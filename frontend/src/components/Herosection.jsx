@@ -4,29 +4,44 @@ import { Search } from "lucide-react";
 
 const Herosection = () => {
   return (
-    <div className="text-center px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-5 my-10">
-        <span className="px-4 py-2 rounded-full bg-gray-100 text-[#f83002] font-medium mx-auto text-sm sm:text-base">
-          No.1 Job Hunt Website
-        </span>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug">
-          Search, apply & <br />
-          Get your <span className="text-[#6a38c2]">Dream Job</span>
-        </h1>
-        <p className="text-sm sm:text-base max-w-xl mx-auto px-2 text-gray-600">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis omnis
-          repudiandae tempora in incidunt!
-        </p>
-        <div className="flex w-full max-w-xl mx-auto shadow-lg border border-gray-200 pl-3 rounded-full items-center gap-2 sm:gap-4">
-          <input
-            className="outline-none border-none w-full py-2 px-2 text-sm sm:text-base rounded-l-full"
-            type="text"
-            placeholder="Find your dream jobs"
-          />
-          <Button className="rounded-r-full bg-[#6a38c2] px-4 py-2">
-            <Search className="h-5 w-5" />
-          </Button>
+    <div className="px-4 sm:px-6 lg:px-20 py-10">
+      {/* Content Layout */}
+      <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10">
+        {/* Left: Text */}
+        <div className="w-full md:w-2/3 text-center md:text-left space-y-5">
+          <span className="px-4 py-2 rounded-full bg-gray-100 text-[#f83002] font-medium text-sm sm:text-base inline-block">
+            No.1 Job Hunt Website
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug">
+            Search, apply & <br />
+            Get your <span className="text-[#6a38c2]">Dream Job</span>
+          </h1>
+          <p className="text-sm sm:text-base max-w-xl text-gray-600 mx-auto md:mx-0">
+            Explore top job listings, apply in minutes, and take the next step
+            in your career.{" "}
+          </p>
         </div>
+
+        {/* Right: Image */}
+        <div className="w-full md:w-1/3 flex justify-center">
+          <img
+            src="./img.avif"
+            alt="Hero"
+            className="w-full max-w-xs md:max-w-sm hover:scale-105 transition-transform duration-500 md:block hidden"
+          />
+        </div>
+      </div>
+
+      {/* Search input: always centered below */}
+      <div className="flex w-full max-w-xl mx-auto mt-10 shadow-lg border border-gray-200 pl-3 rounded-full items-center gap-2 sm:gap-4">
+        <input
+          className="outline-none border-none w-full py-2 px-2 text-sm sm:text-base rounded-l-full"
+          type="text"
+          placeholder="Find your dream jobs"
+        />
+        <Button className="rounded-r-full bg-[#6a38c2] px-4 py-2">
+          <Search className="h-5 w-5" />
+        </Button>
       </div>
     </div>
   );
