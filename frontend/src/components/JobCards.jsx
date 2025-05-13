@@ -3,8 +3,11 @@ import { Button } from "./ui/button";
 import { Bookmark } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const JobCards = () => {
+  const navigate = useNavigate();
+  const jobId = "hshs";
   return (
     <div className="p-4 border rounded-md shadow-md bg-white max-w-full sm:max-w-md mx-auto">
       <div className="flex justify-between items-start mb-3">
@@ -45,20 +48,37 @@ const JobCards = () => {
       </div>
 
       <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-3">
-        <Badge variant="ghost" className="text-blue-600 font-semibold text-xs sm:text-sm">
+        <Badge
+          variant="ghost"
+          className="text-blue-600 font-semibold text-xs sm:text-sm"
+        >
           12 Positions
         </Badge>
-        <Badge variant="ghost" className="text-[#f83002] font-semibold text-xs sm:text-sm">
+        <Badge
+          variant="ghost"
+          className="text-[#f83002] font-semibold text-xs sm:text-sm"
+        >
           Part Time
         </Badge>
-        <Badge variant="ghost" className="text-[#6a38c2] font-semibold text-xs sm:text-sm">
+        <Badge
+          variant="ghost"
+          className="text-[#6a38c2] font-semibold text-xs sm:text-sm"
+        >
           24 LPA
         </Badge>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2 mt-4">
-        <Button variant="outline" className="w-full sm:w-auto">Details</Button>
-        <Button className="bg-[#6a38c2] text-white w-full sm:w-auto">Save for later</Button>
+        <Button
+          variant="outline"
+          className="w-full sm:w-auto"
+          onClick={() => navigate(`/description/${jobId}`)}
+        >
+          Details
+        </Button>
+        <Button className="bg-[#6a38c2] text-white w-full sm:w-auto">
+          Save for later
+        </Button>
       </div>
     </div>
   );

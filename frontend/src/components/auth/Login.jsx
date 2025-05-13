@@ -39,7 +39,7 @@ const Login = () => {
       });
       console.log("res.data:", res.data);
       if (res.data.success) {
-        dispatch(setUser(res.data,user));
+        dispatch(setUser(res.data.user));
         toast.success(res.data.message);
         navigate("/");
       } else {
