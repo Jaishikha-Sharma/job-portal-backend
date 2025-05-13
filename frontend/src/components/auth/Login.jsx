@@ -9,11 +9,11 @@ import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../redux/authSlice.js";
+import { setLoading, setUser } from "../../redux/authSlice.js";
 import { Loader, Loader2 } from "lucide-react";
 
 const Login = () => {
-  const { loading } = useSelector((store) => store.auth);
+  const { loading  ,user} = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState({
@@ -39,6 +39,7 @@ const Login = () => {
       });
       console.log("res.data:", res.data);
       if (res.data.success) {
+        dispatch(setUser(res.data,user));
         toast.success(res.data.message);
         navigate("/");
       } else {
@@ -56,7 +57,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-pink-100">
+    <div className="min-h-screen bg-[#f9f9f9]">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-10">
         <form

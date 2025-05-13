@@ -4,13 +4,13 @@ const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const LatestJob = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-20 py-10">
+    <div className="bg-gradient-to-br from-indigo-50 via-white to-indigo-100 px-4 sm:px-6 lg:px-20 py-10">
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-        <span className="text-[#6a38c2]">Latest</span> Job Openings
+        <span className="text-[#6a38c2]">Latest & Top</span> Job Openings
       </h1>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-6">
-        {randomJobs.slice(0,6).map((item, index) => (
-          <LatestJobCards />
+        {randomJobs.slice(0, 6).map((item, index) => (
+          <LatestJobCards key={index} />
         ))}
       </div>
     </div>

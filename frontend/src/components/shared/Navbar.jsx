@@ -4,13 +4,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { LogOut, Menu, User2, X } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const user = false;
+  const {user} = useSelector(store=>store.auth);
 
   return (
-    <div className="bg-white shadow-sm px-4">
+    <div className=" px-4 sticky top-0 z-50 bg-white shadow-md transition-all">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         {/* Logo */}
         <h1 className="text-2xl font-bold">
@@ -20,9 +21,15 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <ul className="flex font-medium items-center gap-4 text-sm sm:text-base">
-            <li>Home</li>
-            <li>Jobs</li>
-            <li>Browse</li>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/jobs">Jobs</Link>
+            </li>
+            <li>
+              <Link to="/browse">Browse</Link>
+            </li>
           </ul>
 
           {!user ? (

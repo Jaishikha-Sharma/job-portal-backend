@@ -3,6 +3,7 @@ import Navbar from "../components/shared/Navbar.jsx";
 import Herosection from "./Herosection.jsx";
 import CategoryCarousel from "./CategoryCarousel.jsx";
 import LatestJobs from "./LatestJob.jsx";
+import Footer from "./Footer.jsx";
 
 const Home = () => {
   return (
@@ -11,7 +12,7 @@ const Home = () => {
       <Herosection />
       <CategoryCarousel />
       <LatestJobs />
-      {/* <Footer/> */}
+      <Footer/>
     </div>
   );
 };

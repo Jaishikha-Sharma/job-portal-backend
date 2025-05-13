@@ -47,7 +47,7 @@ const SignUp = () => {
     }
 
     try {
-       dispatch(setLoading(true));
+   
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -68,12 +68,12 @@ const SignUp = () => {
       console.log("Error:", error);
       toast.error(error.response?.data?.message || "Registration failed");
     } finally{
-       dispatch(setLoading(false));
+    
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-pink-100">
+    <div className="min-h-screen bg-[#f9f9f9]">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-10">
         <form
