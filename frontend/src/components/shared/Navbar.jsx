@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant.js";
-import { setUser } from "../../redux/authSlice.js"
+import { setUser } from "../../redux/authSlice.js";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,15 +43,28 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <ul className="flex font-medium items-center gap-4 text-sm sm:text-base">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/jobs">Jobs</Link>
-            </li>
-            <li>
-              <Link to="/browse">Browse</Link>
-            </li>
+            {user && user.role === "recruiter" ? (
+              <>
+                <li>
+                  <Link to="/admin/companies">Companies</Link>
+                </li>
+                <li>
+                  <Link to="/admin/jobs">Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/jobs">Jobs</Link>
+                </li>
+                <li>
+                  <Link to="/browse">Browse</Link>
+                </li>
+              </>
+            )}
           </ul>
 
           {!user ? (
@@ -91,16 +104,15 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-col text-gray-600 gap-2">
-                  <Button
-                    asChild
-                    variant="link"
-                    className="justify-start gap-2"
-                  >
-                    <Link to="/profile">
-                      <User2 className="w-4 h-4" />
-                      View Profile
-                    </Link>
-                  </Button>
+                  {user && user.role === "student" && (
+                    <div className="flex w-fit items-center gap-1 cursor-pointer">
+                      <User2 />
+                      <Button variant="link">
+                        {" "}
+                        <Link to="/profile">View Profile</Link>
+                      </Button>
+                    </div>
+                  )}
                   <Button
                     onClick={logoutHandler}
                     variant="link"
