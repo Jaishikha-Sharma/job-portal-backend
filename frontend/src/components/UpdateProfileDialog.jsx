@@ -62,7 +62,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
     if (input.file && typeof input.file !== "string") {
-      formData.append("file", input.file);
+      formData.append("resume", input.file);
     }
 
     try {
@@ -170,7 +170,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
               </Label>
               <Input
                 id="file"
-                name="file"
+                name="resume"
                 type="file"
                 accept="application/pdf"
                 onChange={fileChangeHandler}
