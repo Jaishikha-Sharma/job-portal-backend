@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,55 +15,68 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const CompaniesTable = () => {
+  const { companies, searchCompanyByText } = useSelector(
+    (store) => store.company
+  );
+  const [filterCompany, setFilterCompany] = useState(companies);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const filteredCompany =
+      companies.length >= 0 &&
+      companies.filter((company) => {
+        if (!searchCompanyByText) {
+          return true;
+        }
+        return company?.name
+          ?.toLowerCase()
+          .includes(searchCompanyByText.toLowerCase());
+      });
+    setFilterCompany(filteredCompany);
+  }, [companies, searchCompanyByText]);
   return (
-    <div className="w-full mt-5">
-      {/* Responsive wrapper */}
-      <div className="overflow-x-auto rounded-lg border bg-white shadow-sm">
-        <Table className="min-w-[500px]">
-          <TableCaption className="text-sm text-gray-500 mb-2">
-            A list of your recently registered companies
-          </TableCaption>
-          <TableHeader>
-            <TableRow className="bg-gray-100">
-              <TableHead className="text-gray-700">Logo</TableHead>
-              <TableHead className="text-gray-700">Name</TableHead>
-              <TableHead className="text-gray-700">Date</TableHead>
-              <TableHead className="text-right text-gray-700">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow className="hover:bg-gray-50 transition">
+    <div>
+      <Table>
+        <TableCaption>A list of your recent registered companies</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Logo</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filterCompany?.map((company) => (
+            <tr>
               <TableCell>
-                <Avatar className="w-10 h-10">
-                  <AvatarImage
-                    src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"
-                    alt="Company Logo"
-                  />
+                <Avatar>
+                  <AvatarImage src={company.logo} />
                 </Avatar>
               </TableCell>
-              <TableCell className="font-medium whitespace-nowrap">
-                Company Name
-              </TableCell>
-              <TableCell className="text-gray-600 whitespace-nowrap">
-                10-08-2023
-              </TableCell>
-              <TableCell className="text-right">
+              <TableCell>{company.name}</TableCell>
+              <TableCell>{company.createdAt.split("T")[0]}</TableCell>
+              <TableCell className="text-right cursor-pointer">
                 <Popover>
-                    <PopoverTrigger>
-                        <MoreHorizontal/>
-                    </PopoverTrigger>
+                  <PopoverTrigger>
+                    <MoreHorizontal />
+                  </PopoverTrigger>
                   <PopoverContent className="w-32">
-                    <div>
-                      <Edit2 />
+                    <div
+                      onClick={() =>
+                        navigate(`/admin/companies/${company._id}`)
+                      }
+                      className="flex items-center gap-2 w-fit cursor-pointer"
+                    >
+                      <Edit2 className="w-4" />
                       <span>Edit</span>
                     </div>
                   </PopoverContent>
                 </Popover>
               </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+            </tr>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
