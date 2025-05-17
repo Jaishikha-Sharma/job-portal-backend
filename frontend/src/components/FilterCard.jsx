@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { useDispatch } from "react-redux";
+import { setSearchedQuery } from "../redux/jobSlice";
 
+// Filter configuration
 const filterData = [
   {
     filterType: "Location",
@@ -19,24 +22,32 @@ const filterData = [
 ];
 
 const FilterCard = ({ isMobile = false }) => {
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState({
+    Location: "",
+    Industry: "",
+    Salary: "",
+  });
 
-  const changeHandler = (value) => {
-    setSelectedValue(value);
+  const dispatch = useDispatch();
+
+  const changeHandler = (filterType, value) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filterType]: value,
+    }));
   };
 
+  // Dispatch filters to Redux store whenever selection changes
   useEffect(() => {
-    console.log("Selected filter:", selectedValue);
-  }, [selectedValue]);
+    dispatch(setSearchedQuery(selectedFilters));
+  }, [selectedFilters, dispatch]);
 
   return (
     <div className="w-full bg-[#f9f9f9] p-4 rounded-xl shadow-sm border border-gray-200">
-      <h1 className="font-semibold text-xl text-gray-800 mb-4">
-        Filter Jobs
-      </h1>
+      <h1 className="font-semibold text-xl text-gray-800 mb-4">Filter Jobs</h1>
 
-      {/* Mobile layout: horizontal pills */}
       {isMobile ? (
+        // Mobile layout: horizontal scrollable buttons
         <div className="space-y-4">
           {filterData.map((section, index) => (
             <div key={index}>
@@ -47,10 +58,14 @@ const FilterCard = ({ isMobile = false }) => {
                 {section.array.map((item, idx) => (
                   <Button
                     key={idx}
-                    variant={selectedValue === item ? "default" : "outline"}
+                    variant={
+                      selectedFilters[section.filterType] === item
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className="shrink-0 text-xs"
-                    onClick={() => changeHandler(item)}
+                    onClick={() => changeHandler(section.filterType, item)}
                   >
                     {item}
                   </Button>
@@ -60,36 +75,43 @@ const FilterCard = ({ isMobile = false }) => {
           ))}
         </div>
       ) : (
-        // Desktop layout: vertical radio group
-        <RadioGroup value={selectedValue} onValueChange={changeHandler}>
+        // Desktop layout: vertical radio groups
+        <div>
           {filterData.map((section, index) => (
             <div key={index} className="mb-6">
               <h2 className="text-gray-700 font-medium text-lg mb-2 border-b pb-1">
                 {section.filterType}
               </h2>
-              <div className="space-y-2">
-                {section.array.map((item, idx) => {
-                  const itemId = `id${index}-${idx}`;
-                  return (
-                    <div key={itemId} className="flex items-center gap-3">
-                      <RadioGroupItem
-                        value={item}
-                        id={itemId}
-                        className="border-gray-300 text-primary"
-                      />
-                      <Label
-                        htmlFor={itemId}
-                        className="text-sm text-gray-600 cursor-pointer hover:text-gray-800"
-                      >
-                        {item}
-                      </Label>
-                    </div>
-                  );
-                })}
-              </div>
+              <RadioGroup
+                value={selectedFilters[section.filterType]}
+                onValueChange={(value) =>
+                  changeHandler(section.filterType, value)
+                }
+              >
+                <div className="space-y-2">
+                  {section.array.map((item, idx) => {
+                    const itemId = `id-${section.filterType}-${idx}`;
+                    return (
+                      <div key={itemId} className="flex items-center gap-3">
+                        <RadioGroupItem
+                          value={item}
+                          id={itemId}
+                          className="border-gray-300 text-primary"
+                        />
+                        <Label
+                          htmlFor={itemId}
+                          className="text-sm text-gray-600 cursor-pointer hover:text-gray-800"
+                        >
+                          {item}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </RadioGroup>
             </div>
           ))}
-        </RadioGroup>
+        </div>
       )}
     </div>
   );
