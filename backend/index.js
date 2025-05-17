@@ -17,8 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
   origin: [
-    "http://localhost:5173", // for local development
-    "https://job-portal-weld-two.vercel.app", // for deployed frontend
+    "http://localhost:5173", 
+    "https://job-portal-weld-two.vercel.app", 
   ],
   credentials: true,
 };
