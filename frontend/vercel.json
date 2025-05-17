@@ -4,5 +4,8 @@
   "framework": "vite",
   "env": {
     "CI": "false"
-  }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
 }
