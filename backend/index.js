@@ -21,6 +21,7 @@ const corsOptions = {
     "https://job-portal-weld-two.vercel.app", 
   ],
   credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
