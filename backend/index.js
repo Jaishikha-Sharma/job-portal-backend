@@ -16,12 +16,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
-  origin: [
-    "http://localhost:5173", 
-    "https://job-portal-weld-two.vercel.app", 
-  ],
+  origin: ["http://localhost:5173", "https://job-portal-weld-two.vercel.app"],
   credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
