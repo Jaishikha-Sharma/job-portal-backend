@@ -6,6 +6,6 @@
     "CI": "false"
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+     { "source": "/:path*", "destination": "/" }
   ]
 }
