@@ -12,16 +12,12 @@ import { Badge } from "./ui/badge";
 import { useSelector } from "react-redux";
 
 const AppliedJobTable = () => {
-  // Default to empty array to prevent 'undefined' errors
-  const {
-    allAppliedJobs = [],
-    isLoading,
-    error,
-  } = useSelector((store) => store.job);
+  const { allAppliedJobs } = useSelector((store) => store.job);
 
-  // Optional: Show loading or error messages
-  if (isLoading) return <p>Loading applied jobs...</p>;
-  if (error) return <p>Error loading jobs: {error}</p>;
+  // Filter out records with missing job or company
+  const validAppliedJobs = allAppliedJobs?.filter(
+    (appliedJob) => appliedJob?.job && appliedJob?.job?.company
+  );
 
   return (
     <div>
@@ -36,29 +32,29 @@ const AppliedJobTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allAppliedJobs.length === 0 ? (
+          {validAppliedJobs.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="text-center text-gray-500">
                 You haven't applied to any jobs yet.
               </TableCell>
             </TableRow>
           ) : (
-            allAppliedJobs.map((appliedJob) => (
+            validAppliedJobs.map((appliedJob) => (
               <TableRow key={appliedJob._id}>
                 <TableCell>{appliedJob?.createdAt?.split("T")[0]}</TableCell>
-                <TableCell>{appliedJob?.job?.title}</TableCell>
-                <TableCell>{appliedJob?.job?.company?.name}</TableCell>
+                <TableCell>{appliedJob.job?.title}</TableCell>
+                <TableCell>{appliedJob.job?.company?.name}</TableCell>
                 <TableCell className="text-right">
                   <Badge
                     className={`${
                       appliedJob?.status === "rejected"
                         ? "bg-red-400"
-                        : appliedJob?.status === "pending"
+                        : appliedJob.status === "pending"
                         ? "bg-gray-400"
                         : "bg-green-400"
                     }`}
                   >
-                    {appliedJob?.status?.toUpperCase()}
+                    {appliedJob.status.toUpperCase()}
                   </Badge>
                 </TableCell>
               </TableRow>

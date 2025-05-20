@@ -13,6 +13,19 @@ export const registerCompany = async (req, res) => {
       });
     }
 
+    const userId = req.id;
+
+    // Check how many companies this user already has
+    const companyCount = await Company.countDocuments({ userId });
+
+    if (companyCount >= 5) {
+      return res.status(400).json({
+        message: "You cannot register more than 5 companies.",
+        success: false,
+      });
+    }
+
+    // Check if company name already exists
     let company = await Company.findOne({ name: companyName });
     if (company) {
       return res.status(400).json({
@@ -23,7 +36,7 @@ export const registerCompany = async (req, res) => {
 
     company = await Company.create({
       name: companyName,
-      userId: req.id,
+      userId,
     });
 
     return res.status(201).json({
@@ -33,6 +46,10 @@ export const registerCompany = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
   }
 };
 
@@ -119,5 +136,32 @@ export const updateCompany = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+// Delete company by ID
+export const deleteCompany = async (req, res) => {
+  try {
+    const companyId = req.params.id;
+
+    const company = await Company.findByIdAndDelete(companyId);
+
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Company deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
   }
 };

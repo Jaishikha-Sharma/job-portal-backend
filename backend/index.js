@@ -56,8 +56,6 @@ dotenv.config();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://frontend-91qr590kg-jaishikha-sharmas-projects.vercel.app",
-    "https://frontend-rho-orcin-27.vercel.app",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
