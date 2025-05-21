@@ -144,18 +144,31 @@ const Navbar = () => {
       {menuOpen && (
         <div className="md:hidden px-2 pb-4">
           <ul className="flex flex-col font-medium gap-2 text-sm sm:text-base">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/jobs">Jobs</Link>
-            </li>
-            <li>
-              <Link to="/browse">Browse</Link>
-            </li>
-            <li>
-              <Link to="/saved-jobs">Saved Jobs</Link>
-            </li>
+            {user && user.role === "recruiter" ? (
+              <>
+                <li>
+                  <Link to="/admin/companies">Companies</Link>
+                </li>
+                <li>
+                  <Link to="/admin/jobs">Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/jobs">Jobs</Link>
+                </li>
+                <li>
+                  <Link to="/browse">Browse</Link>
+                </li>
+                <li>
+                  <Link to="/saved-jobs">Saved Jobs</Link>
+                </li>
+              </>
+            )}
           </ul>
 
           {!user ? (
@@ -179,7 +192,9 @@ const Navbar = () => {
                 </Avatar>
                 <div>
                   <p className="text-sm font-medium">{user?.fullname}</p>
-                  <p className="text-xs text-muted-foreground">{user?.profile?.bio}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.profile?.bio}
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col text-gray-600 gap-2">
