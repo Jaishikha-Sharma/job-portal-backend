@@ -11,49 +11,57 @@ import {
 import { Badge } from "./ui/badge";
 import { useSelector } from "react-redux";
 
+const statusColors = {
+  rejected: "bg-red-500 text-white",
+  pending: "bg-gray-400 text-white",
+  "on hold": "bg-yellow-400 text-black",
+  accepted: "bg-green-500 text-white",
+};
+
 const AppliedJobTable = () => {
   const { allAppliedJobs } = useSelector((store) => store.job);
 
-  // Filter out records with missing job or company
   const validAppliedJobs = allAppliedJobs?.filter(
     (appliedJob) => appliedJob?.job && appliedJob?.job?.company
   );
 
   return (
-    <div>
-      <Table>
-        <TableCaption>A list of your applied jobs</TableCaption>
+    <div className="overflow-x-auto rounded-lg shadow-md bg-white">
+      <Table className="min-w-[600px]">
+        <TableCaption className="text-gray-500 text-sm italic">
+          A list of your applied jobs
+        </TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Job Role</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead className="text-right">Status</TableHead>
+          <TableRow className="bg-gray-100">
+            <TableHead className="py-3 px-4 text-left">Date</TableHead>
+            <TableHead className="py-3 px-4 text-left">Job Role</TableHead>
+            <TableHead className="py-3 px-4 text-left">Company</TableHead>
+            <TableHead className="py-3 px-4 text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {validAppliedJobs.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-gray-500">
+              <TableCell colSpan={4} className="text-center text-gray-500 py-6">
                 You haven't applied to any jobs yet.
               </TableCell>
             </TableRow>
           ) : (
-            validAppliedJobs.map((appliedJob) => (
-              <TableRow key={appliedJob._id}>
-                <TableCell>{appliedJob?.createdAt?.split("T")[0]}</TableCell>
-                <TableCell>{appliedJob.job?.title}</TableCell>
-                <TableCell>{appliedJob.job?.company?.name}</TableCell>
-                <TableCell className="text-right">
+            validAppliedJobs.map((appliedJob, idx) => (
+              <TableRow
+                key={appliedJob._id}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <TableCell className="py-3 px-4">
+                  {appliedJob?.createdAt?.split("T")[0]}
+                </TableCell>
+                <TableCell className="py-3 px-4">{appliedJob.job?.title}</TableCell>
+                <TableCell className="py-3 px-4">{appliedJob.job?.company?.name}</TableCell>
+                <TableCell className="py-3 px-4 text-right">
                   <Badge
-                    className={`${
-                      appliedJob?.status === "rejected"
-                        ? "bg-red-400"
-                        : appliedJob.status === "pending"
-                        ? "bg-gray-400"
-                        : appliedJob.status === "on hold"
-                        ? "bg-yellow-400"
-                        : "bg-green-400"
+                    className={`inline-block px-3 py-1 rounded-full font-semibold ${
+                      statusColors[appliedJob.status.toLowerCase()] ||
+                      "bg-gray-300 text-black"
                     }`}
                   >
                     {appliedJob.status.toUpperCase()}
