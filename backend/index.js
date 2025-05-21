@@ -48,11 +48,8 @@ import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 
 const app = express();
-
-// 🌐 Load environment variables
 dotenv.config();
 
-// ✅ CORS configuration
 const corsOptions = {
   origin: [
     "http://localhost:5173",
