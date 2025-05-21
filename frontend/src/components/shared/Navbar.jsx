@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant.js";
-import { setUser } from "../../redux/authSlice.js";
+import { logout } from "../../redux/authSlice.js";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,7 +22,7 @@ const Navbar = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        dispatch(setUser(null));
+        dispatch(logout()); // reset auth state
         navigate("/");
         toast.success(res.data.message);
       }
@@ -62,6 +62,9 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link to="/browse">Browse</Link>
+                </li>
+                <li>
+                  <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
               </>
             )}
@@ -149,6 +152,9 @@ const Navbar = () => {
             </li>
             <li>
               <Link to="/browse">Browse</Link>
+            </li>
+            <li>
+              <Link to="/saved-jobs">Saved Jobs</Link>
             </li>
           </ul>
 

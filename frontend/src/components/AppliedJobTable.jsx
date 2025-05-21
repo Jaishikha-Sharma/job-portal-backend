@@ -51,6 +51,8 @@ const AppliedJobTable = () => {
                         ? "bg-red-400"
                         : appliedJob.status === "pending"
                         ? "bg-gray-400"
+                        : appliedJob.status === "on hold"
+                        ? "bg-yellow-400"
                         : "bg-green-400"
                     }`}
                   >

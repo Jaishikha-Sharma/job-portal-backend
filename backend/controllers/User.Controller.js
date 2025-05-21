@@ -202,3 +202,71 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
+
+// SAVE a job
+export const saveJob = async (req, res) => {
+  try {
+    const userId = req.id; // from auth middleware
+    const { jobId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (user.profile.savedJobs.includes(jobId)) {
+      return res.status(400).json({ success: false, message: "Job already saved" });
+    }
+
+    user.profile.savedJobs.push(jobId);
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Job saved" });
+  } catch (err) {
+    console.error("Save job error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// UNSAVE a job
+export const unsaveJob = async (req, res) => {
+  try {
+    const userId = req.id;
+    const { jobId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    user.profile.savedJobs = user.profile.savedJobs.filter(
+      (id) => id.toString() !== jobId
+    );
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Job unsaved" });
+  } catch (err) {
+    console.error("Unsave job error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getSavedJobs = async (req, res) => {
+  try {
+    const userId = req.id; // from isAuthenticated middleware
+
+    const user = await User.findById(userId).populate({
+      path: "profile.savedJobs",
+      populate: { path: "company" }, // 👈 this will populate company details inside each job
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found", success: false });
+    }
+
+    return res.status(200).json({
+      savedJobs: user.profile.savedJobs,
+      success: true,
+    });
+  } catch (error) {
+    console.error("Get saved jobs error:", error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+};
+

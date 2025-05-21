@@ -5,23 +5,28 @@ import { Button } from "./ui/button";
 import { useDispatch } from "react-redux";
 import { setSearchedQuery } from "../redux/jobSlice";
 
-// Filter configuration
-const filterData = [
-  {
-    filterType: "Location",
-    array: ["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"],
-  },
-  {
-    filterType: "Industry",
-    array: ["Frontend Developer", "Backend Developer", "FullStack Developer"],
-  },
-  {
-    filterType: "Salary",
-    array: ["0-40k", "42-1lakh", "1lakh to 5lakh"],
-  },
-];
+const FilterCard = ({ isMobile = false, jobs = [] }) => {
+  // Extract unique locations from jobs array
+  const uniqueLocations = Array.from(
+    new Set(jobs.map((job) => job.location).filter(Boolean))
+  );
 
-const FilterCard = ({ isMobile = false }) => {
+  // Filter configuration with dynamic Location list
+  const filterData = [
+    {
+      filterType: "Location",
+      array: uniqueLocations.length > 0 ? uniqueLocations : ["No locations"],
+    },
+    {
+      filterType: "Industry",
+      array: ["Frontend Developer", "Backend Developer", "FullStack Developer"],
+    },
+    {
+      filterType: "Salary",
+      array: ["0-40k", "42-1lakh", "1lakh to 5lakh"],
+    },
+  ];
+
   const [selectedFilters, setSelectedFilters] = useState({
     Location: "",
     Industry: "",
@@ -37,7 +42,7 @@ const FilterCard = ({ isMobile = false }) => {
     }));
   };
 
-  // Dispatch filters to Redux store whenever selection changes
+  // Dispatch selected filters to Redux store whenever they change
   useEffect(() => {
     dispatch(setSearchedQuery(selectedFilters));
   }, [selectedFilters, dispatch]);
