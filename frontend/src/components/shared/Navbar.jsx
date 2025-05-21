@@ -22,7 +22,7 @@ const Navbar = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        dispatch(logout()); // reset auth state
+        dispatch(logout());
         navigate("/");
         toast.success(res.data.message);
       }
@@ -36,8 +36,8 @@ const Navbar = () => {
     <div className="px-4 sticky top-0 z-50 bg-white shadow-md transition-all">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         {/* Logo */}
-        <h1 className="text-2xl font-bold">
-          Job<span className="text-[#f83002]">Portal</span>
+        <h1 className="text-2xl font-extrabold tracking-tight hover:animate-wiggle transition-all duration-300 cursor-pointer bg-gradient-to-r from-[#f83002] to-orange-500 text-transparent bg-clip-text">
+          Job<span className="text-black">Portal</span>
         </h1>
 
         {/* Desktop Nav */}
@@ -45,25 +45,25 @@ const Navbar = () => {
           <ul className="flex font-medium items-center gap-4 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/">Home</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/browse">Browse</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
                   <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
               </>
@@ -72,20 +72,27 @@ const Navbar = () => {
 
           {!user ? (
             <div className="flex gap-2">
-              <Button asChild variant="outline">
+              <Button
+                asChild
+                variant="outline"
+                className="hover:bg-[#f83002]/10 transition duration-200"
+              >
                 <Link to="/login">Login</Link>
               </Button>
-              <Button asChild>
+              <Button
+                asChild
+                className="bg-[#f83002] hover:bg-[#f83002]/90 transition duration-200 text-white"
+              >
                 <Link to="/signup">Sign Up</Link>
               </Button>
             </div>
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
+                <Avatar className="cursor-pointer hover:scale-110 transition-all">
                   <AvatarImage
                     src={user?.profile?.profilePhoto}
-                    alt="@shadcn"
+                    alt="user"
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
@@ -95,7 +102,7 @@ const Navbar = () => {
                   <Avatar>
                     <AvatarImage
                       src={user?.profile?.profilePhoto}
-                      alt="@shadcn"
+                      alt="user"
                     />
                   </Avatar>
                   <div>
@@ -111,7 +118,6 @@ const Navbar = () => {
                     <div className="flex w-fit items-center gap-1 cursor-pointer">
                       <User2 />
                       <Button variant="link">
-                        {" "}
                         <Link to="/profile">View Profile</Link>
                       </Button>
                     </div>
@@ -146,25 +152,25 @@ const Navbar = () => {
           <ul className="flex flex-col font-medium gap-2 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/">Home</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/browse">Browse</Link>
                 </li>
-                <li>
+                <li className="hover:text-[#f83002] transition-all">
                   <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
               </>
@@ -173,10 +179,17 @@ const Navbar = () => {
 
           {!user ? (
             <div className="mt-2 flex flex-col gap-2">
-              <Button asChild variant="outline">
+              <Button
+                asChild
+                variant="outline"
+                className="hover:bg-[#f83002]/10 transition"
+              >
                 <Link to="/login">Login</Link>
               </Button>
-              <Button asChild>
+              <Button
+                asChild
+                className="bg-[#f83002] text-white hover:bg-[#f83002]/90 transition"
+              >
                 <Link to="/signup">Sign Up</Link>
               </Button>
             </div>
@@ -186,7 +199,7 @@ const Navbar = () => {
                 <Avatar className="w-8 h-8">
                   <AvatarImage
                     src={user?.profile?.profilePhoto}
-                    alt="@shadcn"
+                    alt="user"
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
