@@ -126,20 +126,18 @@ export const login = async (req, res) => {
 };
 
 // LOGOUT
-export const logout = async (req, res) => {
-  try {
-    res.status(200).cookie("token", "", { maxAge: 0 }).json({
-      message: "Logout successfully!",
-      success: true,
-    });
-  } catch (error) {
-    console.error("Logout error:", error);
-    res.status(500).json({
-      message: "Server error during logout",
-      success: false,
-    });
-  }
-};
+res
+  .status(200)
+  .cookie("token", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: 0,
+  })
+  .json({
+    message: "Logout successfully!",
+    success: true,
+  });
 
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
@@ -210,10 +208,15 @@ export const saveJob = async (req, res) => {
     const { jobId } = req.params;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
 
     if (user.profile.savedJobs.includes(jobId)) {
-      return res.status(400).json({ success: false, message: "Job already saved" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Job already saved" });
     }
 
     user.profile.savedJobs.push(jobId);
@@ -233,7 +236,10 @@ export const unsaveJob = async (req, res) => {
     const { jobId } = req.params;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
 
     user.profile.savedJobs = user.profile.savedJobs.filter(
       (id) => id.toString() !== jobId
@@ -257,7 +263,9 @@ export const getSavedJobs = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found", success: false });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     return res.status(200).json({
@@ -269,4 +277,3 @@ export const getSavedJobs = async (req, res) => {
     return res.status(500).json({ message: "Server error", success: false });
   }
 };
-
