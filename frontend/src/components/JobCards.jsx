@@ -46,6 +46,8 @@ const JobCards = ({ job, hideSaveButton = false }) => {
           className="rounded-full"
           size="icon"
           aria-label="Save job"
+          onClick={handleSaveJob}
+          disabled={loading}
         >
           <Bookmark className="w-4 h-4" />
         </Button>
