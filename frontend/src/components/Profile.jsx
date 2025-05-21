@@ -30,7 +30,9 @@ const Profile = () => {
               />
             </Avatar>
             <div>
-              <h1 className="font-semibold text-lg sm:text-xl">{user?.fullname}</h1>
+              <h1 className="font-semibold text-lg sm:text-xl">
+                {user?.fullname}
+              </h1>
               <p className="text-sm text-gray-600">{user?.profile?.bio}</p>
             </div>
           </div>
@@ -68,21 +70,19 @@ const Profile = () => {
             )}
           </div>
         </div>
-
         <div className="my-5">
-          <Label className="text-md font-bold">Resume</Label>
           <div className="mt-1">
-            {isResume && user?.profile?.resume ? (
+            <Label className="text-md font-bold">Resume</Label>
+            {isResume ? (
               <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={user.profile.resume}
-                className="text-blue-500 hover:underline text-sm sm:text-base"
+                target="blank"
+                href={user?.profile?.resume}
+                className="text-blue-500 w-full hover:underline cursor-pointer"
               >
-                {user.profile.resumeOriginalName}
+                {user?.profile?.resumeOriginalName}
               </a>
             ) : (
-              <span className="text-sm text-gray-500">NA</span>
+              <span>NA</span>
             )}
           </div>
         </div>

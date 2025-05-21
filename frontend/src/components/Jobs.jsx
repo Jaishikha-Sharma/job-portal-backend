@@ -51,13 +51,13 @@ const Jobs = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         {/* Mobile Filter */}
         <div className="block sm:hidden mb-5">
-          <FilterCard isMobile />
+          <FilterCard isMobile jobs={allJobs} />
         </div>
 
         <div className="flex gap-6">
           {/* Sidebar Filter */}
           <div className="hidden sm:block sm:w-1/4">
-            <FilterCard />
+            <FilterCard jobs={allJobs}  />
           </div>
 
           {/* Job Cards Grid */}

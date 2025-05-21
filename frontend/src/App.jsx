@@ -14,7 +14,8 @@ import ProtectedRoute from "./components/admin/ProtectedRoute.jsx";
 import CompanySetup from "./components/admin/CompanySetup.jsx";
 import AdminJob from "./components/admin/AdminJob.jsx";
 import PostJob from "../src/components/admin/PostJob.jsx";
-import Applicants from "../src/components/admin/Applicants.jsx"
+import Applicants from "../src/components/admin/Applicants.jsx";
+import SavedJobs from "./components/SavedJobs.jsx";
 
 
 
@@ -47,6 +48,11 @@ const appRouter = createBrowserRouter([
     path: "/description/:id",
     element: <JobDescription/>,
   },
+
+  {
+  path: "/saved-jobs",
+  element: <SavedJobs />,
+},
 
   // for companies
     {

@@ -29,11 +29,17 @@ const userSchema = new mongoose.Schema(
       skills: [{ type: String }],
       resume: { type: String }, //url
       resumeOriginalName: { type: String },
-      company: { type: mongoose.Schema.Types.ObjectId, re: "Company" },
+      company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
       profilePhoto: {
         type: String,
         default: "",
       },
+      savedJobs: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Job", // reference to the Job model
+        },
+      ],
     },
   },
   { timestamps: true }
