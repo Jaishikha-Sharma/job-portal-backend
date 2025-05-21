@@ -172,14 +172,14 @@ const Navbar = () => {
               <div className="flex items-center gap-3 mb-2">
                 <Avatar className="w-8 h-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.profile?.profilePhoto}
                     alt="@shadcn"
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-medium">Jaishikha Sharma</p>
-                  <p className="text-xs text-muted-foreground">Software Dev</p>
+                  <p className="text-sm font-medium">{user?.fullname}</p>
+                  <p className="text-xs text-muted-foreground">{user?.profile?.bio}</p>
                 </div>
               </div>
               <div className="flex flex-col text-gray-600 gap-2">
