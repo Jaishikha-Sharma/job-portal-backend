@@ -90,20 +90,14 @@ const Navbar = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer hover:scale-110 transition-all">
-                  <AvatarImage
-                    src={user?.profile?.profilePhoto}
-                    alt="user"
-                  />
+                  <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="flex gap-4 mb-4">
                   <Avatar>
-                    <AvatarImage
-                      src={user?.profile?.profilePhoto}
-                      alt="user"
-                    />
+                    <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
                   </Avatar>
                   <div>
                     <h4 className="font-medium">{user?.fullname}</h4>
@@ -197,10 +191,7 @@ const Navbar = () => {
             <div className="mt-4 border-t pt-2">
               <div className="flex items-center gap-3 mb-2">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage
-                    src={user?.profile?.profilePhoto}
-                    alt="user"
-                  />
+                  <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div>
@@ -211,12 +202,14 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="flex flex-col text-gray-600 gap-2">
-                <Button asChild variant="link" className="justify-start gap-2">
-                  <Link to="/profile">
-                    <User2 className="w-4 h-4" />
-                    View Profile
-                  </Link>
-                </Button>
+                {user && user.role === "student" && (
+                  <div className="flex w-fit items-center gap-1 cursor-pointer">
+                    <User2 />
+                    <Button variant="link">
+                      <Link to="/profile">View Profile</Link>
+                    </Button>
+                  </div>
+                )}
                 <Button
                   onClick={logoutHandler}
                   variant="link"
