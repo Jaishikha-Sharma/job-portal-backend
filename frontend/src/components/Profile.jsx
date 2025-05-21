@@ -29,6 +29,7 @@ const Profile = () => {
                     alt="@shadcn"
                   />
             </Avatar>
+            
             <div>
               <h1 className="font-semibold text-lg sm:text-xl">
                 {user?.fullname}
