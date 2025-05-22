@@ -25,10 +25,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-// ✅ Apply CORS middleware FIRST
 app.use(cors(corsOptions));
-
-// ✅ Then other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -39,7 +36,6 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 
-// ✅ Start Server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   connectDB();

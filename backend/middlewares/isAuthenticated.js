@@ -11,12 +11,19 @@ const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    const decode = jwt.verify(token, process.env.SECRET_KEY); // no need for await
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
 
-    req.id = decode.userId;
+    if (!decodedToken?.userId) {
+      return res.status(401).json({
+        message: "Invalid token payload",
+        success: false,
+      });
+    }
+
+    req.userId = decodedToken.userId; // More standard than req.id
     next();
   } catch (error) {
-    console.log("Auth Error:", error.message);
+    console.error("Auth Error:", error); // Log full error for debugging
     return res.status(401).json({
       message: "Authentication failed",
       success: false,
