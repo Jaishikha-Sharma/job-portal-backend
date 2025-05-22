@@ -41,15 +41,7 @@ const Login = () => {
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
-        if (!navigator.cookieEnabled){
-        
-      
-			const date = new Date();
-			date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000);
-			expires = "; expires=" + date.toUTCString();
-		
-		document.cookie = 'token' + "=" + res.data.token + expires + "; path=/";
-    }
+    
         navigate("/");
       } else {
         toast.error(res.data.message || "Login failed");
