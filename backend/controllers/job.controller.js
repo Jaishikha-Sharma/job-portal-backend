@@ -100,3 +100,4 @@ export const getAdminJobs = async (req, res) => {
         console.log(error);
     }
 }
+
