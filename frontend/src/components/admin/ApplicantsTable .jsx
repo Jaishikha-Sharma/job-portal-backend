@@ -42,52 +42,86 @@ const ApplicantsTable = () => {
 
   return (
     <div>
-      <Table>
-        <TableCaption>A list of your recent applied users</TableCaption>
+      <Table className="w-full border-separate border-spacing-y-2 text-sm">
+        <TableCaption className="mb-4 text-base font-semibold text-gray-700">
+          A list of your recent applied users
+        </TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead>FullName</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Resume</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+          <TableRow className="bg-gray-100 rounded-lg">
+            <TableHead className="px-4 py-2 rounded-l-lg">Full Name</TableHead>
+            <TableHead className="px-4 py-2">Email</TableHead>
+            <TableHead className="px-4 py-2">Resume</TableHead>
+            <TableHead className="px-4 py-2">Date</TableHead>
+            <TableHead className="px-4 py-2">Status</TableHead>
+            <TableHead className="px-4 py-2 text-right rounded-r-lg">
+              Action
+            </TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {applicants?.applications?.map((item) => (
-            <TableRow key={item._id}>
-              <TableCell>{item?.applicant?.fullname}</TableCell>
-              <TableCell>{item?.applicant?.email}</TableCell>
-              <TableCell>{item?.applicant?.phoneNumber}</TableCell>
-              <TableCell>
+            <TableRow
+              key={item._id}
+              className="hover:shadow-md transition-shadow bg-white rounded-lg"
+            >
+              <TableCell className="px-4 py-3 font-medium text-gray-800">
+                {item?.applicant?.fullname}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-700">
+                {item?.applicant?.email}
+              </TableCell>
+              <TableCell className="px-4 py-3">
                 {item.applicant?.profile?.resume ? (
                   <a
-                    className="text-blue-600 cursor-pointer"
                     href={item?.applicant?.profile?.resume}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="text-blue-600 font-medium hover:underline"
                   >
                     {item?.applicant?.profile?.resumeOriginalName}
                   </a>
                 ) : (
-                  <span>NA</span>
+                  <span className="text-gray-400 italic">NA</span>
                 )}
               </TableCell>
-              <TableCell>{item?.applicant.createdAt.split("T")[0]}</TableCell>
-              <TableCell className="float-right cursor-pointer">
+              <TableCell className="px-4 py-3 text-gray-600">
+                {item?.applicant.createdAt.split("T")[0]}
+              </TableCell>
+
+              {/* STATUS BADGE */}
+              <TableCell className="px-4 py-3">
+                <span
+                  className={`text-xs font-semibold px-3 py-1 rounded-full inline-block ${
+                    item.status === "Accepted"
+                      ? "bg-green-100 text-green-700"
+                      : item.status === "Rejected"
+                      ? "bg-red-100 text-red-700"
+                      : item.status === "On Hold"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {item.status || "Pending"}
+                </span>
+              </TableCell>
+
+              {/* ACTION MENU */}
+              <TableCell className="px-4 py-3 text-right">
                 <Popover>
                   <PopoverTrigger>
-                    <MoreHorizontal />
+                    <button className="p-1 hover:bg-gray-200 rounded-full">
+                      <MoreHorizontal className="w-5 h-5 text-gray-600" />
+                    </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-40">
+                  <PopoverContent className="w-40 border rounded shadow-md">
                     {shortlistingStatus.map((status, index) => (
                       <div
                         key={index}
                         onClick={() => statusHandler(status, item?._id)}
-                        className="flex items-center py-1 px-2 hover:bg-gray-100 rounded cursor-pointer"
+                        className="text-sm py-2 px-3 hover:bg-gray-100 rounded cursor-pointer text-gray-800"
                       >
-                        <span className="text-sm">{status}</span>
+                        {status}
                       </div>
                     ))}
                   </PopoverContent>
