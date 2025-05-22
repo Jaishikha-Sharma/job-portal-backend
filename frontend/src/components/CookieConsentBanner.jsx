@@ -10,24 +10,62 @@ const CookieConsentBanner = () => {
 
   const checkCookieSupport = () => {
     try {
-      // Try setting a test cookie
-      document.cookie = "test_cookie=1; SameSite=None; Secure";
+      // First try to set a regular cookie
+      document.cookie = "test_cookie=1; path=/";
       
-      // Wait a tick and then check if it was set
+      // Then try to set a third-party cookie with SameSite=None
+      document.cookie = "test_third_party_cookie=1; SameSite=None; Secure";
+      
+      // Wait a bit longer to ensure cookies are processed
       setTimeout(() => {
-        const cookiesEnabled = document.cookie.includes("test_cookie");
-        setShowBanner(!cookiesEnabled);
+        // Check both cookies
+        const regularCookieEnabled = document.cookie.includes("test_cookie");
+        const thirdPartyCookieEnabled = document.cookie.includes("test_third_party_cookie");
+        
+        console.log('Cookie Check Results:', {
+          regularCookieEnabled,
+          thirdPartyCookieEnabled,
+          allCookies: document.cookie
+        });
 
-        // Clean up the test cookie
-        document.cookie = "test_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
-      }, 100);
+        // Show banner if either cookie type is blocked
+        setShowBanner(!regularCookieEnabled || !thirdPartyCookieEnabled);
+
+        // Clean up test cookies
+        document.cookie = "test_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+        document.cookie = "test_third_party_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
+      }, 500); // Increased timeout to ensure cookies are processed
     } catch (e) {
+      console.error('Cookie check error:', e);
       setShowBanner(true);
     }
   };
 
   const handleAccept = () => {
-    window.location.reload();
+    // Try to set cookies again before reloading
+    try {
+      document.cookie = "test_cookie=1; path=/";
+      document.cookie = "test_third_party_cookie=1; SameSite=None; Secure";
+      
+      // Check if cookies were set successfully
+      const regularCookieEnabled = document.cookie.includes("test_cookie");
+      const thirdPartyCookieEnabled = document.cookie.includes("test_third_party_cookie");
+      
+      if (!regularCookieEnabled || !thirdPartyCookieEnabled) {
+        alert("Cookies are still not enabled. Please make sure to enable cookies in your browser settings.");
+        return;
+      }
+
+      // Clean up test cookies
+      document.cookie = "test_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+      document.cookie = "test_third_party_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
+      
+      // If we got here, cookies are working
+      window.location.reload();
+    } catch (e) {
+      console.error('Cookie acceptance error:', e);
+      alert("There was an error checking cookie settings. Please make sure cookies are enabled and try again.");
+    }
   };
 
   const getBrowserInstructions = () => {
@@ -39,7 +77,9 @@ const CookieConsentBanner = () => {
           <li>Click "Settings"</li>
           <li>Scroll down and click "Privacy and security"</li>
           <li>Click "Cookies and other site data"</li>
-          <li>Enable "Allow all cookies" or add this site to the exceptions</li>
+          <li>Select "Allow all cookies" or at least "Allow third-party cookies in incognito"</li>
+          <li>Make sure this site is not in the "Sites that can never use cookies" list</li>
+          <li>You may need to refresh the page after changing these settings</li>
         </ol>
       );
     } else if (userAgent.includes('firefox')) {
@@ -48,7 +88,9 @@ const CookieConsentBanner = () => {
           <li>Click the menu button (≡) in the top-right corner</li>
           <li>Click "Settings"</li>
           <li>Click "Privacy & Security"</li>
-          <li>Under "Enhanced Tracking Protection", select "Standard" or add an exception for this site</li>
+          <li>Under "Enhanced Tracking Protection", select "Standard" or "Custom"</li>
+          <li>If using "Custom", make sure "Cookies" is set to "All Cookies" or add this site as an exception</li>
+          <li>You may need to refresh the page after changing these settings</li>
         </ol>
       );
     } else if (userAgent.includes('safari')) {
@@ -57,13 +99,17 @@ const CookieConsentBanner = () => {
           <li>Click "Safari" in the top menu</li>
           <li>Click "Preferences"</li>
           <li>Go to the "Privacy" tab</li>
-          <li>Uncheck "Prevent cross-site tracking" or adjust cookie settings</li>
+          <li>Uncheck "Prevent cross-site tracking"</li>
+          <li>Make sure "Block all cookies" is unchecked</li>
+          <li>You may need to refresh the page after changing these settings</li>
         </ol>
       );
     }
     return (
       <p className="mt-2">
-        Please check your browser's settings and enable third-party cookies or add this site to your exceptions list.
+        Please check your browser's settings and ensure both first-party and third-party cookies are enabled. 
+        Look for options like "Allow all cookies" or "Third-party cookies" in your browser's privacy settings.
+        You may need to add this site to your allowed sites list or exceptions.
       </p>
     );
   };
@@ -78,7 +124,8 @@ const CookieConsentBanner = () => {
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-2">Cookies Required</h3>
               <p className="text-gray-300">
-                This site requires cookies to function properly. Please enable third-party cookies in your browser settings to access all features.
+                This site requires both first-party and third-party cookies to function properly. 
+                Please enable cookies in your browser settings to access all features.
               </p>
             </div>
             <div className="flex flex-col space-y-2 md:ml-4 mt-4 md:mt-0">
