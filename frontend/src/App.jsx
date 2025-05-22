@@ -17,7 +17,7 @@ import PostJob from "../src/components/admin/PostJob.jsx";
 import Applicants from "../src/components/admin/Applicants.jsx";
 import SavedJobs from "./components/SavedJobs.jsx";
 
-
+import CookieConsentBanner from "./components/CookieConsentBanner.jsx"
 
 const appRouter = createBrowserRouter([
   {
@@ -87,6 +87,7 @@ const appRouter = createBrowserRouter([
 function App() {
   return (
     <div>
+      <CookieConsentBanner />
    <RouterProvider router = {appRouter}/>
     </div>
   );
