@@ -55,7 +55,14 @@ const JobCards = ({ job, hideSaveButton = false }) => {
 
       {/* Company Info */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Button variant="ghost" className="p-0" aria-label="Company profile">
+        <Button
+          variant="ghost"
+          className="p-0"
+          aria-label="Company profile"
+          onClick={() =>
+            navigate(`/company/${job?.company?._id || job?.company}`)
+          }
+        >
           <Avatar className="w-12 h-12 sm:w-10 sm:h-10">
             <AvatarImage
               src={

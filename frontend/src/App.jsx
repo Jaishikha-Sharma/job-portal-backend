@@ -16,8 +16,7 @@ import AdminJob from "./components/admin/AdminJob.jsx";
 import PostJob from "../src/components/admin/PostJob.jsx";
 import Applicants from "../src/components/admin/Applicants.jsx";
 import SavedJobs from "./components/SavedJobs.jsx";
-
-// import CookieConsentBanner from "./components/CookieConsentBanner.jsx"
+import CompanyDetailsPage from "./components/CompanyDetailsPage.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -48,7 +47,6 @@ const appRouter = createBrowserRouter([
     path: "/description/:id",
     element: <JobDescription />,
   },
-
   {
     path: "/saved-jobs",
     element: <SavedJobs />,
@@ -59,6 +57,10 @@ const appRouter = createBrowserRouter([
     path: "/admin/companies",
     element: <Companies />,
   },
+  {
+  path: "/company/:id",
+  element: <CompanyDetailsPage />,
+},
   {
     path: "/admin/companies/create",
     element: <CompanyCreate />,
