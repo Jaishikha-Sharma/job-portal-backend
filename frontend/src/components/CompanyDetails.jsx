@@ -56,54 +56,54 @@ const CompanyDetails = ({ companyId }) => {
       <div className="max-w-3xl mx-auto mt-6 px-4">
         <button
           onClick={handleBack}
-          className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium transition"
+          className="inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-md text-sm font-medium transition"
         >
           &#8592; Back
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto p-8 mt-6 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-lg">
+      <div className="max-w-3xl mx-auto p-8 mt-6 bg-white rounded-xl shadow-md border border-gray-200">
         {/* Company Logo & Name */}
         <div className="flex items-center space-x-6 mb-6">
           {company.logo ? (
             <img
               src={company.logo}
               alt={`${company.name} Logo`}
-              className="w-24 h-24 object-contain rounded-lg border border-gray-300"
+              className="w-20 h-20 object-contain rounded-md border border-gray-300"
             />
           ) : (
-            <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-lg text-gray-500 font-bold text-xl">
+            <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md text-gray-500 font-semibold text-lg">
               N/A
             </div>
           )}
-          <h2 className="text-3xl font-extrabold text-indigo-900">{company.name}</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{company.name}</h2>
         </div>
 
         {/* Description */}
-        <p className="text-indigo-800 leading-relaxed mb-6 whitespace-pre-line">
+        <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-line">
           {company.description || "No description available."}
         </p>
 
         {/* Website & Location */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-indigo-900">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-800">
           <div>
-            <h3 className="text-lg font-semibold mb-1">Website</h3>
+            <h3 className="text-md font-semibold mb-1">Website</h3>
             {company.website ? (
               <a
                 href={company.website}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:underline break-all text-indigo-700"
+                className="hover:underline text-blue-600 break-all"
               >
                 {company.website}
               </a>
             ) : (
-              <p className="text-indigo-500">No website provided</p>
+              <p className="text-gray-500">No website provided</p>
             )}
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-1">Location</h3>
+            <h3 className="text-md font-semibold mb-1">Location</h3>
             <p>{company.location || "Location not specified"}</p>
           </div>
         </div>

@@ -6,12 +6,10 @@ import { useDispatch } from "react-redux";
 import { setSearchedQuery } from "../redux/jobSlice";
 
 const FilterCard = ({ isMobile = false, jobs = [] }) => {
-  // Extract unique locations from jobs array
   const uniqueLocations = Array.from(
     new Set(jobs.map((job) => job.location).filter(Boolean))
   );
 
-  // Filter configuration with dynamic Location list
   const filterData = [
     {
       filterType: "Location",
@@ -42,18 +40,17 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
     }));
   };
 
-  // Dispatch selected filters to Redux store whenever they change
   useEffect(() => {
     dispatch(setSearchedQuery(selectedFilters));
   }, [selectedFilters, dispatch]);
 
   return (
-    <div className="w-full bg-[#f9f9f9] p-4 rounded-xl shadow-sm border border-gray-200">
-      <h1 className="font-semibold text-xl text-gray-800 mb-4">Filter Jobs</h1>
+    <div className="w-full bg-gradient-to-br from-indigo-50 to-white border border-gray-200 p-6 rounded-2xl shadow-sm">
+      <h1 className="text-xl font-semibold text-gray-800 mb-5">Filter Jobs</h1>
 
       {isMobile ? (
-        // Mobile layout: horizontal scrollable buttons
-        <div className="space-y-4">
+        // Mobile: Scrollable button filters
+        <div className="space-y-5">
           {filterData.map((section, index) => (
             <div key={index}>
               <h2 className="text-sm font-semibold text-gray-700 mb-2">
@@ -69,7 +66,11 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
                         : "outline"
                     }
                     size="sm"
-                    className="shrink-0 text-xs"
+                    className={`shrink-0 text-xs transition-colors ${
+                      selectedFilters[section.filterType] === item
+                        ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                        : "hover:border-gray-400"
+                    }`}
                     onClick={() => changeHandler(section.filterType, item)}
                   >
                     {item}
@@ -80,11 +81,11 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
           ))}
         </div>
       ) : (
-        // Desktop layout: vertical radio groups
+        // Desktop: Radio filter groups
         <div>
           {filterData.map((section, index) => (
             <div key={index} className="mb-6">
-              <h2 className="text-gray-700 font-medium text-lg mb-2 border-b pb-1">
+              <h2 className="text-gray-700 font-medium text-lg mb-3 border-b pb-2">
                 {section.filterType}
               </h2>
               <RadioGroup
@@ -101,11 +102,11 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
                         <RadioGroupItem
                           value={item}
                           id={itemId}
-                          className="border-gray-300 text-primary"
+                          className="border-gray-300 text-indigo-600 focus:ring-indigo-400"
                         />
                         <Label
                           htmlFor={itemId}
-                          className="text-sm text-gray-600 cursor-pointer hover:text-gray-800"
+                          className="text-sm text-gray-600 hover:text-gray-800 cursor-pointer transition-colors"
                         >
                           {item}
                         </Label>
