@@ -14,6 +14,7 @@ import useGetCompanyById from "../../hooks/useGetCompanyById";
 const CompanySetup = () => {
   const params = useParams();
   useGetCompanyById(params.id);
+
   const [input, setInput] = useState({
     name: "",
     description: "",
@@ -21,6 +22,7 @@ const CompanySetup = () => {
     location: "",
     file: null,
   });
+
   const { singleCompany } = useSelector((store) => store.company);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ const CompanySetup = () => {
       description: singleCompany.description || "",
       website: singleCompany.website || "",
       location: singleCompany.location || "",
-      file: null, // We don't preload the file input
+      file: null,
     });
   }, [singleCompany]);
 
@@ -95,9 +97,11 @@ const CompanySetup = () => {
             <h1 className="text-2xl font-bold text-gray-800">Company Setup</h1>
           </div>
           <form onSubmit={submitHandler}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Company Name</Label>
+                <Label htmlFor="name" className="mb-0.5 block font-medium text-gray-700">
+                  Company Name
+                </Label>
                 <Input
                   id="name"
                   type="text"
@@ -105,21 +109,13 @@ const CompanySetup = () => {
                   value={input.name}
                   onChange={changeEventHandler}
                   placeholder="e.g. Google Inc."
+                  className="mb-2"
                 />
               </div>
               <div>
-                <Label htmlFor="description">Description</Label>
-                <Input
-                  id="description"
-                  type="text"
-                  name="description"
-                  value={input.description}
-                  onChange={changeEventHandler}
-                  placeholder="e.g. A tech giant"
-                />
-              </div>
-              <div>
-                <Label htmlFor="website">Website</Label>
+                <Label htmlFor="website" className="mb-0.5 block font-medium text-gray-700">
+                  Website
+                </Label>
                 <Input
                   id="website"
                   type="text"
@@ -127,10 +123,13 @@ const CompanySetup = () => {
                   value={input.website}
                   onChange={changeEventHandler}
                   placeholder="e.g. https://google.com"
+                  className="mb-2"
                 />
               </div>
               <div>
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="location" className="mb-0.5 block font-medium text-gray-700">
+                  Location
+                </Label>
                 <Input
                   id="location"
                   type="text"
@@ -138,25 +137,46 @@ const CompanySetup = () => {
                   value={input.location}
                   onChange={changeEventHandler}
                   placeholder="e.g. Mountain View, CA"
+                  className="mb-2"
                 />
               </div>
-              <div className="sm:col-span-2">
-                <Label htmlFor="file">Logo</Label>
+              <div>
+                <Label htmlFor="file" className="mb-0.5 block font-medium text-gray-700">
+                  Logo
+                </Label>
                 <Input
                   id="file"
                   type="file"
                   accept="image/*"
                   onChange={changeFileHandler}
+                  className="mb-2"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="description" className="mb-0.5 block font-medium text-gray-700">
+                  Description
+                </Label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={input.description}
+                  onChange={changeEventHandler}
+                  placeholder="e.g. A tech giant"
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#f83002] focus:border-[#f83002] transition mb-2"
                 />
               </div>
             </div>
 
             {loading ? (
-              <Button className="w-full mt-6" disabled>
+              <Button className="w-full mt-4" disabled>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
               </Button>
             ) : (
-              <Button type="submit" className="w-full mt-6">
+              <Button
+                type="submit"
+                className="w-full mt-4 bg-[#f83002] hover:bg-[#e12700] text-white rounded-md px-6 py-3 font-semibold transition"
+              >
                 Update
               </Button>
             )}

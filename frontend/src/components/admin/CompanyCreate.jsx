@@ -11,19 +11,22 @@ import { COMPANY_API_END_POINT } from "../../utils/constant";
 import { setSingleCompany } from "../../redux/companySlice";
 
 const CompanyCreate = () => {
-  const [companyName, setCompanyName] = useState(""); // ✅ This was missing
+  const [companyName, setCompanyName] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const registerNewCompany = async () => {
+    if (!companyName.trim()) {
+      toast.error("Company name cannot be empty!");
+      return;
+    }
+
     try {
       const res = await axios.post(
         `${COMPANY_API_END_POINT}/register`,
         { companyName },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
@@ -35,42 +38,55 @@ const CompanyCreate = () => {
         navigate(`/admin/companies/${companyId}`);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Something went wrong while creating the company.");
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <Navbar />
-      <div>
-        <div className="max-w-4xl mx-auto">
-          <div className="my-10">
-            <h1 className="font-bold text-2xl">Your Company Name</h1>
-            <p className="text-gray-500">
-              What would you like to give your company name? You can change this
-              later.
-            </p>
-          </div>
+      <div className="flex justify-center items-center py-20 px-6 max-w-lg mx-auto">
+        <div
+          className="w-full bg-white rounded-2xl shadow-md p-10 border border-gray-200
+                     transform transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg"
+        >
+          <h2 className="text-3xl font-extrabold mb-3 text-gray-800">
+            Create Your Company
+          </h2>
+          <p className="mb-8 text-gray-600">
+            Enter the name of your company. You can change this anytime later.
+          </p>
 
-          <Label htmlFor="companyName">Company Name</Label>
+          <Label
+            htmlFor="companyName"
+            className="block mb-2 font-semibold text-gray-700"
+          >
+            Company Name
+          </Label>
           <Input
             id="companyName"
             type="text"
-            className="my-2"
-            placeholder="JobHunt, Microsoft etc."
+            placeholder="JobHunt, Microsoft, etc."
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#f83002] focus:border-[#f83002] transition mb-8"
           />
 
-          <div className="flex items-center gap-2 my-10">
+          <div className="flex justify-between gap-4">
             <Button
               variant="outline"
               onClick={() => navigate("/admin/companies")}
+              className="border-[#f83002] text-[#f83002] hover:bg-[#f83002] hover:text-white rounded-md px-6 py-3 font-semibold transition"
             >
               Cancel
             </Button>
-            <Button onClick={registerNewCompany}>Continue</Button>
+            <Button
+              onClick={registerNewCompany}
+              className="bg-[#f83002] hover:bg-[#e12700] text-white rounded-md px-6 py-3 font-semibold transition"
+            >
+              Continue
+            </Button>
           </div>
         </div>
       </div>

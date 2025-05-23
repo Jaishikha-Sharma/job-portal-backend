@@ -17,7 +17,7 @@ import PostJob from "../src/components/admin/PostJob.jsx";
 import Applicants from "../src/components/admin/Applicants.jsx";
 import SavedJobs from "./components/SavedJobs.jsx";
 
-import CookieConsentBanner from "./components/CookieConsentBanner.jsx"
+// import CookieConsentBanner from "./components/CookieConsentBanner.jsx"
 
 const appRouter = createBrowserRouter([
   {
@@ -28,67 +28,80 @@ const appRouter = createBrowserRouter([
     path: "/signup",
     element: <SignUp />,
   },
-   {
+  {
     path: "/",
     element: <Home />,
   },
-    {
+  {
     path: "/jobs",
     element: <Jobs />,
   },
-    {
+  {
     path: "/browse",
     element: <Browse />,
   },
-      {
+  {
     path: "/profile",
     element: <Profile />,
   },
-    {
+  {
     path: "/description/:id",
-    element: <JobDescription/>,
+    element: <JobDescription />,
   },
 
   {
-  path: "/saved-jobs",
-  element: <SavedJobs />,
-},
+    path: "/saved-jobs",
+    element: <SavedJobs />,
+  },
 
   // for companies
-    {
+  {
     path: "/admin/companies",
-    element: <Companies/>,
+    element: <Companies />,
   },
-   {
+  {
     path: "/admin/companies/create",
-    element: <CompanyCreate/>,
+    element: <CompanyCreate />,
   },
-    {
-    path:"/admin/companies/:id",
-    element:<ProtectedRoute><CompanySetup/></ProtectedRoute> 
+  {
+    path: "/admin/companies/:id",
+    element: (
+      <ProtectedRoute>
+        <CompanySetup />
+      </ProtectedRoute>
+    ),
   },
   // for admin
   {
-    path:"/admin/jobs",
-    element:<ProtectedRoute><AdminJob/></ProtectedRoute> 
+    path: "/admin/jobs",
+    element: (
+      <ProtectedRoute>
+        <AdminJob />
+      </ProtectedRoute>
+    ),
   },
   {
-    path:"/admin/jobs/create",
-    element:<ProtectedRoute><PostJob/></ProtectedRoute> 
+    path: "/admin/jobs/create",
+    element: (
+      <ProtectedRoute>
+        <PostJob />
+      </ProtectedRoute>
+    ),
   },
   {
-    path:"/admin/jobs/:id/applicants",
-    element:<ProtectedRoute><Applicants/></ProtectedRoute> 
+    path: "/admin/jobs/:id/applicants",
+    element: (
+      <ProtectedRoute>
+        <Applicants />
+      </ProtectedRoute>
+    ),
   },
-
-  
 ]);
 
 function App() {
   return (
     <div>
-      <CookieConsentBanner />
-   <RouterProvider router = {appRouter}/>
+      <RouterProvider router={appRouter} />
     </div>
   );
 }
