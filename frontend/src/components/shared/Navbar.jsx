@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogOut, Menu, User2, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -15,6 +15,12 @@ const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentPath = location.pathname;
+
+  // Helper to check active path, using startsWith for partial matching
+  const isActive = (path) => currentPath === path || currentPath.startsWith(path + "/");
 
   const logoutHandler = async () => {
     try {
@@ -45,25 +51,49 @@ const Navbar = () => {
           <ul className="flex font-medium items-center gap-4 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/admin/companies") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/admin/jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/">Home</Link>
                 </li>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/browse") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/browse">Browse</Link>
                 </li>
-                <li className="hover:text-[#f83002] hover:scale-105 transition-all">
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/saved-jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
               </>
@@ -146,25 +176,49 @@ const Navbar = () => {
           <ul className="flex flex-col font-medium gap-2 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/admin/companies") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/admin/jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/">Home</Link>
                 </li>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/browse") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/browse">Browse</Link>
                 </li>
-                <li className="hover:text-[#f83002] transition-all">
+                <li
+                  className={`hover:text-[#f83002] transition-all ${
+                    isActive("/saved-jobs") ? "text-[#f83002] font-semibold" : ""
+                  }`}
+                >
                   <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
               </>

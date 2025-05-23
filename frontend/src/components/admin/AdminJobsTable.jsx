@@ -34,7 +34,7 @@ const AdminJobsTable = () => {
     return (
       <div className="text-center mt-10">
         <img
-          src="/no-jobs.svg"
+          src="/no-result.avif"
           alt="No jobs"
           className="mx-auto h-40"
         />
