@@ -121,8 +121,10 @@ const JobDescription = () => {
         {/* Job Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 text-gray-800 text-base">
           <Detail label="Role" value={singleJob?.title} />
-          <Detail label="Location" value={singleJob?.location} />
           <Detail label="Salary" value={`₹ ${singleJob?.salary} LPA`} />
+          <Detail label="Location" value={singleJob?.location} />
+          <Detail label="Experience Level" value={singleJob?.experienceLevel} />
+
           <Detail label="Qualification" value={singleJob?.qualification} />
           <Detail
             label="Gender Preference"
@@ -136,17 +138,16 @@ const JobDescription = () => {
                 : null
             }
           />
-          <Detail label="Experience Level" value={singleJob?.experienceLevel} />
-
-          <div className="sm:col-span-2">
-            <p className="text-lg font-semibold mb-2">Job Description</p>
-            <p className="whitespace-pre-line text-gray-700 leading-relaxed">
-              {singleJob?.description || (
-                <span className="italic text-gray-400">
-                  No description provided.
-                </span>
-              )}
-            </p>
+          <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-sm max-h-72 overflow-auto">
+            {singleJob?.description ? (
+              <p className="text-gray-800 whitespace-pre-line leading-7 font-sans tracking-wide">
+                {singleJob.description}
+              </p>
+            ) : (
+              <p className="italic text-gray-400 text-center py-10 select-none">
+                No description provided.
+              </p>
+            )}
           </div>
         </div>
 
