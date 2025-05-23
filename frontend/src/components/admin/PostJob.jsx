@@ -77,17 +77,11 @@ const indianLocations = [
 
 const experienceYears = Array.from({ length: 21 }, (_, i) => `${i} years`);
 
-// Predefined questions for Step 4
-const predefinedQuestions = [
-  "Why do you want to work with us?",
-  "Describe your relevant experience for this role.",
-  "What are your salary expectations?",
-  "Are you willing to relocate?",
-  "What is your notice period?",
-];
-
 const PostJob = () => {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { companies } = useSelector((store) => store.company);
 
   const [input, setInput] = useState({
     title: "",
@@ -99,13 +93,11 @@ const PostJob = () => {
     experience: "",
     position: 1,
     companyId: "",
-    questions: [...predefinedQuestions], // store predefined questions here
+    qualification: "",
+    customQualification: "",
+    genderPreference: "",
+    languagesKnown: "",
   });
-
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const { companies } = useSelector((store) => store.company);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -123,7 +115,7 @@ const PostJob = () => {
   };
 
   const nextStep = () => {
-    setStep((prev) => Math.min(prev + 1, 4)); // max step 4 now
+    setStep((prev) => Math.min(prev + 1, 3));
   };
 
   const prevStep = () => {
@@ -162,7 +154,7 @@ const PostJob = () => {
         >
           {/* Step Indicator */}
           <div className="flex justify-between mb-10">
-            {[1, 2, 3, 4].map((num) => (
+            {[1, 2, 3].map((num) => (
               <div
                 key={num}
                 className={`flex-1 text-center py-3 border-b-4 cursor-pointer font-semibold ${
@@ -250,6 +242,64 @@ const PostJob = () => {
                   required
                 />
               </div>
+
+              <div>
+                <Label>Candidate Qualification</Label>
+                <select
+                  name="qualification"
+                  value={input.qualification}
+                  onChange={changeEventHandler}
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  required
+                >
+                  <option value="">Select Qualification</option>
+                  <option value="B.Tech">B.Tech</option>
+                  <option value="M.Tech">M.Tech</option>
+                  <option value="MBA">MBA</option>
+                  <option value="B.Sc">B.Sc</option>
+                  <option value="M.Sc">M.Sc</option>
+                  <option value="Other">Other</option>
+                </select>
+                {input.qualification === "Other" && (
+                  <Input
+                    type="text"
+                    name="customQualification"
+                    value={input.customQualification}
+                    onChange={changeEventHandler}
+                    placeholder="Enter your qualification"
+                    className="focus-visible:ring-blue-500 my-2"
+                  />
+                )}
+              </div>
+
+              <div>
+                <Label>Gender Preference</Label>
+                <select
+                  name="genderPreference"
+                  value={input.genderPreference}
+                  onChange={changeEventHandler}
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  required
+                >
+                  <option value="">Select Preference</option>
+                  <option value="No Preference">No Preference</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <Label>Languages Known</Label>
+                <Input
+                  type="text"
+                  name="languagesKnown"
+                  value={input.languagesKnown}
+                  onChange={changeEventHandler}
+                  placeholder="e.g. English, Hindi, Tamil"
+                  className="focus-visible:ring-blue-500 my-2"
+                />
+              </div>
             </div>
           )}
 
@@ -268,7 +318,6 @@ const PostJob = () => {
                   required
                 />
                 <datalist id="locations">
-                  {/* Hybrid and Remote added explicitly */}
                   <option value="Hybrid" />
                   <option value="Remote" />
                   {indianLocations.map((loc) => (
@@ -297,7 +346,9 @@ const PostJob = () => {
                     onValueChange={selectChangeHandler}
                     value={
                       input.companyId
-                        ? companies.find((c) => c._id === input.companyId)?.name.toLowerCase()
+                        ? companies
+                            .find((c) => c._id === input.companyId)
+                            ?.name.toLowerCase()
                         : ""
                     }
                   >
@@ -359,23 +410,6 @@ const PostJob = () => {
             </div>
           )}
 
-          {/* Step 4: Predefined Questions */}
-          {step === 4 && (
-            <div>
-              <Label>Predefined Candidate Questions</Label>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
-                {input.questions.map((q, i) => (
-                  <li key={i} className="text-gray-700">
-                    {q}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-sm text-gray-500">
-                These questions will be asked to candidates applying for this job.
-              </p>
-            </div>
-          )}
-
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-10">
             {step > 1 && (
@@ -389,7 +423,7 @@ const PostJob = () => {
               </Button>
             )}
 
-            {step < 4 && (
+            {step < 3 && (
               <Button
                 type="button"
                 onClick={nextStep}
@@ -399,7 +433,7 @@ const PostJob = () => {
               </Button>
             )}
 
-            {step === 4 && (
+            {step === 3 && (
               <Button
                 type="submit"
                 className="ml-auto px-6 py-2 flex items-center gap-2"

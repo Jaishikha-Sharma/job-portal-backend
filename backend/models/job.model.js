@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const jobSchema = new mongoose.Schema(
   {
     title: {
-      type: String,  
+      type: String,
       required: true,
     },
     description: {
@@ -31,6 +31,10 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    qualification: { type: String, required: true },
+    genderPreference: { type: String, required: true },
+    languagesKnown: [{ type: String, default: [] }], 
+    experienceLevel: { type: String, default: "" },  
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
