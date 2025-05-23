@@ -47,7 +47,7 @@ const CompaniesTable = () => {
     return (
       <div className="text-center mt-10">
         <img
-          src="/no-companies.svg"
+          src="/no-result.avif"
           alt="No companies"
           className="mx-auto h-40"
         />
