@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
-import { Bookmark } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
@@ -41,16 +40,6 @@ const JobCards = ({ job, hideSaveButton = false }) => {
             ? new Date(job.postedAt).toLocaleDateString()
             : "2 days ago"}
         </p>
-        <Button
-          variant="outline"
-          className="rounded-full"
-          size="icon"
-          aria-label="Save job"
-          onClick={handleSaveJob}
-          disabled={loading}
-        >
-          <Bookmark className="w-4 h-4" />
-        </Button>
       </div>
 
       {/* Company Info */}

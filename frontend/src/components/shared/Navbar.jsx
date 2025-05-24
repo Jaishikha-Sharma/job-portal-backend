@@ -20,7 +20,8 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   // Helper to check active path, using startsWith for partial matching
-  const isActive = (path) => currentPath === path || currentPath.startsWith(path + "/");
+  const isActive = (path) =>
+    currentPath === path || currentPath.startsWith(path + "/");
 
   const logoutHandler = async () => {
     try {
@@ -53,14 +54,18 @@ const Navbar = () => {
               <>
                 <li
                   className={`hover:text-[#f83002] hover:scale-105 transition-all ${
-                    isActive("/admin/companies") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/admin/companies")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/admin/companies">Companies</Link>
                 </li>
                 <li
                   className={`hover:text-[#f83002] hover:scale-105 transition-all ${
-                    isActive("/admin/jobs") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/admin/jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/admin/jobs">Jobs</Link>
@@ -91,10 +96,21 @@ const Navbar = () => {
                 </li>
                 <li
                   className={`hover:text-[#f83002] hover:scale-105 transition-all ${
-                    isActive("/saved-jobs") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/saved-jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/saved-jobs">Saved Jobs</Link>
+                </li>
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/applied-jobss")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  }`}
+                >
+                  <Link to="/applied-jobss">Applied Jobs</Link>
                 </li>
               </>
             )}
@@ -178,14 +194,18 @@ const Navbar = () => {
               <>
                 <li
                   className={`hover:text-[#f83002] transition-all ${
-                    isActive("/admin/companies") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/admin/companies")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/admin/companies">Companies</Link>
                 </li>
                 <li
                   className={`hover:text-[#f83002] transition-all ${
-                    isActive("/admin/jobs") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/admin/jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/admin/jobs">Jobs</Link>
@@ -216,10 +236,21 @@ const Navbar = () => {
                 </li>
                 <li
                   className={`hover:text-[#f83002] transition-all ${
-                    isActive("/saved-jobs") ? "text-[#f83002] font-semibold" : ""
+                    isActive("/saved-jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
                   }`}
                 >
                   <Link to="/saved-jobs">Saved Jobs</Link>
+                </li>
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/applied-jobss")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  }`}
+                >
+                  <Link to="/applied-jobss">Applied Jobs</Link>
                 </li>
               </>
             )}

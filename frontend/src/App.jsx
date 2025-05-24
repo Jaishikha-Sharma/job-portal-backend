@@ -17,6 +17,7 @@ import PostJob from "../src/components/admin/PostJob.jsx";
 import Applicants from "../src/components/admin/Applicants.jsx";
 import SavedJobs from "./components/SavedJobs.jsx";
 import CompanyDetailsPage from "./components/CompanyDetailsPage.jsx";
+import AppliedMenu from "./components/AppliedMenu.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const appRouter = createBrowserRouter([
   {
     path: "/saved-jobs",
     element: <SavedJobs />,
+  },
+   {
+    path: "/applied-jobss",
+    element: <AppliedMenu />,
   },
 
   // for companies

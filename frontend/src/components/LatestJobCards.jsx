@@ -1,10 +1,21 @@
 import React from "react";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const LatestJobCards = ({ job }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (job?._id) {
+      navigate(`/description/${job._id}`);
+    }
+  };
+
   return (
-    <div className="p-4 sm:p-6 rounded-2xl shadow-sm bg-white border border-gray-200 transition-all hover:shadow-md hover:scale-[1.01] duration-300 ease-in-out flex flex-col gap-4">
-      
+    <div
+      onClick={handleClick}
+      className="cursor-pointer p-4 sm:p-6 rounded-2xl shadow-sm bg-white border border-gray-200 transition-all hover:shadow-md hover:scale-[1.01] duration-300 ease-in-out flex flex-col gap-4"
+    >
       {/* Company Info */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
