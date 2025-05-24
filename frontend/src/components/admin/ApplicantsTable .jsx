@@ -60,75 +60,75 @@ const ApplicantsTable = () => {
         </TableHeader>
 
         <TableBody>
-          {applicants?.applications?.map((item) => (
-            <TableRow
-              key={item._id}
-              className="hover:shadow-md transition-shadow bg-white rounded-lg"
-            >
-              <TableCell className="px-4 py-3 font-medium text-gray-800">
-                {item?.applicant?.fullname}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-gray-700">
-                {item?.applicant?.email}
-              </TableCell>
-              <TableCell className="px-4 py-3">
-                {item.applicant?.profile?.resume ? (
-                  <a
-                    href={item?.applicant?.profile?.resume}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 font-medium hover:underline"
+          {applicants?.applications
+            ?.filter((item) => item?.applicant)
+            .map((item) => (
+              <TableRow
+                key={item._id}
+                className="hover:shadow-md transition-shadow bg-white rounded-lg"
+              >
+                <TableCell className="px-4 py-3 font-medium text-gray-800">
+                  {item?.applicant?.fullname || "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-gray-700">
+                  {item?.applicant?.email || "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3">
+                  {item.applicant?.profile?.resume ? (
+                    <a
+                      href={item?.applicant?.profile?.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 font-medium hover:underline"
+                    >
+                      {item?.applicant?.profile?.resumeOriginalName || "Resume"}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 italic">NA</span>
+                  )}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-gray-600">
+                  {item?.applicant?.createdAt?.split("T")[0] || "N/A"}
+                </TableCell>
+
+                <TableCell className="px-4 py-3">
+                  <span
+                    className={`text-xs font-semibold px-3 py-1 rounded-full inline-block ${
+                      item.status === "Accepted"
+                        ? "bg-green-100 text-green-700"
+                        : item.status === "Rejected"
+                        ? "bg-red-100 text-red-700"
+                        : item.status === "On Hold"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
                   >
-                    {item?.applicant?.profile?.resumeOriginalName}
-                  </a>
-                ) : (
-                  <span className="text-gray-400 italic">NA</span>
-                )}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-gray-600">
-                {item?.applicant.createdAt.split("T")[0]}
-              </TableCell>
+                    {item.status || "Pending"}
+                  </span>
+                </TableCell>
 
-              {/* STATUS BADGE */}
-              <TableCell className="px-4 py-3">
-                <span
-                  className={`text-xs font-semibold px-3 py-1 rounded-full inline-block ${
-                    item.status === "Accepted"
-                      ? "bg-green-100 text-green-700"
-                      : item.status === "Rejected"
-                      ? "bg-red-100 text-red-700"
-                      : item.status === "On Hold"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {item.status || "Pending"}
-                </span>
-              </TableCell>
-
-              {/* ACTION MENU */}
-              <TableCell className="px-4 py-3 text-right">
-                <Popover>
-                  <PopoverTrigger>
-                    <button className="p-1 hover:bg-gray-200 rounded-full">
-                      <MoreHorizontal className="w-5 h-5 text-gray-600" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-40 border rounded shadow-md">
-                    {shortlistingStatus.map((status, index) => (
-                      <div
-                        key={index}
-                        onClick={() => statusHandler(status, item?._id)}
-                        className="text-sm py-2 px-3 hover:bg-gray-100 rounded cursor-pointer text-gray-800"
-                      >
-                        {status}
-                      </div>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell className="px-4 py-3 text-right">
+                  <Popover>
+                    <PopoverTrigger>
+                      <button className="p-1 hover:bg-gray-200 rounded-full">
+                        <MoreHorizontal className="w-5 h-5 text-gray-600" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-40 border rounded shadow-md">
+                      {shortlistingStatus.map((status, index) => (
+                        <div
+                          key={index}
+                          onClick={() => statusHandler(status, item?._id)}
+                          className="text-sm py-2 px-3 hover:bg-gray-100 rounded cursor-pointer text-gray-800"
+                        >
+                          {status}
+                        </div>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
