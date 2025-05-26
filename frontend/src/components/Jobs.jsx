@@ -15,27 +15,20 @@ const Jobs = () => {
   useEffect(() => {
     if (searchedQuery && typeof searchedQuery === "object") {
       const filteredJobs = allJobs.filter((job) => {
-        const matchLocation =
-          !searchedQuery.Location ||
-          job.location
-            .toLowerCase()
-            .includes(searchedQuery.Location.toLowerCase());
+        if (searchedQuery.Location && job.location !== searchedQuery.Location) return false;
+        if (searchedQuery.Industry && job.title !== searchedQuery.Industry) return false;
+        if (searchedQuery.Salary && job.salary?.toString() !== searchedQuery.Salary) return false;
+        if (searchedQuery["Experience Level"] && job.experienceLevel !== searchedQuery["Experience Level"]) return false;
+        if (searchedQuery["Job Type"] && job.jobType !== searchedQuery["Job Type"]) return false;
+        if (searchedQuery.Qualification && job.qualification !== searchedQuery.Qualification) return false;
+        if (searchedQuery["Gender Preference"] && job.genderPreference !== searchedQuery["Gender Preference"]) return false;
+        if (
+          searchedQuery["Languages Known"] &&
+          (!job.languagesKnown || !job.languagesKnown.includes(searchedQuery["Languages Known"]))
+        )
+          return false;
 
-        const matchIndustry =
-          !searchedQuery.Industry ||
-          job.title
-            .toLowerCase()
-            .includes(searchedQuery.Industry.toLowerCase());
-
-        const matchSalary =
-          !searchedQuery.Salary ||
-          (job.salary &&
-            job.salary
-              .toString()
-              .toLowerCase()
-              .includes(searchedQuery.Salary.toLowerCase()));
-
-        return matchLocation && matchIndustry && matchSalary;
+        return true;
       });
 
       setFilterJobs(filteredJobs);
@@ -71,7 +64,7 @@ const Jobs = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filterJobs.map((job) => (
                   <motion.div
-                    key={job?._id}
+                    key={job._id || job.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}

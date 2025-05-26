@@ -16,6 +16,7 @@ export const postJob = async (req, res) => {
       position,
       companyId,
       qualification,
+      degree,
       genderPreference,
       languagesKnown,
     } = req.body;
@@ -45,12 +46,13 @@ export const postJob = async (req, res) => {
       requirements: Array.isArray(requirements)
         ? requirements
         : requirements.split(",").map((r) => r.trim()),
-      salary: Number(salary),
+      salary,
       location,
       jobType,
       experienceLevel: experience,
       position,
       qualification,
+      degree,
       genderPreference,
       languagesKnown,
       company: companyId,

@@ -124,6 +124,7 @@ const JobDescription = () => {
           <Detail label="Salary" value={`₹ ${singleJob?.salary} LPA`} />
           <Detail label="Location" value={singleJob?.location} />
           <Detail label="Experience Level" value={singleJob?.experienceLevel} />
+          <Detail label="Job Type" value={singleJob?.jobType} />
 
           <Detail label="Qualification" value={singleJob?.qualification} />
           <Detail
@@ -138,6 +139,24 @@ const JobDescription = () => {
                 : null
             }
           />
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold mb-4">Skills</h2>
+            {singleJob?.requirements && singleJob.requirements.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {singleJob.requirements.map((req, index) => (
+                  <span
+                    key={index}
+                    className="inline-block bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full shadow-sm select-none"
+                  >
+                    {req}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="italic text-gray-400">No requirements specified.</p>
+            )}
+          </div>
+
           <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-sm max-h-72 overflow-auto">
             {singleJob?.description ? (
               <p className="text-gray-800 whitespace-pre-line leading-7 font-sans tracking-wide">

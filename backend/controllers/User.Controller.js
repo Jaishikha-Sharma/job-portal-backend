@@ -15,15 +15,21 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-    const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
         message: "User already exists with this email",
         success: false,
       });
+    }
+
+    let profilePhotoUrl = "";
+
+    if (req.file) {
+      const fileUri = getDataUri(req.file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      profilePhotoUrl = cloudResponse.secure_url;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -34,7 +40,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
       profile: {
-        profilePhoto: cloudResponse.secure_url,
+        profilePhoto: profilePhotoUrl,
       },
     });
 
@@ -50,6 +56,7 @@ export const register = async (req, res) => {
     });
   }
 };
+
 
 // LOGIN
 export const login = async (req, res) => {

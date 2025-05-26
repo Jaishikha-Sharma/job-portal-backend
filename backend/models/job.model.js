@@ -16,7 +16,7 @@ const jobSchema = new mongoose.Schema(
       },
     ],
     salary: {
-      type: Number,
+      type: String,
       required: true,
     },
     location: {
@@ -32,6 +32,7 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
     qualification: { type: String, required: true },
+    degree: { type: String, required: true },
     genderPreference: { type: String, required: true },
     languagesKnown: [{ type: String, default: [] }], 
     experienceLevel: { type: String, default: "" },  

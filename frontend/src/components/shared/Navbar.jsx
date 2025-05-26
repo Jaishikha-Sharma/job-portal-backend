@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { logout } from "../../redux/authSlice.js";
+import { clearCompanies } from "../../redux/companySlice";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,6 +31,8 @@ const Navbar = () => {
       });
       if (res.data.success) {
         dispatch(logout());
+        dispatch(clearCompanies());
+        localStorage.clear();
         navigate("/");
         toast.success(res.data.message);
       }
@@ -112,6 +115,17 @@ const Navbar = () => {
                 >
                   <Link to="/applied-jobss">Applied Jobs</Link>
                 </li>
+                {user && user.role === "admin" && (
+                  <li
+                    className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                      isActive("/admin/dashboard")
+                        ? "text-[#f83002] font-semibold"
+                        : ""
+                    }`}
+                  >
+                    <Link to="/admin/dashboard">Dashboard</Link>
+                  </li>
+                )}
               </>
             )}
           </ul>

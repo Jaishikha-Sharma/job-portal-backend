@@ -5,8 +5,9 @@ import App from "./App.jsx";
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
 import store from './redux/store';
-import { persistStore } from 'redux-persist'
-import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const persistor = persistStore(store);
 

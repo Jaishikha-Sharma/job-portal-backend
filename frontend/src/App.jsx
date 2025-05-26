@@ -1,5 +1,4 @@
-import React from "react";
-import Navbar from "./components/shared/Navbar";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
@@ -18,6 +17,7 @@ import Applicants from "../src/components/admin/Applicants.jsx";
 import SavedJobs from "./components/SavedJobs.jsx";
 import CompanyDetailsPage from "./components/CompanyDetailsPage.jsx";
 import AppliedMenu from "./components/AppliedMenu.jsx";
+import AdminDashboard from "./components/AdminDashboard.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -52,7 +52,7 @@ const appRouter = createBrowserRouter([
     path: "/saved-jobs",
     element: <SavedJobs />,
   },
-   {
+  {
     path: "/applied-jobss",
     element: <AppliedMenu />,
   },
@@ -63,9 +63,9 @@ const appRouter = createBrowserRouter([
     element: <Companies />,
   },
   {
-  path: "/company/:id",
-  element: <CompanyDetailsPage />,
-},
+    path: "/company/:id",
+    element: <CompanyDetailsPage />,
+  },
   {
     path: "/admin/companies/create",
     element: <CompanyCreate />,
@@ -102,6 +102,10 @@ const appRouter = createBrowserRouter([
         <Applicants />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminDashboard />,
   },
 ]);
 

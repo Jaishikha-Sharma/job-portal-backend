@@ -6,7 +6,7 @@ import {
   updateProfile,
   saveJob,
   unsaveJob,
-  getSavedJobs
+  getSavedJobs,
 } from "../controllers/User.Controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multer.js";

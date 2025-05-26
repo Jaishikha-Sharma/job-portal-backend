@@ -74,6 +74,24 @@ const indianLocations = [
   "Gurugram",
   "Chandigarh",
 ];
+const degrees = [
+  "B.Sc",
+  "B.A",
+  "B.Com",
+  "B.Tech",
+  "M.Sc",
+  "M.A",
+  "M.Com",
+  "M.Tech",
+  "PhD",
+];
+const salaryRanges = [
+  "1 LPA - 3 LPA",
+  "3 LPA - 5 LPA",
+  "5 LPA - 7 LPA",
+  "7 LPA - 10 LPA",
+  "10 LPA+",
+];
 
 const experienceYears = Array.from({ length: 21 }, (_, i) => `${i} years`);
 
@@ -82,11 +100,12 @@ const PostJob = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { companies } = useSelector((store) => store.company);
+  const [requirementText, setRequirementText] = useState("");
 
   const [input, setInput] = useState({
     title: "",
     description: "",
-    requirements: "",
+    requirements: [""],
     salary: "",
     location: "",
     jobType: "",
@@ -94,10 +113,44 @@ const PostJob = () => {
     position: 1,
     companyId: "",
     qualification: "",
+    degree: "",
     customQualification: "",
     genderPreference: "",
     languagesKnown: "",
   });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleRequirementChange = (index, value) => {
+    const updatedRequirements = [...input.requirements];
+    updatedRequirements[index] = value;
+    setInput((prev) => ({
+      ...prev,
+      requirements: updatedRequirements,
+    }));
+  };
+
+  const addRequirement = () => {
+    setInput((prev) => ({
+      ...prev,
+      requirements: [...prev.requirements, ""],
+    }));
+  };
+
+  const removeRequirement = (index) => {
+    const updatedRequirements = [...input.requirements];
+    updatedRequirements.splice(index, 1);
+    setInput((prev) => ({
+      ...prev,
+      requirements: updatedRequirements,
+    }));
+  };
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -253,12 +306,10 @@ const PostJob = () => {
                   required
                 >
                   <option value="">Select Qualification</option>
-                  <option value="B.Tech">B.Tech</option>
-                  <option value="M.Tech">M.Tech</option>
-                  <option value="MBA">MBA</option>
-                  <option value="B.Sc">B.Sc</option>
-                  <option value="M.Sc">M.Sc</option>
-                  <option value="Other">Other</option>
+                  <option value="10th">10th</option>
+                  <option value="12th">12th</option>
+                  <option value="Graduation">Graduation</option>
+                  <option value="Post Graduation">Post Graduation</option>
                 </select>
                 {input.qualification === "Other" && (
                   <Input
@@ -270,6 +321,25 @@ const PostJob = () => {
                     className="focus-visible:ring-blue-500 my-2"
                   />
                 )}
+              </div>
+              <div>
+                <Label>Degree</Label>
+                <select
+                  name="degree"
+                  value={input.degree}
+                  onChange={changeEventHandler}
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  required
+                >
+                  <option value="" disabled>
+                    Select Degree
+                  </option>
+                  {degrees.map((deg) => (
+                    <option key={deg} value={deg}>
+                      {deg}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -325,20 +395,6 @@ const PostJob = () => {
                   ))}
                 </datalist>
               </div>
-
-              <div>
-                <Label>Salary</Label>
-                <Input
-                  type="text"
-                  name="salary"
-                  value={input.salary}
-                  onChange={changeEventHandler}
-                  placeholder="e.g. 5 LPA"
-                  className="focus-visible:ring-blue-500 my-2"
-                  required
-                />
-              </div>
-
               {companies.length > 0 && (
                 <div>
                   <Label>Company</Label>
@@ -376,6 +432,38 @@ const PostJob = () => {
                   *Please register a company first, before posting jobs
                 </p>
               )}
+              <div>
+                <Label>Salary</Label>
+                <select
+                  value={input.salaryRange || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setInput((prev) => ({
+                      ...prev,
+                      salaryRange: val,
+                      salary: val, // update salary text input as well
+                    }));
+                  }}
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                >
+                  <option value="">Select Salary Range</option>
+                  {salaryRanges.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
+                </select>
+
+                <Input
+                  type="text"
+                  name="salary"
+                  value={input.salary}
+                  onChange={changeEventHandler}
+                  placeholder="Or enter salary manually (e.g. 5 LPA)"
+                  className="focus-visible:ring-blue-500 my-2"
+                  required
+                />
+              </div>
             </div>
           )}
 
@@ -383,16 +471,36 @@ const PostJob = () => {
           {step === 3 && (
             <div>
               <div>
-                <Label>Requirements</Label>
-                <Input
-                  type="text"
-                  name="requirements"
-                  value={input.requirements}
-                  onChange={changeEventHandler}
-                  className="focus-visible:ring-blue-500 my-2"
-                  placeholder="Comma separated e.g. React, Node.js, SQL"
-                  required
-                />
+                <label className="font-semibold">Skills:</label>
+                {Array.isArray(input.requirements) &&
+                  input.requirements.map((req, index) => (
+                    <div key={index} className="flex items-center gap-2 mt-2">
+                      <input
+                        type="text"
+                        value={req}
+                        onChange={(e) =>
+                          handleRequirementChange(index, e.target.value)
+                        }
+                        placeholder={`Requirement ${index + 1}`}
+                        className="flex-1 p-2 border rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeRequirement(index)}
+                        className="bg-red-500 text-white px-3 py-1 rounded"
+                      >
+                        X
+                      </button>
+                    </div>
+                  ))}
+
+                <button
+                  type="button"
+                  onClick={addRequirement}
+                  className="mt-2 bg-blue-500 text-white px-4 py-1 rounded"
+                >
+                  + Add Skills
+                </button>
               </div>
 
               <div className="mt-6">

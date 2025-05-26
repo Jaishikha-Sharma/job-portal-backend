@@ -10,18 +10,19 @@ import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../../redux/authSlice.js";
-import { Loader, Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
-  const { loading  ,user} = useSelector((store) => store.auth);
+  const { loading } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [input, setInput] = useState({
     email: "",
     password: "",
     role: "",
   });
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -31,18 +32,26 @@ const Login = () => {
 
     try {
       dispatch(setLoading(true));
+
       const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
-      console.log("res.data:", res.data);
+
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
-    
-        navigate("/");
+
+        // Redirect based on role
+        if (res.data.user.role === "admin") {
+          navigate("/admin/dashboard"); // admin dashboard route
+        } else if (res.data.user.role === "recruiter") {
+          navigate("/recruiter/dashboard"); // recruiter dashboard route
+        } else {
+          navigate("/"); // default/student dashboard route
+        }
       } else {
         toast.error(res.data.message || "Login failed");
       }
@@ -127,6 +136,7 @@ const Login = () => {
                     Student
                   </Label>
                 </div>
+
                 <div className="flex items-center space-x-2">
                   <Input
                     type="radio"
@@ -143,12 +153,30 @@ const Login = () => {
                     Recruiter
                   </Label>
                 </div>
+
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="radio"
+                    name="role"
+                    value="admin"
+                    checked={input.role === "admin"}
+                    onChange={changeEventHandler}
+                    className="cursor-pointer"
+                  />
+                  <Label
+                    htmlFor="admin"
+                    className="cursor-pointer text-gray-700"
+                  >
+                    Admin
+                  </Label>
+                </div>
               </RadioGroup>
             </div>
           </div>
+
           {loading ? (
-            <Button className="w-full my-4">
-              <Loader2 className="mr-3 h-4 w-4 animate-spin" /> please wait
+            <Button className="w-full my-4" disabled>
+              <Loader2 className="mr-3 h-4 w-4 animate-spin" /> Please wait
             </Button>
           ) : (
             <Button

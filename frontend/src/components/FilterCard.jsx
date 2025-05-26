@@ -6,8 +6,48 @@ import { useDispatch } from "react-redux";
 import { setSearchedQuery } from "../redux/jobSlice";
 
 const FilterCard = ({ isMobile = false, jobs = [] }) => {
+  // Extract unique locations
   const uniqueLocations = Array.from(
     new Set(jobs.map((job) => job.location).filter(Boolean))
+  );
+
+  // Extract unique industries from job titles
+  const uniqueIndustries = Array.from(
+    new Set(jobs.map((job) => job.title).filter(Boolean))
+  );
+
+  // Extract unique salaries and sort them ascending
+  const uniqueSalaries = Array.from(
+    new Set(jobs.map((job) => job.salary).filter(Boolean))
+  ).sort((a, b) => a - b);
+
+  // Extract unique experience levels
+  const uniqueExperienceLevels = Array.from(
+    new Set(jobs.map((job) => job.experienceLevel).filter(Boolean))
+  );
+
+  // Extract unique job types
+  const uniqueJobTypes = Array.from(
+    new Set(jobs.map((job) => job.jobType).filter(Boolean))
+  );
+
+  // Extract unique qualifications
+  const uniqueQualifications = Array.from(
+    new Set(jobs.map((job) => job.qualification).filter(Boolean))
+  );
+
+  // Extract unique gender preferences
+  const uniqueGenderPreferences = Array.from(
+    new Set(jobs.map((job) => job.genderPreference).filter(Boolean))
+  );
+
+  // Extract unique languages known (assuming array in each job)
+  const uniqueLanguagesKnown = Array.from(
+    new Set(
+      jobs
+        .flatMap((job) => job.languagesKnown || [])
+        .filter(Boolean)
+    )
   );
 
   const filterData = [
@@ -17,22 +57,61 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
     },
     {
       filterType: "Industry",
-      array: ["Frontend Developer", "Backend Developer", "FullStack Developer"],
+      array: uniqueIndustries.length > 0 ? uniqueIndustries : ["No industries"],
     },
     {
       filterType: "Salary",
-      array: ["0-40k", "42-1lakh", "1lakh to 5lakh"],
+      array:
+        uniqueSalaries.length > 0
+          ? uniqueSalaries.map((salary) => salary.toString())
+          : ["No salary data"],
+    },
+    {
+      filterType: "Experience Level",
+      array:
+        uniqueExperienceLevels.length > 0
+          ? uniqueExperienceLevels
+          : ["No experience data"],
+    },
+    {
+      filterType: "Job Type",
+      array: uniqueJobTypes.length > 0 ? uniqueJobTypes : ["No job types"],
+    },
+    {
+      filterType: "Qualification",
+      array:
+        uniqueQualifications.length > 0
+          ? uniqueQualifications
+          : ["No qualification data"],
+    },
+    {
+      filterType: "Gender Preference",
+      array:
+        uniqueGenderPreferences.length > 0
+          ? uniqueGenderPreferences
+          : ["No preference"],
+    },
+    {
+      filterType: "Languages Known",
+      array: uniqueLanguagesKnown.length > 0 ? uniqueLanguagesKnown : ["N/A"],
     },
   ];
 
+  // Initial selected filters state
   const [selectedFilters, setSelectedFilters] = useState({
     Location: "",
     Industry: "",
     Salary: "",
+    "Experience Level": "",
+    "Job Type": "",
+    Qualification: "",
+    "Gender Preference": "",
+    "Languages Known": "",
   });
 
   const dispatch = useDispatch();
 
+  // Update selected filters on user interaction
   const changeHandler = (filterType, value) => {
     setSelectedFilters((prev) => ({
       ...prev,
@@ -40,9 +119,64 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
     }));
   };
 
+  // Dispatch filter changes to redux store
   useEffect(() => {
     dispatch(setSearchedQuery(selectedFilters));
   }, [selectedFilters, dispatch]);
+
+  // Filter jobs based on selectedFilters
+  const filteredJobs = jobs.filter((job) => {
+    if (
+      selectedFilters.Location &&
+      job.location !== selectedFilters.Location
+    )
+      return false;
+
+    if (
+      selectedFilters.Industry &&
+      job.title !== selectedFilters.Industry
+    )
+      return false;
+
+    if (
+      selectedFilters.Salary &&
+      job.salary?.toString() !== selectedFilters.Salary
+    )
+      return false;
+
+    if (
+      selectedFilters["Experience Level"] &&
+      job.experienceLevel !== selectedFilters["Experience Level"]
+    )
+      return false;
+
+    if (
+      selectedFilters["Job Type"] &&
+      job.jobType !== selectedFilters["Job Type"]
+    )
+      return false;
+
+    if (
+      selectedFilters.Qualification &&
+      job.qualification !== selectedFilters.Qualification
+    )
+      return false;
+
+    if (
+      selectedFilters["Gender Preference"] &&
+      job.genderPreference !== selectedFilters["Gender Preference"]
+    )
+      return false;
+
+    if (
+      selectedFilters["Languages Known"] &&
+      (!job.languagesKnown ||
+        !job.languagesKnown.includes(selectedFilters["Languages Known"]))
+    )
+      return false;
+
+    return true;
+  });
 
   return (
     <div className="w-full bg-gradient-to-br from-indigo-50 to-white border border-gray-200 p-6 rounded-2xl shadow-sm">
@@ -119,6 +253,32 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
           ))}
         </div>
       )}
+
+      {/* Display filtered jobs */}
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold mb-3">
+          Filtered Jobs ({filteredJobs.length})
+        </h2>
+        {filteredJobs.length === 0 ? (
+          <p>No jobs found for selected filters.</p>
+        ) : (
+          <ul className="space-y-2 max-h-60 overflow-auto border p-3 rounded">
+            {filteredJobs.map((job) => (
+              <li key={job.id} className="border-b pb-2">
+                <p>
+                  <strong>{job.title}</strong> - {job.location}
+                </p>
+                <p>Salary: {job.salary}</p>
+                <p>Experience: {job.experienceLevel}</p>
+                <p>Job Type: {job.jobType}</p>
+                <p>Qualification: {job.qualification}</p>
+                <p>Gender Preference: {job.genderPreference}</p>
+                <p>Languages: {job.languagesKnown?.join(", ")}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };

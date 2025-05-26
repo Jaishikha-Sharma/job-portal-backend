@@ -32,6 +32,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setLoading, setUser, setSavedJobs, addSavedJob, removeSavedJob ,logout } =
+export const { setLoading, setUser, setSavedJobs, addSavedJob, removeSavedJob ,logout , } =
   authSlice.actions;
 export default authSlice.reducer;
