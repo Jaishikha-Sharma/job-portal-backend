@@ -7,6 +7,7 @@ const isProduction = window.location.hostname !== "localhost";
 const BASE_URL = isProduction
   ? "https://job-portal-backend-2tyj.onrender.com"
   : "http://localhost:8000";
+  
 
 const ADMIN_API_END_POINT = `${BASE_URL}/admin`;
 
