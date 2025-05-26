@@ -17,7 +17,7 @@ dotenv.config();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://job-portal-backend-five-murex.vercel.app",
+    "https://job-portal-backend-neon.vercel.app/",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
