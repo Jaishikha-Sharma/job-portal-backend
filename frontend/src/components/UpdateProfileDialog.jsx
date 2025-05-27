@@ -74,7 +74,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          withCredentials: true,
         }
       );
 
