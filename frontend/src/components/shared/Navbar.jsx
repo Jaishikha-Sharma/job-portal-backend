@@ -6,10 +6,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogOut, Menu, User2, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../../utils/axiosConfig.js";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { logout } from "../../redux/authSlice.js";
 import { clearCompanies } from "../../redux/companySlice";
+import { clearJobs, clearAdminJobs } from "../../redux/jobSlice";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,27 +21,26 @@ const Navbar = () => {
 
   const currentPath = location.pathname;
 
-  // Helper to check active path, using startsWith for partial matching
   const isActive = (path) =>
     currentPath === path || currentPath.startsWith(path + "/");
 
-const logoutHandler = async () => {
-  try {
-    const res = await axios.get(`${USER_API_END_POINT}/logout`, {
-    });
-    if (res.data.success) {
-      dispatch(logout());
-      dispatch(clearCompanies());
-      // localStorage.clear(); 
-      navigate("/");
-      toast.success(res.data.message);
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`, {});
+      if (res.data.success) {
+        dispatch(logout());
+        dispatch(clearCompanies()); // Company data clear karna
+        dispatch(clearJobs()); // Job data clear karna (user jobs)
+        dispatch(clearAdminJobs()); // Admin jobs bhi clear karna
+        localStorage.clear();
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Logout failed");
     }
-  } catch (error) {
-    console.log(error);
-    toast.error(error.response?.data?.message || "Logout failed");
-  }
-};
-
+  };
 
   return (
     <div className="px-4 sticky top-0 z-50 bg-white shadow-md transition-all">
