@@ -57,7 +57,6 @@ export const register = async (req, res) => {
   }
 };
 
-
 // LOGIN
 export const login = async (req, res) => {
   try {
@@ -110,19 +109,12 @@ export const login = async (req, res) => {
       profile: user.profile,
     };
 
-    return res
-      .status(200)
-      .cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-      })
-      .json({
-        message: `Welcome Back ${user.fullname}`,
-        user,
-        success: true,
-      });
+    return res.status(200).json({
+      message: `Welcome Back ${user.fullname}`,
+      token, // ✅ Send token to client to store in localStorage
+      user,
+      success: true,
+    });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({
@@ -135,18 +127,10 @@ export const login = async (req, res) => {
 // LOGOUT
 export const logout = async (req, res) => {
   try {
-    res
-      .status(200)
-      .cookie("token", "", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 0,
-      })
-      .json({
-        message: "Logout successfully!",
-        success: true,
-      });
+    return res.status(200).json({
+      message: "Logout successfully!",
+      success: true,
+    });
   } catch (error) {
     console.error("Logout error:", error);
     res.status(500).json({
@@ -155,6 +139,7 @@ export const logout = async (req, res) => {
     });
   }
 };
+
 
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {

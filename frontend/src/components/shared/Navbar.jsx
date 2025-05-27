@@ -24,23 +24,24 @@ const Navbar = () => {
   const isActive = (path) =>
     currentPath === path || currentPath.startsWith(path + "/");
 
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.get(`${USER_API_END_POINT}/logout`, {
-        withCredentials: true,
-      });
-      if (res.data.success) {
-        dispatch(logout());
-        dispatch(clearCompanies());
-        localStorage.clear();
-        navigate("/");
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Logout failed");
+const logoutHandler = async () => {
+  try {
+    const res = await axios.get(`${USER_API_END_POINT}/logout`, {
+      withCredentials: true,
+    });
+    if (res.data.success) {
+      dispatch(logout());
+      dispatch(clearCompanies());
+      localStorage.clear();  // <-- Yahi localStorage clear kiya ja raha hai logout par
+      navigate("/");
+      toast.success(res.data.message);
     }
-  };
+  } catch (error) {
+    console.log(error);
+    toast.error(error.response?.data?.message || "Logout failed");
+  }
+};
+
 
   return (
     <div className="px-4 sticky top-0 z-50 bg-white shadow-md transition-all">

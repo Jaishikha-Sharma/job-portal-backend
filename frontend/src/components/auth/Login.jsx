@@ -41,16 +41,20 @@ const Login = () => {
       });
 
       if (res.data.success) {
+        // Store token in localStorage
+        localStorage.setItem("token", res.data.token);
+
+        // Store user info in Redux state & localStorage (via authSlice)
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
 
-        // Redirect based on role
+        // Redirect based on user role
         if (res.data.user.role === "admin") {
-          navigate("/admin/dashboard"); // admin dashboard route
+          navigate("/admin/dashboard");
         } else if (res.data.user.role === "recruiter") {
-          navigate("/recruiter/dashboard"); // recruiter dashboard route
+          navigate("/recruiter/dashboard");
         } else {
-          navigate("/"); // default/student dashboard route
+          navigate("/");
         }
       } else {
         toast.error(res.data.message || "Login failed");
@@ -58,8 +62,7 @@ const Login = () => {
     } catch (error) {
       console.error("Login error:", error);
       const message =
-        error?.response?.data?.message ||
-        "Something went wrong. Please try again.";
+        error?.response?.data?.message || "Something went wrong. Please try again.";
       toast.error(message);
     } finally {
       dispatch(setLoading(false));
