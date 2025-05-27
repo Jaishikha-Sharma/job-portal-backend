@@ -40,10 +40,7 @@ const Login = () => {
       });
 
       if (res.data.success) {
-        // Store token in localStorage
         localStorage.setItem("token", res.data.token);
-
-        // Store user info in Redux state & localStorage (via authSlice)
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
 
@@ -51,7 +48,7 @@ const Login = () => {
         if (res.data.user.role === "admin") {
           navigate("/admin/dashboard");
         } else if (res.data.user.role === "recruiter") {
-          navigate("/recruiter/dashboard");
+          navigate("/");
         } else {
           navigate("/");
         }
