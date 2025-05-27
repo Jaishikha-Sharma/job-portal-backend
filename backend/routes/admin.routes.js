@@ -1,6 +1,6 @@
 import express from "express";
 import { getAllUsers, deleteUser } from "../controllers/Admin.Controller.js";
-import isAuthenticated from "../middlewares/isAuthenticated.js";  // your existing middleware
+import { isAuthenticated } from "../middlewares/isAuthenticated.js"; 
 import isAdmin from "../middlewares/isAdmin.js"; // the one you just created
 
 const router = express.Router();

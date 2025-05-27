@@ -8,7 +8,7 @@ import {
   unsaveJob,
   getSavedJobs,
 } from "../controllers/User.Controller.js";
-import isAuthenticated from "../middlewares/isAuthenticated.js";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js"; 
 import { singleUpload } from "../middlewares/multer.js";
 
 const router = express.Router();
