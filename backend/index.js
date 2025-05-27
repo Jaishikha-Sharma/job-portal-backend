@@ -13,30 +13,40 @@ import adminRoutes from "./routes/admin.routes.js";
 const app = express();
 dotenv.config();
 
+// ✅ Allowed Origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://job-portal-backend-neon.vercel.app",
+];
+
+// ✅ CORS Options using Function
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://job-portal-backend-neon.vercel.app",
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 200,
-  // Removed credentials: true because JWT is sent in headers, not cookies
+  credentials: false, // use true ONLY if sending cookies (you are NOT)
 };
 
+// ✅ Middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Removed cookie-parser middleware
-
-// API Routes
+// ✅ API Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/admin", adminRoutes);
 
+// ✅ Start Server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   connectDB();
