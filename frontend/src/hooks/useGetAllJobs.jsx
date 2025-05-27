@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import axios from "../utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { setAllJobs } from "../redux/jobSlice";
@@ -10,17 +10,16 @@ const useGetAllJobs = () => {
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
-        const token = localStorage.getItem("token"); // get token from localStorage
-        const res = await axios.get(`${JOB_API_END_POINT}/get`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // add Authorization header
-          },
-        });
+        const res = await axios.get(`${JOB_API_END_POINT}/get`); 
+
         if (res.data.success) {
           dispatch(setAllJobs(res.data.jobs));
         }
       } catch (error) {
-        console.log(error);
+        console.error(
+          "Failed to fetch jobs:",
+          error.response?.data?.message || error.message
+        );
       }
     };
 

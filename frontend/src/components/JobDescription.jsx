@@ -28,8 +28,14 @@ const JobDescription = () => {
 
   const applyJobHandler = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.get(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {
@@ -50,7 +56,11 @@ const JobDescription = () => {
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
@@ -68,7 +78,6 @@ const JobDescription = () => {
     fetchSingleJob();
   }, [jobId, dispatch, user?._id]);
 
-  // Helper: Show field or subtle "Not specified"
   const displayField = (value) =>
     value && value !== "N/A" ? (
       <span>{value}</span>
@@ -123,7 +132,6 @@ const JobDescription = () => {
           <Detail label="Location" value={singleJob?.location} />
           <Detail label="Experience Level" value={singleJob?.experienceLevel} />
           <Detail label="Job Type" value={singleJob?.jobType} />
-
           <Detail label="Qualification" value={singleJob?.qualification} />
           <Detail
             label="Gender Preference"
