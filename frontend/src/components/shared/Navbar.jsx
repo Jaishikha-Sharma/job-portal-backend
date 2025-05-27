@@ -168,14 +168,12 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-col text-gray-600 gap-2">
-                  {user && user.role === "student" && (
                     <div className="flex w-fit items-center gap-1 cursor-pointer">
                       <User2 />
                       <Button variant="link">
                         <Link to="/profile">View Profile</Link>
                       </Button>
                     </div>
-                  )}
                   <Button
                     onClick={logoutHandler}
                     variant="link"

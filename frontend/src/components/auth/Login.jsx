@@ -132,7 +132,7 @@ const Login = () => {
                     htmlFor="student"
                     className="cursor-pointer text-gray-700"
                   >
-                    Student
+                    Candidate
                   </Label>
                 </div>
 

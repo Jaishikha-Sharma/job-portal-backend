@@ -21,6 +21,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   const { user } = useSelector((store) => store.auth);
   const [loading, setLoading] = useState(false);
 
+  const isStudent = user?.role === "student";
+
   const [input, setInput] = useState({
     fullname: "",
     email: "",
@@ -30,7 +32,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     file: "",
   });
 
-  // ✅ Update form data when dialog opens or user changes
   useEffect(() => {
     if (user && open) {
       setInput({
@@ -39,7 +40,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         phoneNumber: user.phoneNumber || "",
         bio: user.profile?.bio || "",
         skills: user.profile?.skills?.join(", ") || "",
-        file: user.profile?.resume || "",
+        file: "",
       });
     }
   }, [user, open]);
@@ -61,7 +62,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
-    if (input.file && typeof input.file !== "string") {
+    if (input.file) {
       formData.append("resume", input.file);
     }
 
@@ -116,6 +117,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 className="col-span-3"
               />
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
                 Email
@@ -129,6 +131,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 className="col-span-3"
               />
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="phoneNumber" className="text-right">
                 Number
@@ -141,6 +144,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 className="col-span-3"
               />
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="bio" className="text-right">
                 Bio
@@ -153,32 +157,39 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="skills" className="text-right">
-                Skills
-              </Label>
-              <Input
-                id="skills"
-                name="skills"
-                value={input.skills}
-                onChange={changeEventHandler}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="file" className="text-right">
-                Resume
-              </Label>
-              <Input
-                id="file"
-                name="resume"
-                type="file"
-                accept="application/pdf"
-                onChange={fileChangeHandler}
-                className="col-span-3"
-              />
-            </div>
+
+            {isStudent && (
+              <>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="skills" className="text-right">
+                    Skills
+                  </Label>
+                  <Input
+                    id="skills"
+                    name="skills"
+                    value={input.skills}
+                    onChange={changeEventHandler}
+                    className="col-span-3"
+                  />
+                </div>
+
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="file" className="text-right">
+                    Resume
+                  </Label>
+                  <Input
+                    id="file"
+                    name="resume"
+                    type="file"
+                    accept="application/pdf"
+                    onChange={fileChangeHandler}
+                    className="col-span-3"
+                  />
+                </div>
+              </>
+            )}
           </div>
+
           <DialogFooter>
             {loading ? (
               <Button className="w-full my-4" disabled>

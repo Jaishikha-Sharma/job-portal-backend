@@ -10,12 +10,14 @@ import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "../hooks/useGetAppliedJobs";
 
-const isResume = true;
-
 const Profile = () => {
-  useGetAppliedJobs();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
+  const isStudent = user?.role === "student";
+
+  if (isStudent) {
+    useGetAppliedJobs();
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -24,12 +26,9 @@ const Profile = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
-              <AvatarImage
-                    src={user?.profile?.profilePhoto}
-                    alt="@shadcn"
-                  />
+              <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
             </Avatar>
-            
+
             <div>
               <h1 className="font-semibold text-lg sm:text-xl">
                 {user?.fullname}
@@ -37,6 +36,7 @@ const Profile = () => {
               <p className="text-sm text-gray-600">{user?.profile?.bio}</p>
             </div>
           </div>
+
           <Button
             onClick={() => setOpen(true)}
             className="self-end sm:self-auto"
@@ -57,42 +57,49 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="my-5">
-          <h2 className="font-semibold text-md sm:text-lg mb-2">Skills</h2>
-          <div className="flex flex-wrap items-center gap-2">
-            {user?.profile?.skills?.length > 0 ? (
-              user.profile.skills.map((item, index) => (
-                <Badge key={index} className="text-xs sm:text-sm px-2 py-1">
-                  {item}
-                </Badge>
-              ))
-            ) : (
-              <span className="text-sm text-gray-500">NA</span>
-            )}
-          </div>
-        </div>
-        <div className="my-5">
-          <div className="mt-1">
-            <Label className="text-md font-bold">Resume</Label>
-            {isResume ? (
-              <a
-                target="blank"
-                href={user?.profile?.resume}
-                className="text-blue-500 w-full hover:underline cursor-pointer"
-              >
-                {user?.profile?.resumeOriginalName}
-              </a>
-            ) : (
-              <span>NA</span>
-            )}
-          </div>
-        </div>
+        {isStudent && (
+          <>
+            <div className="my-5">
+              <h2 className="font-semibold text-md sm:text-lg mb-2">Skills</h2>
+              <div className="flex flex-wrap items-center gap-2">
+                {user?.profile?.skills?.length > 0 ? (
+                  user.profile.skills.map((item, index) => (
+                    <Badge key={index} className="text-xs sm:text-sm px-2 py-1">
+                      {item}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-sm text-gray-500">NA</span>
+                )}
+              </div>
+            </div>
+
+            <div className="my-5">
+              <div className="mt-1">
+                <Label className="text-md font-bold">Resume</Label>
+                {user?.profile?.resume ? (
+                  <a
+                    target="_blank"
+                    href={user?.profile?.resume}
+                    className="text-blue-500 w-full hover:underline cursor-pointer"
+                  >
+                    {user?.profile?.resumeOriginalName || "View Resume"}
+                  </a>
+                ) : (
+                  <span className="text-sm text-gray-500">NA</span>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl px-4 sm:px-8 py-5 my-5">
-        <h2 className="font-bold text-lg sm:text-xl mb-4">Applied Jobs</h2>
-        <AppliedJobTable />
-      </div>
+      {isStudent && (
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl px-4 sm:px-8 py-5 my-5">
+          <h2 className="font-bold text-lg sm:text-xl mb-4">Applied Jobs</h2>
+          <AppliedJobTable />
+        </div>
+      )}
 
       <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
