@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,140 +9,105 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { MoreHorizontal } from "lucide-react";
+import { Edit2, Eye, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
-import { APPLICATION_API_END_POINT } from "../../utils/constant";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const shortlistingStatus = ["Accepted", "Rejected", "On Hold"];
+const AdminJobsTable = () => {
+  const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
+  const [filterJobs, setFilterJobs] = useState(allAdminJobs);
+  const navigate = useNavigate();
 
-const ApplicantsTable = () => {
-  const { applicants } = useSelector((store) => store.application);
-
-  const statusHandler = async (status, id) => {
-    const confirm = window.confirm(
-      `Are you sure you want to mark this application as "${status}"?`
-    );
-    if (!confirm) return;
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("You must be logged in to update status.");
-      return;
-    }
-
-    try {
-      const res = await axios.post(
-        `${APPLICATION_API_END_POINT}/status/${id}/update`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+  useEffect(() => {
+    const filteredJobs = allAdminJobs.filter((job) => {
+      if (!searchJobByText) return true;
+      const searchLower = searchJobByText.toLowerCase();
+      return (
+        job?.title?.toLowerCase().includes(searchLower) ||
+        job?.company?.name.toLowerCase().includes(searchLower)
       );
-      if (res.data.success) {
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    }
-  };
+    });
+    setFilterJobs(filteredJobs);
+  }, [allAdminJobs, searchJobByText]);
+
+  if (filterJobs.length === 0) {
+    return (
+      <div className="text-center mt-10">
+        <img
+          src="/no-result.avif"
+          alt="No jobs"
+          className="mx-auto h-40"
+        />
+        <h3 className="text-lg font-semibold mt-4 text-gray-800">
+          No Jobs Found
+        </h3>
+        <p className="text-gray-500">
+          Try adding a new job or adjust your search criteria.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <Table className="w-full border-separate border-spacing-y-2 text-sm">
-        <TableCaption className="mb-4 text-base font-semibold text-gray-700">
-          A list of your recent applied users
+    <div className="bg-white rounded-xl shadow-md overflow-x-auto mt-6 border border-gray-200">
+      <Table className="min-w-full">
+        <TableCaption className="text-gray-600 font-medium">
+          A list of your recently posted jobs
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 rounded-lg">
-            <TableHead className="px-4 py-2 rounded-l-lg">Full Name</TableHead>
-            <TableHead className="px-4 py-2">Email</TableHead>
-            <TableHead className="px-4 py-2">Resume</TableHead>
-            <TableHead className="px-4 py-2">Date</TableHead>
-            <TableHead className="px-4 py-2">Status</TableHead>
-            <TableHead className="px-4 py-2 text-right rounded-r-lg">
-              Action
+          <TableRow className="bg-gray-200">
+            <TableHead className="text-gray-700 py-3 px-6 text-left">
+              Company Name
             </TableHead>
+            <TableHead className="text-gray-700 py-3 px-6 text-left">Role</TableHead>
+            <TableHead className="text-gray-700 py-3 px-6 text-left">Date</TableHead>
+            <TableHead className="text-right text-gray-700 py-3 px-6">Actions</TableHead>
           </TableRow>
         </TableHeader>
-
         <TableBody>
-          {applicants?.applications
-            ?.filter((item) => item?.applicant)
-            .map((item) => (
-              <TableRow
-                key={item._id}
-                className="hover:shadow-md transition-shadow bg-white rounded-lg"
-              >
-                <TableCell className="px-4 py-3 font-medium text-gray-800">
-                  {item?.applicant?.fullname || "N/A"}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-700">
-                  {item?.applicant?.email || "N/A"}
-                </TableCell>
-                <TableCell className="px-4 py-3">
-                  {item.applicant?.profile?.resume ? (
-                    <a
-                      href={item?.applicant?.profile?.resume}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 font-medium hover:underline"
-                    >
-                      {item?.applicant?.profile?.resumeOriginalName || "Resume"}
-                    </a>
-                  ) : (
-                    <span className="text-gray-400 italic">NA</span>
-                  )}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-600">
-                  {item?.applicant?.createdAt?.split("T")[0] || "N/A"}
-                </TableCell>
-
-                <TableCell className="px-4 py-3">
-                  <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full inline-block ${
-                      item.status === "Accepted"
-                        ? "bg-green-100 text-green-700"
-                        : item.status === "Rejected"
-                        ? "bg-red-100 text-red-700"
-                        : item.status === "On Hold"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {item.status || "Pending"}
-                  </span>
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-right">
-                  <Popover>
-                    <PopoverTrigger>
-                      <button className="p-1 hover:bg-gray-200 rounded-full">
-                        <MoreHorizontal className="w-5 h-5 text-gray-600" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-40 border rounded shadow-md">
-                      {shortlistingStatus.map((status, index) => (
-                        <div
-                          key={index}
-                          onClick={() => statusHandler(status, item?._id)}
-                          className="text-sm py-2 px-3 hover:bg-gray-100 rounded cursor-pointer text-gray-800"
-                        >
-                          {status}
-                        </div>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                </TableCell>
-              </TableRow>
-            ))}
+          {filterJobs.map((job) => (
+            <TableRow
+              key={job._id}
+              className="hover:bg-red-50/50 transition-colors duration-200 cursor-default"
+            >
+              <TableCell className="font-semibold text-gray-800 py-4 px-6">
+                {job?.company?.name}
+              </TableCell>
+              <TableCell className="text-gray-700 py-4 px-6">{job?.title}</TableCell>
+              <TableCell className="text-gray-600 py-4 px-6">
+                {job?.createdAt?.split("T")[0]}
+              </TableCell>
+              <TableCell className="text-right py-4 px-6">
+                <Popover>
+                  <PopoverTrigger className="hover:text-[#f83002] transition cursor-pointer">
+                    <MoreHorizontal />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-40 shadow-lg border border-gray-200 rounded-md">
+                    <div className="p-2">
+                      <div
+                        onClick={() => navigate(`/admin/companies/${job._id}`)}
+                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#f83002] hover:bg-gray-100 p-2 rounded-md cursor-pointer"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        <span>Edit</span>
+                      </div>
+                      <div
+                        onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)}
+                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#f83002] hover:bg-gray-100 p-2 rounded-md cursor-pointer mt-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span>Applicants</span>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
   );
 };
 
-export default ApplicantsTable;
+export default AdminJobsTable;
