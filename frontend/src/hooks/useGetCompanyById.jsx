@@ -1,7 +1,7 @@
 import { setSingleCompany } from '../redux/companySlice'
 import { setAllJobs } from '../redux/jobSlice'
 import { COMPANY_API_END_POINT, JOB_API_END_POINT } from '../utils/constant'
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../utils/axiosConfig";  
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
