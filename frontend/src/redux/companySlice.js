@@ -2,20 +2,22 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { COMPANY_API_END_POINT } from "../utils/constant.js";
 
-// Async thunk to delete a company and then fetch updated companies list
 export const deleteCompany = createAsyncThunk(
   "company/deleteCompany",
   async (id, thunkAPI) => {
     try {
+      const token = localStorage.getItem("token"); // Get JWT token from localStorage
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token in Authorization header
+        },
+      };
+
       const deleteUrl = `${COMPANY_API_END_POINT}/delete/${id}`;
-      await axios.delete(deleteUrl, {
-        withCredentials: true,
-      });
+      await axios.delete(deleteUrl, config);
 
       const getUrl = `${COMPANY_API_END_POINT}/get`;
-      const response = await axios.get(getUrl, {
-        withCredentials: true,
-      });
+      const response = await axios.get(getUrl, config);
 
       return response.data.companies;
     } catch (error) {
@@ -46,10 +48,10 @@ const companySlice = createSlice({
       state.searchCompanyByText = action.payload;
     },
     clearCompanies: (state) => {
-    state.companies = [];
-    state.searchCompanyByText = "";
-    state.singleCompany = null;
-  },
+      state.companies = [];
+      state.searchCompanyByText = "";
+      state.singleCompany = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,6 +70,11 @@ const companySlice = createSlice({
   },
 });
 
-export const { setSingleCompany, setCompanies, setSearchCompanyByText , clearCompanies,  } =
-  companySlice.actions;
+export const {
+  setSingleCompany,
+  setCompanies,
+  setSearchCompanyByText,
+  clearCompanies,
+} = companySlice.actions;
+
 export default companySlice.reducer;

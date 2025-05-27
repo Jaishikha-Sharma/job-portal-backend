@@ -46,14 +46,17 @@ const CompanySetup = () => {
     if (input.file) {
       formData.append("resume", input.file);
     }
+
     try {
       setLoading(true);
+      const token = localStorage.getItem("token"); // get token from storage
       const res = await axios.put(
         `${COMPANY_API_END_POINT}/update/${params.id}`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // send token here
           },
         }
       );
@@ -98,7 +101,10 @@ const CompanySetup = () => {
           <form onSubmit={submitHandler}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name" className="mb-0.5 block font-medium text-gray-700">
+                <Label
+                  htmlFor="name"
+                  className="mb-0.5 block font-medium text-gray-700"
+                >
                   Company Name
                 </Label>
                 <Input
@@ -112,7 +118,10 @@ const CompanySetup = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="website" className="mb-0.5 block font-medium text-gray-700">
+                <Label
+                  htmlFor="website"
+                  className="mb-0.5 block font-medium text-gray-700"
+                >
                   Website
                 </Label>
                 <Input
@@ -126,7 +135,10 @@ const CompanySetup = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="location" className="mb-0.5 block font-medium text-gray-700">
+                <Label
+                  htmlFor="location"
+                  className="mb-0.5 block font-medium text-gray-700"
+                >
                   Location
                 </Label>
                 <Input
@@ -140,7 +152,10 @@ const CompanySetup = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="file" className="mb-0.5 block font-medium text-gray-700">
+                <Label
+                  htmlFor="file"
+                  className="mb-0.5 block font-medium text-gray-700"
+                >
                   Logo
                 </Label>
                 <Input
@@ -152,7 +167,10 @@ const CompanySetup = () => {
                 />
               </div>
               <div className="sm:col-span-2">
-                <Label htmlFor="description" className="mb-0.5 block font-medium text-gray-700">
+                <Label
+                  htmlFor="description"
+                  className="mb-0.5 block font-medium text-gray-700"
+                >
                   Description
                 </Label>
                 <textarea

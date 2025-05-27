@@ -26,10 +26,21 @@ const ApplicantsTable = () => {
     );
     if (!confirm) return;
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to update status.");
+      return;
+    }
+
     try {
       const res = await axios.post(
         `${APPLICATION_API_END_POINT}/status/${id}/update`,
-        { status }
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (res.data.success) {
         toast.success(res.data.message);

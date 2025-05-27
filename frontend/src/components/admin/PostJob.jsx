@@ -175,16 +175,24 @@ const PostJob = () => {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
+  const token = localStorage.getItem("token"); // or from redux
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!token) {
+      toast.error("You must be logged in to post a job.");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // <-- token here
         },
-        withCredentials: true,
       });
+
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/admin/jobs");
