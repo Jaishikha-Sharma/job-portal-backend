@@ -52,7 +52,6 @@ const SignUp = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true,
       });
 
       if (res.data.success || res.data.sucess) {

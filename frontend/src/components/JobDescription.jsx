@@ -30,7 +30,6 @@ const JobDescription = () => {
     try {
       const res = await axios.get(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-        { withCredentials: true }
       );
 
       if (res.data.success) {
@@ -52,7 +51,6 @@ const JobDescription = () => {
     const fetchSingleJob = async () => {
       try {
         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
-          withCredentials: true,
         });
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));

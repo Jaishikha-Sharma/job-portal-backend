@@ -29,7 +29,6 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(`${ADMIN_API_END_POINT}/users`, {
-        withCredentials: true,
       });
       if (response.data.success) {
         setUsers(response.data.users);
@@ -51,7 +50,6 @@ const AdminDashboard = () => {
       const response = await axios.delete(
         `${ADMIN_API_END_POINT}/users/${id}`,
         {
-          withCredentials: true,
         }
       );
       if (response.data.success) {

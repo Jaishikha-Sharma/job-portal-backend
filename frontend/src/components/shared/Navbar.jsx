@@ -27,12 +27,11 @@ const Navbar = () => {
 const logoutHandler = async () => {
   try {
     const res = await axios.get(`${USER_API_END_POINT}/logout`, {
-      withCredentials: true,
     });
     if (res.data.success) {
       dispatch(logout());
       dispatch(clearCompanies());
-      localStorage.clear();  // <-- Yahi localStorage clear kiya ja raha hai logout par
+      // localStorage.clear(); 
       navigate("/");
       toast.success(res.data.message);
     }

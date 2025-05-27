@@ -19,7 +19,6 @@ const JobCards = ({ job, hideSaveButton = false }) => {
       const res = await axios.put(
         `${USER_API_END_POINT}/save-job/${job._id}`,
         {},
-        { withCredentials: true }
       );
       dispatch(setSavedJobs(res.data.savedJobs));
       alert("Job saved successfully!");

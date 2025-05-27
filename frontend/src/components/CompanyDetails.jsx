@@ -16,7 +16,6 @@ const CompanyDetails = ({ companyId }) => {
       try {
         const { data } = await axios.get(
           `${COMPANY_API_END_POINT}/get/${companyId}`,
-          { withCredentials: true }
         );
 
         if (data.success) {

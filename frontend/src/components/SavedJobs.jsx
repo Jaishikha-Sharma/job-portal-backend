@@ -14,7 +14,6 @@ const SavedJobs = () => {
     const fetchSavedJobs = async () => {
       try {
         const res = await axios.get(`${USER_API_END_POINT}/saved-jobs`, {
-          withCredentials: true,
         });
         dispatch(setSavedJobs(res.data.savedJobs));
       } catch (error) {
