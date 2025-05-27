@@ -10,7 +10,12 @@ const useGetAllCompanies = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const res = await axios.get(`${COMPANY_API_END_POINT}/get`);
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${COMPANY_API_END_POINT}/get`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
         console.log("called");
         if (res.data.success) {
           dispatch(setCompanies(res.data.companies));
@@ -21,7 +26,7 @@ const useGetAllCompanies = () => {
     };
 
     fetchCompanies();
-  }, [dispatch]); // ✅ Add dispatch here
+  }, [dispatch]);
 };
 
 export default useGetAllCompanies;
