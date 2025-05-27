@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios from "../utils/axiosConfig";
 import { setSavedJobs } from "../redux/authSlice";
 import { USER_API_END_POINT } from "../utils/constant.js";
 import JobCards from "../components/JobCards.jsx";

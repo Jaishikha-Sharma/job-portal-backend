@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../utils/axiosConfig";  
 import { COMPANY_API_END_POINT } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
 

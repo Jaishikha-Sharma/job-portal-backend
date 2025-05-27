@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../utils/axiosConfig";  
 
 const isProduction = window.location.hostname !== "localhost";
 const BASE_URL = isProduction

@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { setSavedJobs } from "../redux/authSlice";
 import { USER_API_END_POINT } from "../utils/constant.js";

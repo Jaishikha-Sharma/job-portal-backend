@@ -3,7 +3,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../utils/axiosConfig";
 import { setSingleJob } from "../redux/jobSlice";
 import {
   APPLICATION_API_END_POINT,
