@@ -49,14 +49,14 @@ const CompanySetup = () => {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem("token"); // get token from storage
+      const token = localStorage.getItem("token");
       const res = await axios.put(
         `${COMPANY_API_END_POINT}/update/${params.id}`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // send token here
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -73,14 +73,25 @@ const CompanySetup = () => {
   };
 
   useEffect(() => {
-    setInput({
-      name: singleCompany.name || "",
-      description: singleCompany.description || "",
-      website: singleCompany.website || "",
-      location: singleCompany.location || "",
-      file: null,
-    });
+    if (singleCompany) {
+      setInput({
+        name: singleCompany.name || "",
+        description: singleCompany.description || "",
+        website: singleCompany.website || "",
+        location: singleCompany.location || "",
+        file: null,
+      });
+    }
   }, [singleCompany]);
+
+  if (!singleCompany) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+        <span className="ml-2 text-gray-600">Loading company details...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
