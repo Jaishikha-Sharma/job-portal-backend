@@ -167,3 +167,72 @@ export const getAdminJobs = async (req, res) => {
     });
   }
 };
+// Update a job by ID
+export const updateJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+
+    const existingJob = await Job.findById(jobId);
+
+    if (!existingJob) {
+      return res.status(404).json({
+        message: "Job not found.",
+        success: false,
+      });
+    }
+
+    const {
+      title,
+      description,
+      requirements,
+      salary,
+      location,
+      jobType,
+      experience,
+      position,
+      qualification,
+      degree,
+      genderPreference,
+      languagesKnown,
+      companyId,
+    } = req.body;
+
+    const updatedFields = {
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(requirements && {
+        requirements: Array.isArray(requirements)
+          ? requirements
+          : requirements.split(",").map((r) => r.trim()),
+      }),
+      ...(salary && { salary }),
+      ...(location && { location }),
+      ...(jobType && { jobType }),
+      ...(experience && { experienceLevel: experience }),
+      ...(position && { position }),
+      ...(qualification && { qualification }),
+      ...(degree && { degree }),
+      ...(genderPreference && { genderPreference }),
+      ...(languagesKnown && { languagesKnown }),
+      ...(companyId && { company: companyId }),
+    };
+
+    const updatedJob = await Job.findByIdAndUpdate(jobId, updatedFields, {
+      new: true,
+    }).populate("company");
+
+    return res.status(200).json({
+      message: "Job updated successfully.",
+      job: updatedJob,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+      success: false,
+    });
+  }
+};
+

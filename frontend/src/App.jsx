@@ -19,6 +19,7 @@ import CompanyDetailsPage from "./components/CompanyDetailsPage.jsx";
 import AppliedMenu from "./components/AppliedMenu.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import Dashboard from "./components/admin/Dashboard.jsx";
+import JobUpdate from "./components/admin/JobUpdate.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -116,6 +117,15 @@ const appRouter = createBrowserRouter([
     path: "/admin/dashboard",
     element: <AdminDashboard />,
   },
+  {
+  path: "/admin/jobs/edit/:id",
+  element: (
+    <ProtectedRoute>
+      <JobUpdate />
+    </ProtectedRoute>
+  ),
+},
+
 ]);
 
 function App() {

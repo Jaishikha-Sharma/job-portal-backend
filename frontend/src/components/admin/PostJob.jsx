@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -25,7 +25,6 @@ const jobTypes = [
   "Contract",
   "Freelance",
 ];
-
 const popularJobTitles = [
   "Software Engineer",
   "Frontend Developer",
@@ -38,7 +37,6 @@ const popularJobTitles = [
   "QA Engineer",
   "DevOps Engineer",
 ];
-
 const indianLocations = [
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -84,6 +82,7 @@ const degrees = [
   "M.Com",
   "M.Tech",
   "PhD",
+  "other"
 ];
 const salaryRanges = [
   "1 LPA - 3 LPA",
@@ -92,15 +91,20 @@ const salaryRanges = [
   "7 LPA - 10 LPA",
   "10 LPA+",
 ];
-
 const experienceYears = Array.from({ length: 21 }, (_, i) => `${i} years`);
+
+const RequiredLabel = ({ children }) => (
+  <Label>
+    {children}
+    <span className="text-red-400 ml-1">*</span>
+  </Label>
+);
 
 const PostJob = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { companies } = useSelector((store) => store.company);
-  const [requirementText, setRequirementText] = useState("");
 
   const [input, setInput] = useState({
     title: "",
@@ -119,41 +123,36 @@ const PostJob = () => {
     languagesKnown: "",
   });
 
+  const [jobMode, setJobMode] = useState(""); // "On-site", "Remote", or "Hybrid"
+
+  useEffect(() => {
+    // Auto update location field for Remote or Hybrid mode
+    if (jobMode === "Remote" || jobMode === "Hybrid") {
+      setInput((prev) => ({ ...prev, location: jobMode }));
+    } else if (jobMode === "On-site") {
+      setInput((prev) => ({ ...prev, location: "" })); // reset location for On-site
+    }
+  }, [jobMode]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setInput((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleRequirementChange = (index, value) => {
     const updatedRequirements = [...input.requirements];
     updatedRequirements[index] = value;
-    setInput((prev) => ({
-      ...prev,
-      requirements: updatedRequirements,
-    }));
+    setInput((prev) => ({ ...prev, requirements: updatedRequirements }));
   };
 
   const addRequirement = () => {
-    setInput((prev) => ({
-      ...prev,
-      requirements: [...prev.requirements, ""],
-    }));
+    setInput((prev) => ({ ...prev, requirements: [...prev.requirements, ""] }));
   };
 
   const removeRequirement = (index) => {
     const updatedRequirements = [...input.requirements];
     updatedRequirements.splice(index, 1);
-    setInput((prev) => ({
-      ...prev,
-      requirements: updatedRequirements,
-    }));
-  };
-
-  const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
+    setInput((prev) => ({ ...prev, requirements: updatedRequirements }));
   };
 
   const selectChangeHandler = (value) => {
@@ -167,20 +166,44 @@ const PostJob = () => {
     setInput({ ...input, jobType: e.target.value });
   };
 
-  const nextStep = () => {
-    setStep((prev) => Math.min(prev + 1, 3));
-  };
-
-  const prevStep = () => {
-    setStep((prev) => Math.max(prev - 1, 1));
-  };
-
-  const token = localStorage.getItem("token"); // or from redux
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+  const token = localStorage.getItem("token");
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     if (!token) {
       toast.error("You must be logged in to post a job.");
+      return;
+    }
+
+    // Manual field validation
+    const requiredFields = [
+      "title",
+      "description",
+      "salary",
+      "location",
+      "jobType",
+      "experience",
+      "position",
+      "companyId",
+      "qualification",
+      "genderPreference",
+    ];
+
+    for (const field of requiredFields) {
+      if (
+        !input[field] ||
+        (typeof input[field] === "string" && input[field].trim() === "")
+      ) {
+        toast.error(`Please fill out the ${field} field.`);
+        return;
+      }
+    }
+
+    if (input.requirements.some((r) => !r.trim())) {
+      toast.error("All skill requirements must be filled.");
       return;
     }
 
@@ -189,7 +212,7 @@ const PostJob = () => {
       const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // <-- token here
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -234,15 +257,15 @@ const PostJob = () => {
           {step === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label>Job Title</Label>
+                <RequiredLabel>Job Title</RequiredLabel>
                 <Input
                   list="jobTitles"
                   name="title"
                   value={input.title}
-                  onChange={changeEventHandler}
-                  placeholder="Select or type a job title"
-                  className="focus-visible:ring-blue-500 my-2"
+                  onChange={handleChange}
                   required
+                  placeholder="Select or type a job title"
+                  className="my-2"
                 />
                 <datalist id="jobTitles">
                   {popularJobTitles.map((title) => (
@@ -252,12 +275,12 @@ const PostJob = () => {
               </div>
 
               <div>
-                <Label>Job Type</Label>
+                <RequiredLabel>Job Type</RequiredLabel>
                 <select
                   name="jobType"
                   value={input.jobType}
                   onChange={jobTypeChangeHandler}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  className="w-full p-3 border rounded-md my-2"
                   required
                 >
                   <option value="" disabled>
@@ -272,12 +295,12 @@ const PostJob = () => {
               </div>
 
               <div>
-                <Label>Experience</Label>
+                <RequiredLabel>Experience</RequiredLabel>
                 <select
                   name="experience"
                   value={input.experience}
-                  onChange={changeEventHandler}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-md my-2"
                   required
                 >
                   <option value="" disabled>
@@ -292,52 +315,42 @@ const PostJob = () => {
               </div>
 
               <div>
-                <Label>No. of Positions</Label>
+                <RequiredLabel>No. of Positions</RequiredLabel>
                 <Input
                   type="number"
                   name="position"
                   value={input.position}
-                  onChange={changeEventHandler}
-                  className="focus-visible:ring-blue-500 my-2"
+                  onChange={handleChange}
                   min={1}
+                  className="my-2"
                   required
                 />
               </div>
 
               <div>
-                <Label>Candidate Qualification</Label>
+                <RequiredLabel>Candidate Qualification</RequiredLabel>
                 <select
                   name="qualification"
                   value={input.qualification}
-                  onChange={changeEventHandler}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-md my-2"
                   required
                 >
                   <option value="">Select Qualification</option>
-                  <option value="10th">10th</option>
-                  <option value="12th">12th</option>
-                  <option value="Graduation">Graduation</option>
-                  <option value="Post Graduation">Post Graduation</option>
+                  <option value="10th Pass">10th Pass</option>
+                  <option value="12th Pass">12th Pass</option>
+                  <option value="Graduate">Graduate</option>
+                  <option value="Post Graduate">Post Graduate</option>
                 </select>
-                {input.qualification === "Other" && (
-                  <Input
-                    type="text"
-                    name="customQualification"
-                    value={input.customQualification}
-                    onChange={changeEventHandler}
-                    placeholder="Enter your qualification"
-                    className="focus-visible:ring-blue-500 my-2"
-                  />
-                )}
               </div>
+
               <div>
                 <Label>Degree</Label>
                 <select
                   name="degree"
                   value={input.degree}
-                  onChange={changeEventHandler}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
-                  required
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-md my-2"
                 >
                   <option value="" disabled>
                     Select Degree
@@ -351,12 +364,12 @@ const PostJob = () => {
               </div>
 
               <div>
-                <Label>Gender Preference</Label>
+                <RequiredLabel>Gender Preference</RequiredLabel>
                 <select
                   name="genderPreference"
                   value={input.genderPreference}
-                  onChange={changeEventHandler}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-md my-2"
                   required
                 >
                   <option value="">Select Preference</option>
@@ -373,9 +386,9 @@ const PostJob = () => {
                   type="text"
                   name="languagesKnown"
                   value={input.languagesKnown}
-                  onChange={changeEventHandler}
-                  placeholder="e.g. English, Hindi, Tamil"
-                  className="focus-visible:ring-blue-500 my-2"
+                  onChange={handleChange}
+                  placeholder="e.g. English, Hindi"
+                  className="my-2"
                 />
               </div>
             </div>
@@ -384,28 +397,49 @@ const PostJob = () => {
           {/* Step 2: Location, Salary, Company */}
           {step === 2 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Job Mode Radio Buttons */}
               <div>
-                <Label>Location</Label>
-                <Input
-                  list="locations"
-                  name="location"
-                  value={input.location}
-                  onChange={changeEventHandler}
-                  placeholder="Hybrid, Remote or start typing location"
-                  className="focus-visible:ring-blue-500 my-2"
-                  required
-                />
-                <datalist id="locations">
-                  <option value="Hybrid" />
-                  <option value="Remote" />
-                  {indianLocations.map((loc) => (
-                    <option key={loc} value={loc} />
+                <RequiredLabel>Job Mode</RequiredLabel>
+                <div className="flex gap-6 mt-2">
+                  {["On-site", "Remote", "Hybrid"].map((mode) => (
+                    <label key={mode} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="jobMode"
+                        value={mode}
+                        checked={jobMode === mode}
+                        onChange={(e) => setJobMode(e.target.value)}
+                      />
+                      {mode}
+                    </label>
                   ))}
-                </datalist>
+                </div>
               </div>
+
+              {/* Show location input only if jobMode !== Remote */}
+              {jobMode !== "Remote" && (
+                <div>
+                  <RequiredLabel>Location</RequiredLabel>
+                  <Input
+                    list="locations"
+                    name="location"
+                    value={input.location}
+                    onChange={handleChange}
+                    placeholder="Hybrid, Remote or enter city"
+                    className="my-2"
+                    required={jobMode !== "Remote"}
+                  />
+                  <datalist id="locations">
+                    {indianLocations.map((loc) => (
+                      <option key={loc} value={loc} />
+                    ))}
+                  </datalist>
+                </div>
+              )}
+
               {companies.length > 0 && (
                 <div>
-                  <Label>Company</Label>
+                  <RequiredLabel>Company</RequiredLabel>
                   <Select
                     onValueChange={selectChangeHandler}
                     value={
@@ -424,7 +458,7 @@ const PostJob = () => {
                         {companies.map((company) => (
                           <SelectItem
                             key={company._id}
-                            value={company?.name?.toLowerCase()}
+                            value={company.name.toLowerCase()}
                           >
                             {company.name}
                           </SelectItem>
@@ -440,19 +474,19 @@ const PostJob = () => {
                   *Please register a company first, before posting jobs
                 </p>
               )}
+
               <div>
-                <Label>Salary</Label>
+                <RequiredLabel>Salary</RequiredLabel>
                 <select
                   value={input.salaryRange || ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
+                  onChange={(e) =>
                     setInput((prev) => ({
                       ...prev,
-                      salaryRange: val,
-                      salary: val, // update salary text input as well
-                    }));
-                  }}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
+                      salaryRange: e.target.value,
+                      salary: e.target.value,
+                    }))
+                  }
+                  className="w-full p-3 border rounded-md my-2"
                 >
                   <option value="">Select Salary Range</option>
                   {salaryRanges.map((range) => (
@@ -466,9 +500,9 @@ const PostJob = () => {
                   type="text"
                   name="salary"
                   value={input.salary}
-                  onChange={changeEventHandler}
+                  onChange={handleChange}
                   placeholder="Or enter salary manually (e.g. 5 LPA)"
-                  className="focus-visible:ring-blue-500 my-2"
+                  className="my-2"
                   required
                 />
               </div>
@@ -479,47 +513,46 @@ const PostJob = () => {
           {step === 3 && (
             <div>
               <div>
-                <label className="font-semibold">Skills:</label>
-                {Array.isArray(input.requirements) &&
-                  input.requirements.map((req, index) => (
-                    <div key={index} className="flex items-center gap-2 mt-2">
-                      <input
-                        type="text"
-                        value={req}
-                        onChange={(e) =>
-                          handleRequirementChange(index, e.target.value)
-                        }
-                        placeholder={`Requirement ${index + 1}`}
-                        className="flex-1 p-2 border rounded"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeRequirement(index)}
-                        className="bg-red-500 text-white px-3 py-1 rounded"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-
+                <RequiredLabel>Skills</RequiredLabel>
+                {input.requirements.map((req, index) => (
+                  <div key={index} className="flex items-center gap-2 mt-2">
+                    <input
+                      type="text"
+                      value={req}
+                      onChange={(e) =>
+                        handleRequirementChange(index, e.target.value)
+                      }
+                      placeholder={`Requirement ${index + 1}`}
+                      className="flex-1 p-2 border rounded"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeRequirement(index)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
                 <button
                   type="button"
                   onClick={addRequirement}
-                  className="mt-2 bg-blue-500 text-white px-4 py-1 rounded"
+                  className="mt-2 bg-blue-600 text-white px-3 py-1 rounded"
                 >
-                  + Add Skills
+                  + Add Skill
                 </button>
               </div>
 
               <div className="mt-6">
-                <Label>Description</Label>
+                <RequiredLabel>Job Description</RequiredLabel>
                 <textarea
                   name="description"
                   value={input.description}
-                  onChange={changeEventHandler}
+                  onChange={handleChange}
                   rows={5}
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 my-2"
-                  placeholder="Describe the job, responsibilities, culture..."
+                  className="w-full p-3 border rounded-md my-2"
+                  placeholder="Write the detailed job description here"
                   required
                 />
               </div>
@@ -529,34 +562,20 @@ const PostJob = () => {
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-10">
             {step > 1 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-                className="px-6 py-2"
-              >
-                Back
+              <Button variant="outline" onClick={prevStep}>
+                Previous
               </Button>
             )}
 
-            {step < 3 && (
-              <Button
-                type="button"
-                onClick={nextStep}
-                className="ml-auto px-6 py-2"
-              >
-                Next
-              </Button>
-            )}
+            {step < 3 && <Button onClick={nextStep}>Next</Button>}
 
             {step === 3 && (
-              <Button
-                type="submit"
-                className="ml-auto px-6 py-2 flex items-center gap-2"
-                disabled={loading}
-              >
-                {loading && <Loader2 className="animate-spin" size={18} />}
-                Post Job
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  <Loader2 className="animate-spin h-5 w-5" />
+                ) : (
+                  "Submit"
+                )}
               </Button>
             )}
           </div>
