@@ -9,7 +9,14 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Edit2, Eye, MoreHorizontal } from "lucide-react";
+import {
+  Edit2,
+  Eye,
+  MoreHorizontal,
+  Linkedin,
+  Copy,
+  MessageCircle,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -33,11 +40,7 @@ const AdminJobsTable = () => {
   if (filterJobs.length === 0) {
     return (
       <div className="text-center mt-10">
-        <img
-          src="/no-result.avif"
-          alt="No jobs"
-          className="mx-auto h-40"
-        />
+        <img src="/no-result.avif" alt="No jobs" className="mx-auto h-40" />
         <h3 className="text-lg font-semibold mt-4 text-gray-800">
           No Jobs Found
         </h3>
@@ -59,9 +62,15 @@ const AdminJobsTable = () => {
             <TableHead className="text-gray-700 py-3 px-6 text-left">
               Company Name
             </TableHead>
-            <TableHead className="text-gray-700 py-3 px-6 text-left">Role</TableHead>
-            <TableHead className="text-gray-700 py-3 px-6 text-left">Date</TableHead>
-            <TableHead className="text-right text-gray-700 py-3 px-6">Actions</TableHead>
+            <TableHead className="text-gray-700 py-3 px-6 text-left">
+              Role
+            </TableHead>
+            <TableHead className="text-gray-700 py-3 px-6 text-left">
+              Date
+            </TableHead>
+            <TableHead className="text-right text-gray-700 py-3 px-6">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,7 +82,9 @@ const AdminJobsTable = () => {
               <TableCell className="font-semibold text-gray-800 py-4 px-6">
                 {job?.company?.name}
               </TableCell>
-              <TableCell className="text-gray-700 py-4 px-6">{job?.title}</TableCell>
+              <TableCell className="text-gray-700 py-4 px-6">
+                {job?.title}
+              </TableCell>
               <TableCell className="text-gray-600 py-4 px-6">
                 {job?.createdAt?.split("T")[0]}
               </TableCell>
@@ -82,8 +93,8 @@ const AdminJobsTable = () => {
                   <PopoverTrigger className="hover:text-[#f83002] transition cursor-pointer">
                     <MoreHorizontal />
                   </PopoverTrigger>
-                  <PopoverContent className="w-40 shadow-lg border border-gray-200 rounded-md">
-                    <div className="p-2">
+                  <PopoverContent className="w-44 shadow-lg border border-gray-200 rounded-md p-2">
+                    <div className="flex flex-col gap-2">
                       <div
                         onClick={() => navigate(`/admin/companies/${job._id}`)}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#f83002] hover:bg-gray-100 p-2 rounded-md cursor-pointer"
@@ -92,11 +103,49 @@ const AdminJobsTable = () => {
                         <span>Edit</span>
                       </div>
                       <div
-                        onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)}
-                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#f83002] hover:bg-gray-100 p-2 rounded-md cursor-pointer mt-2"
+                        onClick={() =>
+                          navigate(`/admin/jobs/${job._id}/applicants`)
+                        }
+                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#f83002] hover:bg-gray-100 p-2 rounded-md cursor-pointer"
                       >
                         <Eye className="w-4 h-4" />
                         <span>Applicants</span>
+                      </div>
+                      <div className="flex justify-around pt-1 border-t border-gray-200 mt-1">
+                        <a
+                          href={`https://wa.me/?text=${encodeURIComponent(
+                            `${window.location.origin}/job/${job._id}`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:text-[#25D366]"
+                          title="Share on WhatsApp"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </a>
+                        <a
+                          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                            `${window.location.origin}/job/${job._id}`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:text-[#0077B5]"
+                          title="Share on LinkedIn"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                        </a>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `${window.location.origin}/job/${job._id}`
+                            );
+                            alert("Link copied to clipboard!");
+                          }}
+                          className="text-gray-600 hover:text-gray-900"
+                          title="Copy link"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </PopoverContent>

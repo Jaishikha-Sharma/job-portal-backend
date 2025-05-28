@@ -18,6 +18,7 @@ import SavedJobs from "./components/SavedJobs.jsx";
 import CompanyDetailsPage from "./components/CompanyDetailsPage.jsx";
 import AppliedMenu from "./components/AppliedMenu.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
+import Dashboard from "./components/admin/Dashboard.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -84,6 +85,14 @@ const appRouter = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <AdminJob />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/dashboards",
+    element: (
+      <ProtectedRoute>
+        <Dashboard />
       </ProtectedRoute>
     ),
   },

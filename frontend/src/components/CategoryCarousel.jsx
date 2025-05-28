@@ -8,27 +8,22 @@ import {
 } from "./ui/carousel";
 import { Button } from "./ui/button";
 
-const category = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Web Developer",
-  "Full Stack Developer",
-  "Graphic Designer",
-];
+const CategoryCarousel = ({ categories = [], onCategoryClick }) => {
+  if (categories.length === 0) return null;
 
-const CategoryCarousel = () => {
   return (
     <div className="relative px-4">
       <Carousel className="w-full max-w-4xl mx-auto my-10">
         <CarouselContent>
-          {category.map((cat, index) => (
+          {categories.map((cat, index) => (
             <CarouselItem
               key={index}
               className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 flex justify-center"
             >
               <Button
                 variant="outline"
-                className="rounded-full text-sm sm:text-base px-4 py-2 whitespace-nowrap"
+                className="rounded-full text-sm sm:text-base px-4 py-2 whitespace-nowrap hover:bg-indigo-100 hover:text-indigo-900 transition"
+                onClick={() => onCategoryClick(cat)}
               >
                 {cat}
               </Button>

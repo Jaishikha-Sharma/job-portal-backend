@@ -57,6 +57,15 @@ const Navbar = () => {
               <>
                 <li
                   className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/dashboards")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  }`}
+                >
+                  <Link to="/dashboards">Dashboard</Link>
+                </li>
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
                     isActive("/admin/companies")
                       ? "text-[#f83002] font-semibold"
                       : ""
@@ -168,12 +177,12 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-col text-gray-600 gap-2">
-                    <div className="flex w-fit items-center gap-1 cursor-pointer">
-                      <User2 />
-                      <Button variant="link">
-                        <Link to="/profile">View Profile</Link>
-                      </Button>
-                    </div>
+                  <div className="flex w-fit items-center gap-1 cursor-pointer">
+                    <User2 />
+                    <Button variant="link">
+                      <Link to="/profile">View Profile</Link>
+                    </Button>
+                  </div>
                   <Button
                     onClick={logoutHandler}
                     variant="link"
@@ -204,6 +213,15 @@ const Navbar = () => {
           <ul className="flex flex-col font-medium gap-2 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
+                <li
+                  className={`hover:text-[#f83002] hover:scale-105 transition-all ${
+                    isActive("/dashboards")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  }`}
+                >
+                  <Link to="/dashboards">Dashboard</Link>
+                </li>
                 <li
                   className={`hover:text-[#f83002] transition-all ${
                     isActive("/admin/companies")
@@ -299,14 +317,12 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="flex flex-col text-gray-600 gap-2">
-                {user && user.role === "student" && (
-                  <div className="flex w-fit items-center gap-1 cursor-pointer">
-                    <User2 />
-                    <Button variant="link">
-                      <Link to="/profile">View Profile</Link>
-                    </Button>
-                  </div>
-                )}
+                <div className="flex w-fit items-center gap-1 cursor-pointer">
+                  <User2 />
+                  <Button variant="link">
+                    <Link to="/profile">View Profile</Link>
+                  </Button>
+                </div>
                 <Button
                   onClick={logoutHandler}
                   variant="link"

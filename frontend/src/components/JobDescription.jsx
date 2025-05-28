@@ -78,13 +78,6 @@ const JobDescription = () => {
     fetchSingleJob();
   }, [jobId, dispatch, user?._id]);
 
-  const displayField = (value) =>
-    value && value !== "N/A" ? (
-      <span>{value}</span>
-    ) : (
-      <span className="italic text-gray-400">Not specified</span>
-    );
-
   return (
     <>
       <Navbar />
@@ -122,7 +115,6 @@ const JobDescription = () => {
           </Button>
         </div>
 
-        {/* Divider */}
         <hr className="border-gray-300 mb-8" />
 
         {/* Job Details */}
@@ -180,24 +172,54 @@ const JobDescription = () => {
         <div className="mt-10 text-sm text-gray-500 italic text-right">
           Posted On: {singleJob?.createdAt?.split("T")[0] || "Unknown"}
         </div>
+
+        {/* Share Job Section */}
+        <div className="mt-6 flex items-center justify-end gap-4">
+          <span className="text-sm font-medium text-gray-600">
+            Share this job:
+          </span>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(window.location.href)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-600 hover:underline"
+          >
+            WhatsApp
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-700 hover:underline"
+          >
+            LinkedIn
+          </a>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success("Link copied to clipboard!");
+            }}
+            className="text-gray-700 hover:underline"
+          >
+            Copy Link
+          </button>
+        </div>
       </div>
     </>
   );
 };
 
-const Detail = ({ label, value }) => {
-  return (
-    <div>
-      <p className="font-semibold text-gray-700">{label}</p>
-      <p className="mt-1 text-gray-600">
-        {value && value !== "N/A" ? (
-          value
-        ) : (
-          <span className="italic text-gray-400">Not specified</span>
-        )}
-      </p>
-    </div>
-  );
-};
+const Detail = ({ label, value }) => (
+  <div>
+    <p className="font-semibold text-gray-700">{label}</p>
+    <p className="mt-1 text-gray-600">
+      {value && value !== "N/A" ? (
+        value
+      ) : (
+        <span className="italic text-gray-400">Not specified</span>
+      )}
+    </p>
+  </div>
+);
 
 export default JobDescription;
