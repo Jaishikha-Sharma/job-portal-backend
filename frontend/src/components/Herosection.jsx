@@ -34,7 +34,7 @@ const Herosection = () => {
   }, [query, jobs]);
 
   const searchJobHandler = (searchTerm) => {
-    if (searchTerm === "No jobs available") return;
+    if (searchTerm === "No jobs available at this moment") return;
     dispatch(setSearchedQuery(searchTerm || query));
     setFilteredJobs([]);
     navigate("/browse");
@@ -54,9 +54,9 @@ const Herosection = () => {
   return (
     <div className="bg-gradient-to-br from-indigo-100 via-white to-pink-100 px-4 sm:px-6 lg:px-20 py-10">
       {/* Content Layout */}
-      <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10">
+      <div className="flex flex-row items-center justify-between gap-6 flex-wrap md:flex-nowrap">
         {/* Left: Text */}
-        <div className="w-full md:w-2/3 text-center md:text-left space-y-5">
+        <div className="w-full sm:w-2/3 text-center sm:text-left space-y-5">
           <span className="px-4 py-2 rounded-full bg-white text-[#f83002] font-medium text-sm sm:text-base inline-block">
             No.1 Job Hunt Website
           </span>
@@ -64,18 +64,18 @@ const Herosection = () => {
             Search, apply & <br />
             Get your <span className="text-[#6a38c2]">Dream Job</span>
           </h1>
-          <p className="text-sm sm:text-base max-w-xl text-gray-600 mx-auto md:mx-0">
+          <p className="text-sm sm:text-base max-w-xl text-gray-600 mx-auto sm:mx-0">
             Explore top job listings, apply in minutes, and take the next step
             in your career.
           </p>
         </div>
 
         {/* Right: Image */}
-        <div className="w-full md:w-1/3 flex justify-center">
+        <div className="w-full sm:w-1/3 flex justify-center">
           <img
             src="./img.png"
             alt="Hero"
-            className="w-full max-w-xs md:max-w-sm hover:scale-105 transition-transform duration-500 md:block hidden"
+            className="w-full max-w-xs sm:max-w-sm hover:scale-105 transition-transform duration-500"
           />
         </div>
       </div>

@@ -14,9 +14,15 @@ const CompanyDetails = ({ companyId }) => {
 
     const fetchCompanyDetails = async () => {
       try {
-        const { data } = await axios.get(
-          `${COMPANY_API_END_POINT}/get/${companyId}`,
-        );
+    const token = localStorage.getItem("token"); 
+    const { data } = await axios.get(
+      `${COMPANY_API_END_POINT}/get/${companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
         if (data.success) {
           setCompany(data.company);
