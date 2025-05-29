@@ -10,7 +10,7 @@ import axios from "../../utils/axiosConfig.js";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../../redux/authSlice.js";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const { loading } = useSelector((store) => store.auth);
@@ -22,6 +22,9 @@ const Login = () => {
     password: "",
     role: "",
   });
+
+  // New state to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -103,15 +106,26 @@ const Login = () => {
               >
                 Password
               </Label>
-              <Input
-                value={input.password}
-                name="password"
-                onChange={changeEventHandler}
-                type="password"
-                placeholder="••••••••"
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-              />
+              <div className="relative">
+                <Input
+                  value={input.password}
+                  name="password"
+                  onChange={changeEventHandler}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div>
