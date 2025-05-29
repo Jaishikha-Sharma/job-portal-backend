@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";  // added useNavigate
 import axios from "../utils/axiosConfig";
 import { setSingleJob } from "../redux/jobSlice";
 import {
@@ -11,6 +11,7 @@ import {
 } from "../utils/constant";
 import { toast } from "sonner";
 import Navbar from "../components/shared/Navbar";
+import { MessageCircle, Linkedin, Copy } from "lucide-react";
 
 const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
@@ -18,6 +19,7 @@ const JobDescription = () => {
   const params = useParams();
   const jobId = params.id;
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // for back button
 
   const isInitiallyApplied =
     singleJob?.applications?.some(
@@ -82,6 +84,15 @@ const JobDescription = () => {
     <>
       <Navbar />
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        {/* Back Button */}
+        <Button
+          variant="outline"
+          className="mb-6"
+          onClick={() => navigate(-1)}
+        >
+          ← Back
+        </Button>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
@@ -125,10 +136,7 @@ const JobDescription = () => {
           <Detail label="Experience Level" value={singleJob?.experienceLevel} />
           <Detail label="Job Type" value={singleJob?.jobType} />
           <Detail label="Qualification" value={singleJob?.qualification} />
-          <Detail
-            label="Gender Preference"
-            value={singleJob?.genderPreference}
-          />
+          <Detail label="Gender Preference" value={singleJob?.genderPreference} />
           <Detail
             label="Languages Known"
             value={
@@ -137,7 +145,7 @@ const JobDescription = () => {
                 : null
             }
           />
-          <div className="mt-8">
+          <div className="mt-8 sm:col-span-2">
             <h2 className="text-lg font-semibold mb-4">Skills</h2>
             {singleJob?.requirements && singleJob.requirements.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -155,7 +163,7 @@ const JobDescription = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-sm max-h-72 overflow-auto">
+          <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-sm max-h-72 overflow-auto sm:col-span-2">
             {singleJob?.description ? (
               <p className="text-gray-800 whitespace-pre-line leading-7 font-sans tracking-wide">
                 {singleJob.description}
@@ -166,6 +174,22 @@ const JobDescription = () => {
               </p>
             )}
           </div>
+
+          {/* Company and Posted By moved to bottom with full width */}
+          <div className="sm:col-span-2 mt-6 flex flex-col sm:flex-row justify-between text-gray-700 font-semibold">
+            <p>
+              <span className="font-bold">Company:</span>{" "}
+              {singleJob?.company?.name || (
+                <span className="italic text-gray-400">Not specified</span>
+              )}
+            </p>
+            <p className="mt-2 sm:mt-0">
+              <span className="font-bold">Posted By:</span>{" "}
+              {singleJob?.created_by?.fullname || (
+                <span className="italic text-gray-400">Not specified</span>
+              )}
+            </p>
+          </div>
         </div>
 
         {/* Posted On */}
@@ -173,35 +197,41 @@ const JobDescription = () => {
           Posted On: {singleJob?.createdAt?.split("T")[0] || "Unknown"}
         </div>
 
-        {/* Share Job Section */}
+        {/* Share Job Section with Lucide Icons */}
         <div className="mt-6 flex items-center justify-end gap-4">
           <span className="text-sm font-medium text-gray-600">
             Share this job:
           </span>
+
           <a
             href={`https://wa.me/?text=${encodeURIComponent(window.location.href)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-green-600 hover:underline"
+            className="text-green-600 hover:text-green-800 transition-colors"
+            aria-label="Share on WhatsApp"
           >
-            WhatsApp
+            <MessageCircle size={24} />
           </a>
+
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-700 hover:underline"
+            className="text-blue-700 hover:text-blue-900 transition-colors"
+            aria-label="Share on LinkedIn"
           >
-            LinkedIn
+            <Linkedin size={24} />
           </a>
+
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
               toast.success("Link copied to clipboard!");
             }}
-            className="text-gray-700 hover:underline"
+            className="text-gray-700 hover:text-gray-900 transition-colors"
+            aria-label="Copy link"
           >
-            Copy Link
+            <Copy size={24} />
           </button>
         </div>
       </div>

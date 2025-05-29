@@ -60,7 +60,6 @@ export const postJob = async (req, res) => {
     });
     console.log("✅ Job created:", job);
 
-
     return res.status(201).json({
       message: "New job created successfully.",
       job,
@@ -89,6 +88,7 @@ export const getAllJobs = async (req, res) => {
 
     const jobs = await Job.find(query)
       .populate("company")
+      .populate("created_by", "fullname")
       .sort({ createdAt: -1 });
 
     if (!jobs || jobs.length === 0) {
@@ -118,7 +118,8 @@ export const getJobById = async (req, res) => {
     const jobId = req.params.id;
     const job = await Job.findById(jobId)
       .populate("applications")
-      .populate("company");
+      .populate("company")
+      .populate("created_by", "fullname");
 
     if (!job) {
       return res.status(404).json({
@@ -145,6 +146,7 @@ export const getAdminJobs = async (req, res) => {
 
     const jobs = await Job.find({ created_by: adminId })
       .populate("company")
+      .populate("created_by", "fullname")
       .sort({ createdAt: -1 });
 
     if (!jobs || jobs.length === 0) {
