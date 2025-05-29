@@ -20,7 +20,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
   const [loading, setLoading] = useState(false);
-
   const isStudent = user?.role === "student";
 
   const [input, setInput] = useState({
@@ -30,6 +29,10 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     bio: "",
     skills: "",
     file: "",
+    dob: "",
+    address: "",
+    pincode: "",
+    linkedin: "",
   });
 
   useEffect(() => {
@@ -40,6 +43,10 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         phoneNumber: user.phoneNumber || "",
         bio: user.profile?.bio || "",
         skills: user.profile?.skills?.join(", ") || "",
+        dob: user.profile?.dob ? user.profile.dob.split("T")[0] : "",
+        address: user.profile?.address || "",
+        pincode: user.profile?.pincode || "",
+        linkedin: user.profile?.linkedin || "",
         file: "",
       });
     }
@@ -57,13 +64,12 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("fullname", input.fullname);
-    formData.append("email", input.email);
-    formData.append("phoneNumber", input.phoneNumber);
-    formData.append("bio", input.bio);
-    formData.append("skills", input.skills);
-    if (input.file) {
-      formData.append("resume", input.file);
+    for (let key in input) {
+      if (key === "file" && input.file) {
+        formData.append("resume", input.file);
+      } else {
+        formData.append(key, input[key]);
+      }
     }
 
     try {
@@ -85,7 +91,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -96,111 +101,151 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="sm:max-w-[425px]"
+        className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto rounded-xl"
         onInteractOutside={() => setOpen(false)}
       >
         <DialogHeader>
-          <DialogTitle>Update Profile</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-center">
+            Update Profile
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={submitHandler}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="fullname" className="text-right">
-                Name
-              </Label>
+          <div className="space-y-4 py-2">
+            {/* Full Name */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="fullname">Full Name</Label>
               <Input
                 id="fullname"
                 name="fullname"
-                type="text"
                 value={input.fullname}
                 onChange={changeEventHandler}
-                className="col-span-3"
+                required
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Email
-              </Label>
+            {/* Email */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 value={input.email}
                 onChange={changeEventHandler}
-                className="col-span-3"
+                required
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phoneNumber" className="text-right">
-                Number
-              </Label>
+            {/* Phone Number */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
                 value={input.phoneNumber}
                 onChange={changeEventHandler}
-                className="col-span-3"
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="bio" className="text-right">
-                Bio
-              </Label>
+            {/* DOB */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="dob">Date of Birth</Label>
+              <Input
+                id="dob"
+                name="dob"
+                type="date"
+                value={input.dob}
+                onChange={changeEventHandler}
+              />
+            </div>
+
+            {/* Address */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="address">Address</Label>
+              <Input
+                id="address"
+                name="address"
+                value={input.address}
+                onChange={changeEventHandler}
+              />
+            </div>
+
+            {/* Pincode */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="pincode">Pincode</Label>
+              <Input
+                id="pincode"
+                name="pincode"
+                value={input.pincode}
+                onChange={changeEventHandler}
+              />
+            </div>
+
+            {/* LinkedIn */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="linkedin">LinkedIn</Label>
+              <Input
+                id="linkedin"
+                name="linkedin"
+                type="url"
+                placeholder="https://linkedin.com/in/username"
+                value={input.linkedin}
+                onChange={changeEventHandler}
+              />
+            </div>
+
+            {/* Bio */}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="bio">Bio</Label>
               <Input
                 id="bio"
                 name="bio"
                 value={input.bio}
                 onChange={changeEventHandler}
-                className="col-span-3"
               />
             </div>
 
+            {/* Skills and Resume - Only for Students */}
             {isStudent && (
               <>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="skills" className="text-right">
-                    Skills
-                  </Label>
+                <div className="flex flex-col gap-1">
+                  <Label htmlFor="skills">Skills (comma-separated)</Label>
                   <Input
                     id="skills"
                     name="skills"
                     value={input.skills}
                     onChange={changeEventHandler}
-                    className="col-span-3"
                   />
                 </div>
 
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="file" className="text-right">
-                    Resume
-                  </Label>
+                <div className="flex flex-col gap-1">
+                  <Label htmlFor="file">Upload Resume (PDF)</Label>
                   <Input
                     id="file"
                     name="resume"
                     type="file"
                     accept="application/pdf"
                     onChange={fileChangeHandler}
-                    className="col-span-3"
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 2MB
+                  </p>
                 </div>
               </>
             )}
           </div>
 
-          <DialogFooter>
-            {loading ? (
-              <Button className="w-full my-4" disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" className="w-full my-4">
-                Update
-              </Button>
-            )}
+          <DialogFooter className="mt-6">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Update"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

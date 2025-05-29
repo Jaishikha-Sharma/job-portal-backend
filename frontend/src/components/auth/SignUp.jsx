@@ -6,10 +6,10 @@ import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../../utils/axiosConfig.js";
 import { USER_API_END_POINT } from "../../utils/constant.js";
-import { Loader, Loader2 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const SignUp = () => {
   const { loading } = useSelector((store) => store.auth);
@@ -20,10 +20,13 @@ const SignUp = () => {
     password: "",
     role: "",
     file: "",
+    dob: "",
+    address: "",
+    pincode: "",
+    linkedin: "",
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -42,12 +45,16 @@ const SignUp = () => {
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("password", input.password);
     formData.append("role", input.role);
+    formData.append("dob", input.dob);
+    formData.append("address", input.address);
+    formData.append("pincode", input.pincode);
+    formData.append("linkedin", input.linkedin);
+
     if (input.file) {
       formData.append("resume", input.file);
     }
 
     try {
-   
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -66,8 +73,6 @@ const SignUp = () => {
     } catch (error) {
       console.log("Error:", error);
       toast.error(error.response?.data?.message || "Registration failed");
-    } finally{
-    
     }
   };
 
@@ -77,109 +82,242 @@ const SignUp = () => {
       <div className="flex items-center justify-center px-4 py-10">
         <form
           onSubmit={submitHandler}
-          className="w-full max-w-xl bg-white border border-gray-200 rounded-2xl shadow-lg p-8 transition-all duration-300"
+          className="w-full max-w-xl bg-white border border-gray-200 rounded-2xl shadow-lg p-10 transition-all duration-300"
         >
-          <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+          <h1 className="text-3xl font-bold mb-10 text-center text-gray-800">
             Create Your Account
           </h1>
 
-          <div className="space-y-5">
+          <div className="space-y-6">
+            {/** Each input container */}
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label
+                htmlFor="fullName"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Full Name
+              </Label>
               <Input
+                id="fullName"
                 type="text"
                 value={input.fullName}
                 name="fullName"
                 onChange={changeEventHandler}
                 placeholder="John Doe"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
 
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label
+                htmlFor="email"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Email
+              </Label>
               <Input
+                id="email"
                 value={input.email}
                 name="email"
                 onChange={changeEventHandler}
                 type="email"
                 placeholder="john@example.com"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
 
             <div>
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label
+                htmlFor="phoneNumber"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Phone Number
+              </Label>
               <Input
+                id="phoneNumber"
                 value={input.phoneNumber}
                 name="phoneNumber"
                 onChange={changeEventHandler}
                 type="text"
                 placeholder="+1 234 567 890"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
 
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label
+                htmlFor="password"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Password
+              </Label>
               <Input
+                id="password"
                 value={input.password}
                 name="password"
                 onChange={changeEventHandler}
                 type="password"
                 placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
 
             <div>
-              <Label>Role</Label>
-              <RadioGroup className="flex gap-6">
-                <div className="flex items-center space-x-2">
+              <Label className="block mb-2 text-gray-700 font-semibold">
+                Role
+              </Label>
+              <RadioGroup className="flex gap-8">
+                <div className="flex items-center space-x-3">
                   <Input
                     type="radio"
+                    id="student"
                     name="role"
                     value="student"
                     checked={input.role === "student"}
                     onChange={changeEventHandler}
+                    className="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                    required
                   />
-                  <Label htmlFor="student">Student</Label>
+                  <Label
+                    htmlFor="student"
+                    className="cursor-pointer text-gray-700 font-medium"
+                  >
+                    Student
+                  </Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <Input
                     type="radio"
+                    id="recruiter"
                     name="role"
                     value="recruiter"
                     checked={input.role === "recruiter"}
                     onChange={changeEventHandler}
+                    className="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                    required
                   />
-                  <Label htmlFor="recruiter">Recruiter</Label>
+                  <Label
+                    htmlFor="recruiter"
+                    className="cursor-pointer text-gray-700 font-medium"
+                  >
+                    Recruiter
+                  </Label>
                 </div>
               </RadioGroup>
             </div>
 
             <div>
-              <Label htmlFor="profile">Profile Picture</Label>
+              <Label
+                htmlFor="dob"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Date of Birth
+              </Label>
               <Input
+                id="dob"
+                type="date"
+                name="dob"
+                value={input.dob}
+                onChange={changeEventHandler}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="address"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Address
+              </Label>
+              <Input
+                id="address"
+                type="text"
+                name="address"
+                placeholder="Your Address"
+                value={input.address}
+                onChange={changeEventHandler}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="pincode"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Pincode
+              </Label>
+              <Input
+                id="pincode"
+                type="text"
+                name="pincode"
+                placeholder="Your Area Pincode"
+                value={input.pincode}
+                onChange={changeEventHandler}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="linkedin"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                LinkedIn Profile
+              </Label>
+              <Input
+                id="linkedin"
+                type="url"
+                name="linkedin"
+                placeholder="https://linkedin.com/in/your-profile"
+                value={input.linkedin}
+                onChange={changeEventHandler}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="profile"
+                className="block mb-2 text-gray-700 font-semibold"
+              >
+                Profile Picture
+              </Label>
+              <Input
+                id="profile"
                 type="file"
                 accept="image/*"
                 onChange={changeFileHandler}
+                className="w-full text-gray-700"
               />
             </div>
           </div>
 
           {loading ? (
-            <Button className="w-full my-4">
-              <Loader2 className="mr-3 h-4 w-4 animate-spin" /> please wait
+            <Button className="w-full my-6" disabled>
+              <Loader2 className="mr-3 h-5 w-5 animate-spin" /> Please wait...
             </Button>
           ) : (
             <Button
               type="submit"
-              className="w-full mt-8 py-3 text-white bg-indigo-500 hover:bg-indigo-600 font-medium rounded-lg shadow-md transition duration-300"
+              className="w-full mt-8 py-3 text-white bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-lg shadow-lg transition duration-300"
             >
               Sign Up
             </Button>
           )}
 
-          <div className="text-center mt-4">
+          <div className="text-center mt-6 text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 font-medium">
+            <Link to="/login" className="text-indigo-600 font-semibold hover:underline">
               Log In
             </Link>
           </div>

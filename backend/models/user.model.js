@@ -34,10 +34,14 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: "",
       },
+      dob: { type: Date },
+      address: { type: String },
+      pincode: { type: String },
+      linkedin: { type: String },
       savedJobs: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Job", // reference to the Job model
+          ref: "Job", 
         },
       ],
     },

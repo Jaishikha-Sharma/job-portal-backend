@@ -7,9 +7,28 @@ import cloudinary from "../utils/cloudinary.js";
 // REGISTER
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, role } = req.body;
+    const {
+      fullname,
+      email,
+      phoneNumber,
+      password,
+      role,
+      dob,
+      address,
+      pincode,
+      linkedin,
+    } = req.body;
 
-    if (!fullname || !email || !password || !phoneNumber || !role) {
+    if (
+      !fullname ||
+      !email ||
+      !password ||
+      !phoneNumber ||
+      !role ||
+      !linkedin ||
+      !pincode ||
+      !dob
+    ) {
       return res.status(400).json({
         message: "Something is missing",
         success: false,
@@ -41,6 +60,10 @@ export const register = async (req, res) => {
       role,
       profile: {
         profilePhoto: profilePhotoUrl,
+        dob,
+        address,
+        pincode,
+        linkedin,
       },
     });
 
@@ -140,11 +163,20 @@ export const logout = async (req, res) => {
   }
 };
 
-
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
   try {
-    const { fullname, email, bio, phoneNumber, skills } = req.body;
+    const {
+      fullname,
+      email,
+      bio,
+      phoneNumber,
+      skills,
+      dob,
+      address,
+      pincode,
+      linkedin,
+    } = req.body;
 
     const file = req.file;
     let cloudResponse;
@@ -180,6 +212,10 @@ export const updateProfile = async (req, res) => {
     user.email = email;
     user.phoneNumber = phoneNumber;
     user.profile.bio = bio;
+    user.profile.dob = dob || user.profile.dob;
+    user.profile.address = address || user.profile.address;
+    user.profile.pincode = pincode || user.profile.pincode;
+    user.profile.linkedin = linkedin || user.profile.linkedin;
     user.profile.skills = skillsArray;
 
     if (cloudResponse) {

@@ -34,8 +34,8 @@ const jobSchema = new mongoose.Schema(
     qualification: { type: String, required: true },
     degree: { type: String, required: true },
     genderPreference: { type: String, required: true },
-    languagesKnown: [{ type: String, default: [] }], 
-    experienceLevel: { type: String, default: "" },  
+    languagesKnown: [{ type: String, default: [] }],
+    experienceLevel: { type: String, default: "" },
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
@@ -52,6 +52,11 @@ const jobSchema = new mongoose.Schema(
         ref: "Application",
       },
     ],
+    status: {
+      type: String,
+      enum: ["draft", "published"],
+      default: "published",
+    },
   },
   { timestamps: true }
 );
