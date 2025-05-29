@@ -16,14 +16,17 @@ import {
   Linkedin,
   Copy,
   MessageCircle,
+  Trash2,
 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { deleteJob } from "../../redux/deleteJobThunk.js";
 
 const AdminJobsTable = () => {
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
   const [filterJobs, setFilterJobs] = useState(allAdminJobs);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const filteredJobs = allAdminJobs.filter((job) => {
@@ -36,6 +39,19 @@ const AdminJobsTable = () => {
     });
     setFilterJobs(filteredJobs);
   }, [allAdminJobs, searchJobByText]);
+
+  const handleDelete = async (jobId) => {
+    const confirm = window.confirm("Are you sure you want to delete this job?");
+    if (!confirm) return;
+
+    try {
+      await dispatch(deleteJob(jobId)).unwrap();
+      alert("Job deleted successfully.");
+    } catch (err) {
+      console.error("Failed to delete job:", err);
+      alert("Something went wrong while deleting the job.");
+    }
+  };
 
   if (filterJobs.length === 0) {
     return (
@@ -53,7 +69,7 @@ const AdminJobsTable = () => {
 
   return (
     <>
-      {/* Desktop Table - hidden on small screens */}
+      {/* Desktop Table */}
       <div className="hidden md:block bg-white rounded-xl shadow-md overflow-x-auto mt-6 border border-gray-200">
         <Table className="min-w-full">
           <TableCaption className="text-gray-600 font-medium">
@@ -116,6 +132,15 @@ const AdminJobsTable = () => {
                           <Eye className="w-4 h-4" />
                           <span>Applicants</span>
                         </div>
+
+                        <div
+                          onClick={() => handleDelete(job._id)}
+                          className="flex items-center gap-2 text-sm text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span>Delete</span>
+                        </div>
+
                         <div className="flex justify-around pt-1 border-t border-gray-200 mt-1">
                           <a
                             href={`https://wa.me/?text=${encodeURIComponent(
@@ -162,7 +187,7 @@ const AdminJobsTable = () => {
         </Table>
       </div>
 
-      {/* Mobile Card View - visible on small screens */}
+      {/* Mobile View */}
       <div className="md:hidden mt-6 space-y-4">
         {filterJobs.map((job) => (
           <div
@@ -202,6 +227,15 @@ const AdminJobsTable = () => {
                       <Eye className="w-4 h-4" />
                       <span>Applicants</span>
                     </div>
+
+                    <div
+                      onClick={() => handleDelete(job._id)}
+                      className="flex items-center gap-2 text-sm text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </div>
+
                     <div className="flex justify-around pt-1 border-t border-gray-200 mt-1">
                       <a
                         href={`https://wa.me/?text=${encodeURIComponent(

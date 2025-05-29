@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { deleteJob } from "./deleteJobThunk";
 
 const jobSlice = createSlice({
   name: "job",
@@ -38,6 +39,14 @@ const jobSlice = createSlice({
     clearAdminJobs: (state) => {
       state.allAdminJobs = [];
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(deleteJob.fulfilled, (state, action) => {
+      const deletedJobId = action.payload;
+      state.allAdminJobs = state.allAdminJobs.filter(
+        (job) => job._id !== deletedJobId
+      );
+    });
   },
 });
 
