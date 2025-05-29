@@ -61,42 +61,49 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     setInput({ ...input, file });
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    for (let key in input) {
-      if (key === "file" && input.file) {
-        formData.append("resume", input.file);
-      } else {
-        formData.append(key, input[key]);
-      }
-    }
+ const submitHandler = async (e) => {
+  e.preventDefault();
+  const formData = new FormData();
 
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        `${USER_API_END_POINT}/profile/update`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.data.success) {
-        dispatch(setUser(res.data.user));
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-      setOpen(false);
+  // Append only the relevant fields based on role
+  for (let key in input) {
+    if ((key === "skills" || key === "file") && !isStudent) {
+      // skip skills and file if user is NOT student
+      continue;
     }
-  };
+    if (key === "file" && input.file) {
+      formData.append("resume", input.file);
+    } else {
+      formData.append(key, input[key]);
+    }
+  }
+
+  try {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      `${USER_API_END_POINT}/profile/update`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.data.success) {
+      dispatch(setUser(res.data.user));
+      toast.success(res.data.message);
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+    setOpen(false);
+  }
+};
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

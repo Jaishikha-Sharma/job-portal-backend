@@ -186,13 +186,6 @@ export const updateProfile = async (req, res) => {
       cloudResponse = await cloudinary.uploader.upload(fileUri.content);
     }
 
-    if (!fullname || !email || !skills || !phoneNumber || !bio) {
-      return res.status(400).json({
-        message: "Something is missing",
-        success: false,
-      });
-    }
-
     let skillsArray = [];
     if (skills) {
       skillsArray = skills.split(",");
