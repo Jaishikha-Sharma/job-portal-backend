@@ -11,6 +11,7 @@ import { USER_API_END_POINT } from "../../utils/constant.js";
 import { logout } from "../../redux/authSlice.js";
 import { clearCompanies } from "../../redux/companySlice";
 import { clearJobs, clearAdminJobs } from "../../redux/jobSlice";
+import NotificationsDropdown from "../NotificationsDropdown.jsx";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,48 +56,108 @@ const Navbar = () => {
           <ul className="flex font-medium items-center gap-4 text-sm sm:text-base">
             {user && user.role === "recruiter" ? (
               <>
-                <li className={`${isActive("/dashboards") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/dashboards")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/dashboards">Dashboard</Link>
                 </li>
-                <li className={`${isActive("/admin/companies") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/admin/companies")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li className={`${isActive("/admin/jobs") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/admin/jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li className={`${isActive("/") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/") ? "text-[#f83002] font-semibold" : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/">Home</Link>
                 </li>
-                <li className={`${isActive("/jobs") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/jobs") ? "text-[#f83002] font-semibold" : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li className={`${isActive("/browse") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/browse") ? "text-[#f83002] font-semibold" : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/browse">Browse</Link>
                 </li>
-                <li className={`${isActive("/saved-jobs") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/saved-jobs")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/saved-jobs">Saved Jobs</Link>
                 </li>
-                <li className={`${isActive("/applied-jobss") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                <li
+                  className={`${
+                    isActive("/applied-jobss")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
                   <Link to="/applied-jobss">Applied Jobs</Link>
                 </li>
                 {user?.role === "admin" && (
-                  <li className={`${isActive("/admin/dashboard") ? "text-[#f83002] font-semibold" : ""} hover:text-[#f83002] hover:scale-105 transition-all`}>
+                  <li
+                    className={`${
+                      isActive("/admin/dashboard")
+                        ? "text-[#f83002] font-semibold"
+                        : ""
+                    } hover:text-[#f83002] hover:scale-105 transition-all`}
+                  >
                     <Link to="/admin/dashboard">Dashboard</Link>
                   </li>
                 )}
               </>
             )}
           </ul>
+          {user && user.role !== "recruiter" && (
+            <div className="mr-4">
+              <NotificationsDropdown />
+            </div>
+          )}
 
           {!user ? (
             <div className="flex gap-2">
-              <Button asChild variant="outline" className="hover:bg-[#f83002]/10 transition duration-200">
+              <Button
+                asChild
+                variant="outline"
+                className="hover:bg-[#f83002]/10 transition duration-200"
+              >
                 <Link to="/login">Login</Link>
               </Button>
-              <Button asChild className="bg-[#f83002] hover:bg-[#f83002]/90 transition duration-200 text-white">
+              <Button
+                asChild
+                className="bg-[#f83002] hover:bg-[#f83002]/90 transition duration-200 text-white"
+              >
                 <Link to="/signup">Sign Up</Link>
               </Button>
             </div>
@@ -115,7 +176,9 @@ const Navbar = () => {
                   </Avatar>
                   <div>
                     <h4 className="font-medium">{user?.fullname}</h4>
-                    <p className="text-sm text-muted-foreground">{user?.profile?.bio}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.profile?.bio}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col text-gray-600 gap-2">
@@ -125,7 +188,11 @@ const Navbar = () => {
                       <Link to="/profile">View Profile</Link>
                     </Button>
                   </div>
-                  <Button onClick={logoutHandler} variant="link" className="justify-start gap-2">
+                  <Button
+                    onClick={logoutHandler}
+                    variant="link"
+                    className="justify-start gap-2"
+                  >
                     <LogOut className="w-4 h-4" />
                     Log Out
                   </Button>
@@ -136,9 +203,19 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle Menu">
-          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          {user && user.role !== "recruiter" && <NotificationsDropdown />}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {menuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -168,9 +245,14 @@ const Navbar = () => {
                     : []),
                 ]
             ).map(({ to, label }) => (
-              <li key={to} className={`px-3 py-2 rounded-lg transition-all duration-200 ${
-                isActive(to) ? "bg-[#f83002]/10 text-[#f83002] font-semibold" : "hover:bg-orange-100"
-              }`}>
+              <li
+                key={to}
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${
+                  isActive(to)
+                    ? "bg-[#f83002]/10 text-[#f83002] font-semibold"
+                    : "hover:bg-orange-100"
+                }`}
+              >
                 <Link to={to}>{label}</Link>
               </li>
             ))}
@@ -178,10 +260,17 @@ const Navbar = () => {
 
           {!user ? (
             <div className="flex flex-col gap-3">
-              <Button asChild variant="outline" className="w-full hover:bg-[#f83002]/10">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full hover:bg-[#f83002]/10"
+              >
                 <Link to="/login">Login</Link>
               </Button>
-              <Button asChild className="w-full bg-[#f83002] text-white hover:bg-[#f83002]/90">
+              <Button
+                asChild
+                className="w-full bg-[#f83002] text-white hover:bg-[#f83002]/90"
+              >
                 <Link to="/signup">Sign Up</Link>
               </Button>
             </div>
@@ -194,7 +283,9 @@ const Navbar = () => {
                 </Avatar>
                 <div>
                   <p className="font-medium text-sm">{user?.fullname}</p>
-                  <p className="text-xs text-muted-foreground">{user?.profile?.bio}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.profile?.bio}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -203,7 +294,11 @@ const Navbar = () => {
                   <Link to="/profile">View Profile</Link>
                 </Button>
               </div>
-              <Button onClick={logoutHandler} variant="link" className="flex items-center gap-2 p-0 text-left text-red-600 hover:text-red-700">
+              <Button
+                onClick={logoutHandler}
+                variant="link"
+                className="flex items-center gap-2 p-0 text-left text-red-600 hover:text-red-700"
+              >
                 <LogOut className="w-4 h-4" />
                 Log Out
               </Button>

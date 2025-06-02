@@ -1,9 +1,9 @@
 import { Job } from "../models/job.model.js";
+import { User } from "../models/user.model.js";
+import { Notification } from "../models/notification.model.js";
 
 // ADMIN - Create a new job
 export const postJob = async (req, res) => {
-  console.log("📥 Incoming Request Body =>", req.body);
-
   try {
     const {
       title,
@@ -20,9 +20,11 @@ export const postJob = async (req, res) => {
       genderPreference,
       languagesKnown,
     } = req.body;
-    const userId = req.id;
 
-    // Basic validation
+    const userId = req.id;
+    console.log("User ID from req.id:", userId);  
+
+    // Validation
     if (
       !title ||
       !description ||
@@ -34,12 +36,13 @@ export const postJob = async (req, res) => {
       !position ||
       !companyId
     ) {
-      return res.status(400).json({
-        message: "Something is missing.",
-        success: false,
-      });
+      console.log("Validation failed: Missing required fields");
+      return res
+        .status(400)
+        .json({ message: "Required fields missing.", success: false });
     }
 
+    // Create job
     const job = await Job.create({
       title,
       description,
@@ -58,20 +61,35 @@ export const postJob = async (req, res) => {
       company: companyId,
       created_by: userId,
     });
-    console.log("✅ Job created:", job);
 
-    return res.status(201).json({
-      message: "New job created successfully.",
-      job,
-      success: true,
-    });
+    console.log("Job created with ID:", job._id);
+
+    // Notify all users (excluding recruiters)
+    const users = await User.find({ role: "student" });
+    console.log("Number of students found:", users.length);
+    console.log("Students:", users.map(u => ({ id: u._id, email: u.email })));
+
+    const notifications = users.map((user) => ({
+      userId: user._id,
+      message: `New job posted: ${job.title}`,
+      type: "job",
+    }));
+
+    await Notification.insertMany(notifications);
+    console.log("Notifications inserted:", notifications.length);
+
+    return res
+      .status(201)
+      .json({
+        message: "Job created and notifications sent.",
+        job,
+        success: true,
+      });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Server error",
-      error: error.message,
-      success: false,
-    });
+    console.error("Error in postJob:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message, success: false });
   }
 };
 

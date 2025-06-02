@@ -9,6 +9,8 @@ import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 import adminRoutes from "./routes/admin.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
+
 
 const app = express();
 dotenv.config();
@@ -42,6 +44,7 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
