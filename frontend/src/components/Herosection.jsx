@@ -92,7 +92,7 @@ const Herosection = () => {
             type="text"
             onChange={(e) => setQuery(e.target.value)}
             value={query}
-            placeholder="🔍 Find your dream job..."
+            placeholder=" Find your dream job..."
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 searchJobHandler();
