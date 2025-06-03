@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
-import { Button } from "./ui/button";
 import axios from "../utils/axiosConfig";
 import { useDispatch, useSelector } from "react-redux";
 import { setSavedJobs } from "../redux/authSlice";
 import { USER_API_END_POINT } from "../utils/constant.js";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 
 const LatestJobCards = ({ job }) => {
   const navigate = useNavigate();
@@ -14,15 +14,12 @@ const LatestJobCards = ({ job }) => {
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  // On mount or savedJobsFromRedux change, update isSaved and also sync with localStorage
   useEffect(() => {
-    // Save to localStorage whenever savedJobsFromRedux updates
     if (savedJobsFromRedux && Array.isArray(savedJobsFromRedux)) {
       localStorage.setItem("savedJobs", JSON.stringify(savedJobsFromRedux));
     }
   }, [savedJobsFromRedux]);
 
-  // On mount, load savedJobs from localStorage and check if current job is saved
   useEffect(() => {
     const savedJobsLocal = JSON.parse(localStorage.getItem("savedJobs")) || [];
     setIsSaved(savedJobsLocal.some((savedJob) => savedJob._id === job._id));
@@ -60,7 +57,6 @@ const LatestJobCards = ({ job }) => {
 
       dispatch(setSavedJobs(res.data.savedJobs));
       setIsSaved(true);
-      alert("Job saved successfully!");
     } catch (error) {
       console.error("Failed to save job", error);
       alert("Failed to save job. Please try again.");
@@ -74,19 +70,19 @@ const LatestJobCards = ({ job }) => {
       onClick={handleClick}
       className="cursor-pointer p-4 sm:p-6 rounded-2xl shadow-sm bg-white border border-gray-200 transition-all hover:shadow-sm hover:scale-[1.005] duration-300 ease-in-out flex flex-col gap-4 relative"
     >
-      {/* Save Button top-right */}
-      <Button
-        className={`absolute top-3 right-3 ${
-          isSaved
-            ? "bg-gray-400 text-gray-800 cursor-not-allowed"
-            : "bg-[#6a38c2] text-white hover:bg-[#5c2fbf]"
-        }`}
+      {/* Save Icon */}
+      <button
         onClick={handleSaveJob}
         disabled={loading || isSaved}
-        size="sm"
+        className={`absolute top-3 right-3 p-2 rounded-full transition-colors duration-300 shadow-md ${
+          isSaved
+            ? "bg-green-100 text-green-600 cursor-not-allowed"
+            : "bg-gray-100 hover:bg-blue-100 hover:text-blue-600"
+        }`}
+        title={isSaved ? "Job Saved" : "Save Job"}
       >
-        {loading ? "Saving..." : isSaved ? "Saved" : "Save for later"}
-      </Button>
+        {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
+      </button>
 
       {/* Company Info */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">

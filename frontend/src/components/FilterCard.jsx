@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { setSearchedQuery } from "../redux/jobSlice";
 
 const FilterCard = ({ isMobile = false, jobs = [] }) => {
-  // Unique value extraction (same as before)
   const uniqueLocations = Array.from(
     new Set(jobs.map((job) => job.location).filter(Boolean))
   );
@@ -33,14 +32,8 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
   );
 
   const filterData = [
-    {
-      filterType: "Location",
-      array: uniqueLocations.length > 0 ? uniqueLocations : ["No locations"],
-    },
-    {
-      filterType: "Industry",
-      array: uniqueIndustries.length > 0 ? uniqueIndustries : ["No industries"],
-    },
+    { filterType: "Location", array: uniqueLocations || ["No locations"] },
+    { filterType: "Industry", array: uniqueIndustries || ["No industries"] },
     {
       filterType: "Salary",
       array:
@@ -50,32 +43,20 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
     },
     {
       filterType: "Experience Level",
-      array:
-        uniqueExperienceLevels.length > 0
-          ? uniqueExperienceLevels
-          : ["No experience data"],
+      array: uniqueExperienceLevels || ["No experience data"],
     },
-    {
-      filterType: "Job Type",
-      array: uniqueJobTypes.length > 0 ? uniqueJobTypes : ["No job types"],
-    },
+    { filterType: "Job Type", array: uniqueJobTypes || ["No job types"] },
     {
       filterType: "Qualification",
-      array:
-        uniqueQualifications.length > 0
-          ? uniqueQualifications
-          : ["No qualification data"],
+      array: uniqueQualifications || ["No qualification data"],
     },
     {
       filterType: "Gender Preference",
-      array:
-        uniqueGenderPreferences.length > 0
-          ? uniqueGenderPreferences
-          : ["No preference"],
+      array: uniqueGenderPreferences || ["No preference"],
     },
     {
       filterType: "Languages Known",
-      array: uniqueLanguagesKnown.length > 0 ? uniqueLanguagesKnown : ["N/A"],
+      array: uniqueLanguagesKnown || ["N/A"],
     },
   ];
 
@@ -91,7 +72,6 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const dispatch = useDispatch();
 
   const changeHandler = (filterType, value) => {
@@ -106,15 +86,14 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
   }, [selectedFilters, dispatch]);
 
   return (
-    <div className="w-full bg-gradient-to-br from-indigo-50 to-white border border-gray-200 p-6 rounded-2xl shadow-md">
-      <div className="flex items-center justify-between mb-5">
+    <div className="w-full bg-gradient-to-br from-[#f4f0fa] to-white border border-gray-200 p-6 rounded-2xl shadow-sm">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold text-gray-800">Filter Jobs</h1>
         {isMobile && (
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="text-indigo-600 font-semibold focus:outline-none"
+            className="text-indigo-600 font-medium text-sm hover:underline"
             aria-expanded={mobileOpen}
-            aria-label="Toggle filter panel"
           >
             {mobileOpen ? "Close Filters" : "Open Filters"}
           </button>
@@ -124,7 +103,7 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
       {(!isMobile || mobileOpen) && (
         <>
           {isMobile ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               {filterData.map((section, index) => (
                 <div key={index}>
                   <h2 className="text-sm font-semibold text-gray-700 mb-2">
@@ -140,10 +119,10 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
                             : "outline"
                         }
                         size="sm"
-                        className={`shrink-0 text-xs transition-colors rounded-full ${
+                        className={`shrink-0 rounded-full text-xs font-medium px-3 py-1 transition-all duration-150 ${
                           selectedFilters[section.filterType] === item
                             ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                            : "border-indigo-400 text-indigo-600 hover:bg-indigo-100"
+                            : "border border-indigo-300 text-indigo-600 hover:bg-indigo-100"
                         }`}
                         onClick={() => changeHandler(section.filterType, item)}
                       >
@@ -155,10 +134,10 @@ const FilterCard = ({ isMobile = false, jobs = [] }) => {
               ))}
             </div>
           ) : (
-            <div>
+            <div className="space-y-8">
               {filterData.map((section, index) => (
-                <div key={index} className="mb-6">
-                  <h2 className="text-gray-700 font-medium text-lg mb-3 border-b pb-2">
+                <div key={index}>
+                  <h2 className="text-gray-800 font-semibold text-base mb-3 border-b pb-2">
                     {section.filterType}
                   </h2>
                   <RadioGroup

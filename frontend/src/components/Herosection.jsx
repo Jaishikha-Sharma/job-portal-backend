@@ -56,10 +56,11 @@ const Herosection = () => {
       {/* Content Layout */}
       <div className="flex flex-row items-center justify-between gap-6 flex-wrap md:flex-nowrap">
         {/* Left: Text */}
-        <div className="w-full sm:w-2/3 text-center sm:text-left space-y-5">
-          <span className="px-4 py-2 rounded-full bg-white text-[#f83002] font-medium text-sm sm:text-base inline-block">
-            No.1 Job Hunt Website
+        <div className="w-full md:w-2/3 text-center md:text-left space-y-6">
+          <span className="px-5 py-2 rounded-full bg-white text-[#f83002] font-semibold text-sm shadow-md inline-block">
+            🚀 No.1 Job Hunt Website
           </span>
+
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug">
             Search, apply & <br />
             Get your <span className="text-[#6a38c2]">Dream Job</span>
@@ -82,16 +83,16 @@ const Herosection = () => {
 
       {/* Search input with dropdown */}
       <div
-        className="relative w-full max-w-xl mx-auto mt-10 shadow-lg border border-gray-200 pl-3 rounded-full bg-white"
+        className="relative w-full max-w-xl mx-auto mt-10 shadow-xl border border-gray-200 rounded-full bg-white transition-all duration-300"
         ref={dropdownRef}
       >
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 px-4 py-2">
           <input
-            className="outline-none border-none w-full py-2 px-2 text-sm sm:text-base rounded-l-full"
+            className="flex-1 outline-none bg-transparent text-sm sm:text-base placeholder-gray-500"
             type="text"
             onChange={(e) => setQuery(e.target.value)}
             value={query}
-            placeholder="Find your dream jobs"
+            placeholder="🔍 Find your dream job..."
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 searchJobHandler();
@@ -100,7 +101,7 @@ const Herosection = () => {
           />
           <Button
             onClick={() => searchJobHandler()}
-            className="rounded-r-full bg-[#6a38c2] px-4 py-2"
+            className="rounded-full bg-gradient-to-r from-[#6a38c2] to-[#a074f3] text-white px-4 py-2 hover:scale-105 transition-transform duration-200"
           >
             <Search className="h-5 w-5" />
           </Button>
@@ -108,29 +109,17 @@ const Herosection = () => {
 
         {/* Dropdown suggestions */}
         {filteredJobs.length > 0 && (
-          <ul
-            className="
-              absolute top-full left-0 right-0
-              bg-white
-              border border-gray-300
-              rounded-b-lg
-              max-h-60 overflow-y-auto
-              shadow-xl
-              z-50
-              animate-fadeIn
-              scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-gray-100
-            "
-          >
+          <ul className="absolute top-full left-0 right-0 bg-white border border-t-0 border-gray-300 rounded-b-xl max-h-60 overflow-y-auto z-50 shadow-2xl animate-fadeIn scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-gray-100">
             {filteredJobs.map((job) => (
               <li
                 key={job._id}
-                className={`px-5 py-3 font-medium select-none transition duration-200
-                  ${
-                    job._id === "no-match"
-                      ? "text-gray-400 cursor-default hover:bg-white"
-                      : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900"
-                  }
-                `}
+                className={`px-5 py-3 font-medium transition duration-200 select-none
+            ${
+              job._id === "no-match"
+                ? "text-gray-400 cursor-default hover:bg-white"
+                : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900"
+            }
+          `}
                 onClick={() => searchJobHandler(job.title)}
               >
                 {job.title}
