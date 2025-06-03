@@ -8,8 +8,20 @@ import {
   Calendar,
   PlusCircle,
 } from "lucide-react";
+
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip,
+} from "recharts";
+
 import useGetAllAdminJobs from "../../hooks/useGetAllAdminJobs";
 import Navbar from "../shared/Navbar";
+
+const COLORS = ["#FFA500", "#00C49F", "#0088FE", "#FF8042"];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -59,39 +71,79 @@ const Dashboard = () => {
     },
   ];
 
+  const pieData = [
+    { name: "Jobs Posted", value: jobsPosted },
+    { name: "Applicants", value: totalApplicants },
+    { name: "Avg Applicants/Job", value: Number(avgApplicants) },
+  ];
+
   return (
     <>
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-6 bg-gray-50 min-h-screen flex flex-col">
+
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">
-            Welcome, <span className="text-orange-500">{user?.fullname || "Recruiter"}</span>
+            Welcome,{" "}
+            <span className="text-orange-500">{user?.fullname || "Recruiter"}</span>
           </h1>
           <p className="text-gray-600 mt-1">Your personalized hiring dashboard</p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {stats.map(({ label, value, icon, bg }) => (
-            <div
-              key={label}
-              className={`p-5 ${bg} rounded-xl shadow-sm border hover:shadow-md transition-all`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                {icon}
+        {/* Container for Pie chart + Stats */}
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 flex-1">
+            {stats.map(({ label, value, icon, bg }) => (
+              <div
+                key={label}
+                className={`p-5 ${bg} rounded-xl shadow-md border hover:shadow-lg transition-all cursor-pointer flex flex-col items-center justify-center`}
+                onClick={() => {
+                  if (label === "Jobs Posted") navigate("/admin/jobs");
+                }}
+              >
+                <div className="mb-2">{icon}</div>
+                <p className="text-2xl font-semibold text-gray-800">{value}</p>
+                <p className="text-sm text-gray-600">{label}</p>
               </div>
-              <p className="text-2xl font-semibold text-gray-800">{value}</p>
-              <p className="text-sm text-gray-500">{label}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Pie Chart */}
+          <div className="w-full lg:w-1/3 h-64 sm:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  label
+                  isAnimationActive={true}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
         </div>
 
-        {/* Actions & Summary */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        {/* Footer Actions */}
+        <div className="mt-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-4 border-t border-gray-200">
+
           <button
             onClick={() => navigate("/admin/jobs/create")}
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-3 rounded-md shadow transition"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-md shadow transition"
           >
             <PlusCircle className="w-5 h-5" />
             Post a New Job

@@ -57,6 +57,11 @@ const jobSchema = new mongoose.Schema(
       enum: ["draft", "published"],
       default: "published",
     },
+    questions: [
+      {
+        type: String,
+      },
+    ],
   },
   { timestamps: true }
 );

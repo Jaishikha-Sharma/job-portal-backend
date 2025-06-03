@@ -19,6 +19,7 @@ export const postJob = async (req, res) => {
       degree,
       genderPreference,
       languagesKnown,
+      questions, // Added questions here
     } = req.body;
 
     const userId = req.id;
@@ -58,6 +59,11 @@ export const postJob = async (req, res) => {
       degree,
       genderPreference,
       languagesKnown,
+      questions: Array.isArray(questions)
+        ? questions
+        : questions
+        ? questions.split(",").map((q) => q.trim())
+        : [],
       company: companyId,
       created_by: userId,
     });
@@ -81,7 +87,7 @@ export const postJob = async (req, res) => {
     return res
       .status(201)
       .json({
-        message: "Job created and notifications sent.",
+        message: "Job created",
         job,
         success: true,
       });
@@ -187,6 +193,7 @@ export const getAdminJobs = async (req, res) => {
     });
   }
 };
+
 // Update a job by ID
 export const updateJob = async (req, res) => {
   try {
@@ -214,6 +221,7 @@ export const updateJob = async (req, res) => {
       degree,
       genderPreference,
       languagesKnown,
+      questions, // Added questions here
       companyId,
     } = req.body;
 
@@ -234,6 +242,11 @@ export const updateJob = async (req, res) => {
       ...(degree && { degree }),
       ...(genderPreference && { genderPreference }),
       ...(languagesKnown && { languagesKnown }),
+      ...(questions && {
+        questions: Array.isArray(questions)
+          ? questions
+          : questions.split(",").map((q) => q.trim()),
+      }),
       ...(companyId && { company: companyId }),
     };
 

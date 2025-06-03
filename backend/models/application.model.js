@@ -14,11 +14,17 @@ const ApplicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected" , "on hold" ],
+      enum: ["pending", "accepted", "rejected", "on hold"],
       default: "pending",
     },
+    answers: [
+      {
+        question: { type: String, required: true },
+        answer: { type: String, required: true },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export const Application = mongoose.model("Application" , ApplicationSchema);
+export const Application = mongoose.model("Application", ApplicationSchema);

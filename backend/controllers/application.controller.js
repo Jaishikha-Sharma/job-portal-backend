@@ -5,12 +5,34 @@ export const applyJob = async (req, res) => {
   try {
     const userId = req.id;
     const jobId = req.params.id;
+    const { answers } = req.body; // get answers from request body
 
     if (!jobId) {
       return res.status(400).json({
         message: "Job id is required.",
         success: false,
       });
+    }
+
+    // Validate answers
+    if (!Array.isArray(answers)) {
+      return res.status(400).json({
+        message: "Answers must be an array.",
+        success: false,
+      });
+    }
+    for (const ans of answers) {
+      if (
+        !ans.hasOwnProperty("question") ||
+        !ans.hasOwnProperty("answer") ||
+        typeof ans.question !== "string" ||
+        typeof ans.answer !== "string"
+      ) {
+        return res.status(400).json({
+          message: "Each answer must contain a question and answer string.",
+          success: false,
+        });
+      }
     }
 
     // Get UTC start and end of today for date filtering
@@ -37,21 +59,11 @@ export const applyJob = async (req, res) => {
       )
     );
 
-    console.log("User ID:", userId);
-    console.log(
-      "Date range for applications today:",
-      todayStart.toISOString(),
-      "-",
-      todayEnd.toISOString()
-    );
-
     // Count how many applications user made today
     const applicationsToday = await Application.countDocuments({
       applicant: userId,
       createdAt: { $gte: todayStart, $lte: todayEnd },
     });
-
-    console.log("Applications today:", applicationsToday);
 
     if (applicationsToday >= 5) {
       return res.status(429).json({
@@ -82,10 +94,11 @@ export const applyJob = async (req, res) => {
       });
     }
 
-    // Create a new application
+    // Create a new application with answers
     const newApplication = await Application.create({
       job: jobId,
       applicant: userId,
+      answers,
     });
 
     job.applications.push(newApplication._id);
@@ -126,9 +139,11 @@ export const getAppliedJobs = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server error", success: false });
   }
 };
-// admin dekhega kitna user ne apply kiya hai
+
+// Admin can see who applied for a job
 export const getApplicants = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -147,12 +162,14 @@ export const getApplicants = async (req, res) => {
     }
     return res.status(200).json({
       job,
-      succees: true,
+      success: true,
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server error", success: false });
   }
 };
+
 export const updateStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -164,7 +181,6 @@ export const updateStatus = async (req, res) => {
       });
     }
 
-    // find the application by applicantion id
     const application = await Application.findOne({ _id: applicationId });
     if (!application) {
       return res.status(404).json({
@@ -173,7 +189,6 @@ export const updateStatus = async (req, res) => {
       });
     }
 
-    // update the status
     application.status = status.toLowerCase();
     await application.save();
 
@@ -183,5 +198,6 @@ export const updateStatus = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server error", success: false });
   }
 };

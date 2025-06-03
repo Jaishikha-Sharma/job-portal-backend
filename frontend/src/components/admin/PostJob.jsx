@@ -82,7 +82,7 @@ const degrees = [
   "M.Com",
   "M.Tech",
   "PhD",
-  "other"
+  "other",
 ];
 const salaryRanges = [
   "1 LPA - 3 LPA",
@@ -92,6 +92,15 @@ const salaryRanges = [
   "10 LPA+",
 ];
 const experienceYears = Array.from({ length: 21 }, (_, i) => `${i} years`);
+
+const predefinedQuestions = [
+  "Why do you want to work with us?",
+  "Describe a challenging project you worked on.",
+  "What are your strengths and weaknesses?",
+  "Where do you see yourself in 5 years?",
+  "How do you handle tight deadlines?",
+  "Are you willing to relocate?",
+];
 
 const RequiredLabel = ({ children }) => (
   <Label>
@@ -121,6 +130,7 @@ const PostJob = () => {
     customQualification: "",
     genderPreference: "",
     languagesKnown: "",
+    questions: [],
   });
 
   const [jobMode, setJobMode] = useState(""); // "On-site", "Remote", or "Hybrid"
@@ -169,6 +179,23 @@ const PostJob = () => {
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
   const token = localStorage.getItem("token");
+
+  const toggleQuestion = (question) => {
+    setInput((prev) => {
+      const exists = prev.questions.includes(question);
+      if (exists) {
+        return {
+          ...prev,
+          questions: prev.questions.filter((q) => q !== question),
+        };
+      } else {
+        return {
+          ...prev,
+          questions: [...prev.questions, question],
+        };
+      }
+    });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -555,6 +582,29 @@ const PostJob = () => {
                   placeholder="Write the detailed job description here"
                   required
                 />
+              </div>
+
+              <div className="mt-6">
+                <h3><b>Default Questions</b></h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  Select questions candidates will be asked to answer
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {predefinedQuestions.map((question) => (
+                    <label
+                      key={question}
+                      className="flex items-center gap-2 cursor-pointer select-none"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={input.questions.includes(question)}
+                        onChange={() => toggleQuestion(question)}
+                        className="w-4 h-4"
+                      />
+                      <span>{question}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
           )}

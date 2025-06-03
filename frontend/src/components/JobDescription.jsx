@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";  // added useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 import { setSingleJob } from "../redux/jobSlice";
 import {
@@ -19,7 +19,10 @@ const JobDescription = () => {
   const params = useParams();
   const jobId = params.id;
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // for back button
+  const navigate = useNavigate();
+
+  // Track answers for each question
+  const [answers, setAnswers] = useState({});
 
   const isInitiallyApplied =
     singleJob?.applications?.some(
@@ -31,8 +34,16 @@ const JobDescription = () => {
   const applyJobHandler = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
+
+      // Convert answers object into array with questions
+      const answersArray = singleJob.questions.map((question, index) => ({
+        question,
+        answer: answers[index] || "", // fallback empty string if no answer
+      }));
+
+      const res = await axios.post(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+        { answers: answersArray },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +55,10 @@ const JobDescription = () => {
         setIsApplied(true);
         const updatedSingleJob = {
           ...singleJob,
-          applications: [...singleJob.applications, { applicant: user?._id }],
+          applications: [
+            ...singleJob.applications,
+            { applicant: user?._id, answers: answersArray },
+          ],
         };
         dispatch(setSingleJob(updatedSingleJob));
         toast.success(res.data.message);
@@ -85,11 +99,7 @@ const JobDescription = () => {
       <Navbar />
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         {/* Back Button */}
-        <Button
-          variant="outline"
-          className="mb-6"
-          onClick={() => navigate(-1)}
-        >
+        <Button variant="outline" className="mb-6" onClick={() => navigate(-1)}>
           ← Back
         </Button>
 
@@ -126,6 +136,31 @@ const JobDescription = () => {
           </Button>
         </div>
 
+        {/* Questions & Answers Section */}
+        {singleJob?.questions && singleJob.questions.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-4">
+              Application Questions
+            </h2>
+            {singleJob.questions.map((question, index) => (
+              <div key={index} className="mb-4">
+                <label className="block mb-1 font-medium text-gray-700">
+                  {question}
+                </label>
+                <textarea
+                  rows={3}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  value={answers[index] || ""}
+                  onChange={(e) =>
+                    setAnswers((prev) => ({ ...prev, [index]: e.target.value }))
+                  }
+                  disabled={isApplied}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
         <hr className="border-gray-300 mb-8" />
 
         {/* Job Details */}
@@ -136,7 +171,10 @@ const JobDescription = () => {
           <Detail label="Experience Level" value={singleJob?.experienceLevel} />
           <Detail label="Job Type" value={singleJob?.jobType} />
           <Detail label="Qualification" value={singleJob?.qualification} />
-          <Detail label="Gender Preference" value={singleJob?.genderPreference} />
+          <Detail
+            label="Gender Preference"
+            value={singleJob?.genderPreference}
+          />
           <Detail
             label="Languages Known"
             value={
@@ -175,7 +213,7 @@ const JobDescription = () => {
             )}
           </div>
 
-          {/* Company and Posted By moved to bottom with full width */}
+          {/* Company and Posted By */}
           <div className="sm:col-span-2 mt-6 flex flex-col sm:flex-row justify-between text-gray-700 font-semibold">
             <p>
               <span className="font-bold">Company:</span>{" "}
@@ -197,14 +235,16 @@ const JobDescription = () => {
           Posted On: {singleJob?.createdAt?.split("T")[0] || "Unknown"}
         </div>
 
-        {/* Share Job Section with Lucide Icons */}
+        {/* Share Job Section */}
         <div className="mt-6 flex items-center justify-end gap-4">
           <span className="text-sm font-medium text-gray-600">
             Share this job:
           </span>
 
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(window.location.href)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(
+              window.location.href
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-green-600 hover:text-green-800 transition-colors"
@@ -214,7 +254,9 @@ const JobDescription = () => {
           </a>
 
           <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+              window.location.href
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-700 hover:text-blue-900 transition-colors"
