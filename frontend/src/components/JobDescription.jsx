@@ -16,6 +16,8 @@ import { MessageCircle, Linkedin, Copy } from "lucide-react";
 const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
   const params = useParams();
   const jobId = params.id;
   const dispatch = useDispatch();
@@ -61,6 +63,7 @@ const JobDescription = () => {
           ],
         };
         dispatch(setSingleJob(updatedSingleJob));
+        setShowSuccessMessage(true);
         toast.success(res.data.message);
       }
     } catch (error) {
@@ -97,6 +100,38 @@ const JobDescription = () => {
   return (
     <>
       <Navbar />
+      {showSuccessMessage && (
+        <div className="max-w-3xl mx-auto mt-6 mb-4 p-6 bg-gradient-to-r from-purple-100 via-purple-50 to-purple-100 border border-purple-300 text-purple-900 rounded-2xl shadow-lg animate-fade-in-up">
+          <div className="flex items-start gap-4">
+            <div className="text-purple-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2l4-4M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10s-4.48 10-10 10z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-1 tracking-tight">
+                Congratulations!
+              </h2>
+              <p className="text-sm sm:text-base leading-relaxed">
+                Your application has been successfully submitted. Our hiring
+                team will reach out to you soon. Good luck!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         {/* Back Button */}
         <Button variant="outline" className="mb-6" onClick={() => navigate(-1)}>

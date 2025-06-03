@@ -45,10 +45,16 @@ const Navbar = () => {
   return (
     <div className="px-4 sticky top-0 z-50 bg-white shadow-md transition-all">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
-        <Link to="/">
+        <Link to="/" className="inline-block">
           <h1 className="text-2xl font-extrabold tracking-tight hover:animate-wiggle transition-all duration-300 cursor-pointer bg-gradient-to-r from-[#f83002] to-orange-500 text-transparent bg-clip-text">
             Job<span className="text-black">Portal</span>
           </h1>
+          <p className="text-xs mt-1 font-medium text-gray-600 italic ml-[3.8rem]">
+            by{" "}
+            <span className="font-semibold text-[#f83002]">
+              Step Up Student
+            </span>
+          </p>
         </Link>
 
         {/* Desktop Nav */}
@@ -100,13 +106,13 @@ const Navbar = () => {
                 >
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li
+                {/* <li
                   className={`${
                     isActive("/browse") ? "text-[#f83002] font-semibold" : ""
                   } hover:text-[#f83002] hover:scale-105 transition-all`}
                 >
                   <Link to="/browse">Browse</Link>
-                </li>
+                </li> */}
                 <li
                   className={`${
                     isActive("/saved-jobs")
@@ -237,7 +243,7 @@ const Navbar = () => {
               : [
                   { to: "/", label: "Home" },
                   { to: "/jobs", label: "Jobs" },
-                  { to: "/browse", label: "Browse" },
+                  // { to: "/browse", label: "Browse" },
                   { to: "/saved-jobs", label: "Saved Jobs" },
                   { to: "/applied-jobss", label: "Applied Jobs" },
                   ...(user?.role === "admin"
