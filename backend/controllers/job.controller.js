@@ -1,6 +1,7 @@
 import { Job } from "../models/job.model.js";
 import { User } from "../models/user.model.js";
 import { Notification } from "../models/notification.model.js";
+import { Company } from "../models/company.model.js";
 
 // ADMIN - Create a new job
 export const postJob = async (req, res) => {
@@ -19,13 +20,12 @@ export const postJob = async (req, res) => {
       degree,
       genderPreference,
       languagesKnown,
-      questions, // Added questions here
+      questions,
     } = req.body;
 
     const userId = req.id;
-    console.log("User ID from req.id:", userId);  
 
-    // Validation
+    // Validation for required fields
     if (
       !title ||
       !description ||
@@ -37,10 +37,16 @@ export const postJob = async (req, res) => {
       !position ||
       !companyId
     ) {
-      console.log("Validation failed: Missing required fields");
-      return res
-        .status(400)
-        .json({ message: "Required fields missing.", success: false });
+      return res.status(400).json({ message: "Required fields missing.", success: false });
+    }
+
+    // Check if company is approved
+    const company = await Company.findById(companyId);
+    if (!company) {
+      return res.status(404).json({ message: "Company not found.", success: false });
+    }
+    if (!company.isApproved) {
+      return res.status(403).json({ message: "Company is not approved to post jobs.", success: false });
     }
 
     // Create job
@@ -68,36 +74,26 @@ export const postJob = async (req, res) => {
       created_by: userId,
     });
 
-    console.log("Job created with ID:", job._id);
-
-    // Notify all users (excluding recruiters)
+    // Notify all students
     const users = await User.find({ role: "student" });
-    console.log("Number of students found:", users.length);
-    console.log("Students:", users.map(u => ({ id: u._id, email: u.email })));
-
     const notifications = users.map((user) => ({
       userId: user._id,
       message: `New job posted: ${job.title}`,
       type: "job",
     }));
-
     await Notification.insertMany(notifications);
-    console.log("Notifications inserted:", notifications.length);
 
-    return res
-      .status(201)
-      .json({
-        message: "Job created",
-        job,
-        success: true,
-      });
+    return res.status(201).json({
+      message: "Job created successfully.",
+      job,
+      success: true,
+    });
   } catch (error) {
     console.error("Error in postJob:", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message, success: false });
+    return res.status(500).json({ message: "Server error", error: error.message, success: false });
   }
 };
+
 
 // STUDENT - Get all jobs with optional keyword search
 export const getAllJobs = async (req, res) => {

@@ -1,17 +1,24 @@
 import express from "express";
-import { getAllUsers, deleteUser } from "../controllers/Admin.Controller.js";
-import { isAuthenticated } from "../middlewares/isAuthenticated.js"; 
-import isAdmin from "../middlewares/isAdmin.js"; // the one you just created
+import {
+  getAllUsers,
+  deleteUser,
+  getAllCompanies,
+  toggleCompanyApproval,
+} from "../controllers/Admin.Controller.js";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+import isAdmin from "../middlewares/isAdmin.js";
 
 const router = express.Router();
 
-router.use(isAuthenticated); // protects all routes below
-router.use(isAdmin); // only admin can access below
+router.use(isAuthenticated);
+router.use(isAdmin);
 
-// GET all users (except admins)
+// Users
 router.get("/users", getAllUsers);
-
-// DELETE user by ID
 router.delete("/users/:userId", deleteUser);
+
+// Companies
+router.get("/companies", getAllCompanies);
+router.put("/companies/:companyId/toggle-approval", toggleCompanyApproval);
 
 export default router;

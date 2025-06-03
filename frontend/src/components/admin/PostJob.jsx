@@ -585,7 +585,9 @@ const PostJob = () => {
               </div>
 
               <div className="mt-6">
-                <h3><b>Default Questions</b></h3>
+                <h3>
+                  <b>Default Questions</b>
+                </h3>
                 <p className="text-sm text-gray-600 mb-2">
                   Select questions candidates will be asked to answer
                 </p>
