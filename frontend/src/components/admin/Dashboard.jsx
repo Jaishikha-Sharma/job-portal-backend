@@ -92,27 +92,10 @@ const Dashboard = () => {
         </div>
 
         {/* Container for Pie chart + Stats */}
-        <div className="flex flex-col-reverse lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-10">
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 flex-1">
-            {stats.map(({ label, value, icon, bg }) => (
-              <div
-                key={label}
-                className={`p-5 ${bg} rounded-xl shadow-md border hover:shadow-lg transition-all cursor-pointer flex flex-col items-center justify-center`}
-                onClick={() => {
-                  if (label === "Jobs Posted") navigate("/admin/jobs");
-                }}
-              >
-                <div className="mb-2">{icon}</div>
-                <p className="text-2xl font-semibold text-gray-800">{value}</p>
-                <p className="text-sm text-gray-600">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Pie Chart */}
-          <div className="w-full lg:w-1/3 h-64 sm:h-80">
+          {/* Pie Chart - full width on mobile, fixed width on desktop */}
+          <div className="w-full lg:w-96 h-72 sm:h-80 mx-auto lg:mx-0 order-[-1] lg:order-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -121,7 +104,7 @@ const Dashboard = () => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={90}
                   fill="#8884d8"
                   label
                   isAnimationActive={true}
@@ -136,6 +119,22 @@ const Dashboard = () => {
             </ResponsiveContainer>
           </div>
 
+          {/* Stats Cards with smaller font on mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-6 flex-1">
+            {stats.map(({ label, value, icon, bg }) => (
+              <div
+                key={label}
+                className={`p-6 ${bg} rounded-xl shadow-md border hover:shadow-xl transition-all cursor-pointer flex flex-col items-center justify-center`}
+                onClick={() => {
+                  if (label === "Jobs Posted") navigate("/admin/jobs");
+                }}
+              >
+                <div className="mb-3">{icon}</div>
+                <p className="text-xl sm:text-3xl font-semibold text-gray-800">{value}</p>
+                <p className="text-xs sm:text-base text-gray-600 mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Footer Actions */}
