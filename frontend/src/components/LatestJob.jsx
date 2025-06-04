@@ -2,6 +2,7 @@ import React from "react";
 import LatestJobCards from "./LatestJobCards";
 import { useSelector } from "react-redux";
 import useGetAllJobs from "../hooks/useGetAllJobs";
+import { Link } from "react-router-dom";
 
 const LatestJobs = () => {
   useGetAllJobs();
@@ -25,6 +26,16 @@ const LatestJobs = () => {
             ?.slice(0, 6)
             .map((job) => <LatestJobCards key={job._id} job={job} />)
         )}
+      </div>
+
+      {/* See All Jobs Button */}
+      <div className="mt-12 text-center">
+        <Link
+          to="/jobs"
+          className="inline-block px-8 py-3 text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 font-semibold rounded-full shadow-md transition-transform duration-300 transform hover:scale-105"
+        >
+          🔎 See All Jobs
+        </Link>
       </div>
     </div>
   );
