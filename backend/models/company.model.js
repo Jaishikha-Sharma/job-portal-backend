@@ -26,7 +26,6 @@ const companySchema = new mongoose.Schema(
     },
     isApproved: {
       type: Boolean,
-      default: true,
     },
   },
   { timestamps: true }

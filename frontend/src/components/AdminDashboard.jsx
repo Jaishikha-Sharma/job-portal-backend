@@ -50,7 +50,11 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get(`${ADMIN_API_END_POINT}/companies`);
       if (response.data.success) {
-        setCompanies(response.data.companies);
+        // ✅ Sort companies by newest first (using createdAt)
+        const sortedCompanies = response.data.companies.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setCompanies(sortedCompanies);
       } else {
         alert("Failed to fetch companies");
       }
@@ -103,6 +107,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white shadow-md rounded-md mt-10 space-y-12">
+      {/* Users Section */}
       <section>
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">Users</h2>
         {users.length === 0 ? (
@@ -112,18 +117,35 @@ const AdminDashboard = () => {
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Fullname</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Email</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Role</th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">Action</th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Fullname
+                  </th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Email
+                  </th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Role
+                  </th>
+                  <th className="text-center py-3 px-4 border-b border-gray-300">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {users.map(({ _id, fullname, email, role }) => (
-                  <tr key={_id} className="hover:bg-gray-50 transition-colors duration-200">
-                    <td className="py-3 px-4 border-b border-gray-200">{fullname}</td>
-                    <td className="py-3 px-4 border-b border-gray-200">{email}</td>
-                    <td className="py-3 px-4 border-b border-gray-200">{role}</td>
+                  <tr
+                    key={_id}
+                    className="hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <td className="py-3 px-4 border-b border-gray-200">
+                      {fullname}
+                    </td>
+                    <td className="py-3 px-4 border-b border-gray-200">
+                      {email}
+                    </td>
+                    <td className="py-3 px-4 border-b border-gray-200">
+                      {role}
+                    </td>
                     <td className="py-3 px-4 border-b border-gray-200 text-center">
                       <button
                         onClick={() => handleDeleteUser(_id)}
@@ -140,6 +162,7 @@ const AdminDashboard = () => {
         )}
       </section>
 
+      {/* Companies Section */}
       <section>
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">Companies</h2>
         {companies.length === 0 ? (
@@ -149,44 +172,67 @@ const AdminDashboard = () => {
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Company Name</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300 max-w-xs">Company Description</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Owner Name</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">Owner Email</th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">Approval Status</th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">Action</th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Company Name
+                  </th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300 max-w-xs">
+                    Company Description
+                  </th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Owner Name
+                  </th>
+                  <th className="text-left py-3 px-4 border-b border-gray-300">
+                    Owner Email
+                  </th>
+                  <th className="text-center py-3 px-4 border-b border-gray-300">
+                    Approval Status
+                  </th>
+                  <th className="text-center py-3 px-4 border-b border-gray-300">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {companies.map(({ _id, name, description, userId, isApproved }) => (
-                  <tr key={_id} className="hover:bg-gray-50 transition-colors duration-200">
-                    <td className="py-3 px-4 border-b border-gray-200 font-semibold text-gray-800">{name}</td>
-                    <td className="py-3 px-4 border-b border-gray-200 max-w-xs whitespace-normal break-words text-gray-700">
-                      {description || "-"}
-                    </td>
-                    <td className="py-3 px-4 border-b border-gray-200">{userId?.fullname || "-"}</td>
-                    <td className="py-3 px-4 border-b border-gray-200">{userId?.email || "-"}</td>
-                    <td
-                      className={`py-3 px-4 border-b border-gray-200 text-center font-semibold ${
-                        isApproved ? "text-green-600" : "text-red-600"
-                      }`}
+                {companies.map(
+                  ({ _id, name, description, userId, isApproved }) => (
+                    <tr
+                      key={_id}
+                      className="hover:bg-gray-50 transition-colors duration-200"
                     >
-                      {isApproved ? "Approved" : "Disapproved"}
-                    </td>
-                    <td className="py-3 px-4 border-b border-gray-200 text-center">
-                      <button
-                        onClick={() => toggleCompanyApproval(_id)}
-                        className={`inline-block font-semibold py-1 px-3 rounded-md transition-colors duration-200 ${
-                          isApproved
-                            ? "bg-red-600 hover:bg-red-700 text-white"
-                            : "bg-green-600 hover:bg-green-700 text-white"
+                      <td className="py-3 px-4 border-b border-gray-200 font-semibold text-gray-800">
+                        {name}
+                      </td>
+                      <td className="py-3 px-4 border-b border-gray-200 max-w-xs whitespace-normal break-words text-gray-700">
+                        {description || "-"}
+                      </td>
+                      <td className="py-3 px-4 border-b border-gray-200">
+                        {userId?.fullname || "-"}
+                      </td>
+                      <td className="py-3 px-4 border-b border-gray-200">
+                        {userId?.email || "-"}
+                      </td>
+                      <td
+                        className={`py-3 px-4 border-b border-gray-200 text-center font-semibold ${
+                          isApproved ? "text-green-600" : "text-red-600"
                         }`}
                       >
-                        {isApproved ? "Disapprove" : "Approve"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        {isApproved ? "Approved" : "Disapproved"}
+                      </td>
+                      <td className="py-3 px-4 border-b border-gray-200 text-center">
+                        <button
+                          onClick={() => toggleCompanyApproval(_id)}
+                          className={`inline-block font-semibold py-1 px-3 rounded-md transition-colors duration-200 ${
+                            isApproved
+                              ? "bg-red-600 hover:bg-red-700 text-white"
+                              : "bg-green-600 hover:bg-green-700 text-white"
+                          }`}
+                        >
+                          {isApproved ? "Disapprove" : "Approve"}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>

@@ -22,7 +22,7 @@ const CompanyCreate = () => {
     }
 
     try {
-      const token = localStorage.getItem("token"); // get token from localStorage
+      const token = localStorage.getItem("token");
 
       const res = await axios.post(
         `${COMPANY_API_END_POINT}/register`,
@@ -30,7 +30,7 @@ const CompanyCreate = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // <-- add token here
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -38,6 +38,16 @@ const CompanyCreate = () => {
       if (res?.data?.success) {
         dispatch(setSingleCompany(res.data.company));
         toast.success(res.data.message);
+
+        // ✅ Show verification info toast after short delay
+        setTimeout(() => {
+          toast.message("Company Under Review", {
+            description:
+              "✅ Your company has been submitted and is currently under verification. It will be visible once approved by an admin.",
+            duration: 5000,
+          });
+        }, 1000);
+
         const companyId = res?.data?.company?._id;
         navigate(`/admin/companies/${companyId}`);
       }
