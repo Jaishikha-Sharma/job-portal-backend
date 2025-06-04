@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../shared/Navbar";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -8,7 +8,7 @@ import useGetAllCompanies from "../../hooks/useGetAllCompanies";
 import { useSelector, useDispatch } from "react-redux";
 import { setSearchCompanyByText } from "../../redux/companySlice";
 import Joyride from "react-joyride";
-import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 
 const Companies = () => {
   useGetAllCompanies();
@@ -94,10 +94,17 @@ const Companies = () => {
         )}
 
         {/* Companies Table Section */}
-        <div className="mt-8">
+        <div id="companies-table-section" className="mt-8">
           <CompaniesTable />
         </div>
       </div>
+      <Button
+        onClick={() => navigate("/admin/jobs/create")}
+        className="fixed bottom-8 right-8 z-50 bg-[#f83002] hover:bg-[#d72000] text-white px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
+      >
+        <Plus size={18} />
+        <span className="text-sm font-semibold">Create Jobs</span>
+      </Button>
     </div>
   );
 };

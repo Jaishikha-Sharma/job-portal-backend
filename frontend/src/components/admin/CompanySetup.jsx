@@ -109,6 +109,12 @@ const CompanySetup = () => {
             </Button>
             <h1 className="text-2xl font-bold text-gray-800">Company Setup</h1>
           </div>
+
+          <p className="text-sm text-gray-500 mb-4">
+            Fields marked with <span className="text-red-500">*</span> are
+            required.
+          </p>
+
           <form onSubmit={submitHandler}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -116,7 +122,7 @@ const CompanySetup = () => {
                   htmlFor="name"
                   className="mb-0.5 block font-medium text-gray-700"
                 >
-                  Company Name
+                  Company Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -126,6 +132,7 @@ const CompanySetup = () => {
                   onChange={changeEventHandler}
                   placeholder="e.g. Google Inc."
                   className="mb-2"
+                  required
                 />
               </div>
               <div>
@@ -133,7 +140,7 @@ const CompanySetup = () => {
                   htmlFor="website"
                   className="mb-0.5 block font-medium text-gray-700"
                 >
-                  Website
+                  Website <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="website"
@@ -143,6 +150,7 @@ const CompanySetup = () => {
                   onChange={changeEventHandler}
                   placeholder="e.g. https://google.com"
                   className="mb-2"
+                  required
                 />
               </div>
               <div>
@@ -150,7 +158,7 @@ const CompanySetup = () => {
                   htmlFor="location"
                   className="mb-0.5 block font-medium text-gray-700"
                 >
-                  Location
+                  Location <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="location"
@@ -160,6 +168,7 @@ const CompanySetup = () => {
                   onChange={changeEventHandler}
                   placeholder="e.g. Mountain View, CA"
                   className="mb-2"
+                  required
                 />
               </div>
               <div>
@@ -167,7 +176,7 @@ const CompanySetup = () => {
                   htmlFor="file"
                   className="mb-0.5 block font-medium text-gray-700"
                 >
-                  Logo
+                  Logo <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="file"
@@ -175,6 +184,7 @@ const CompanySetup = () => {
                   accept="image/*"
                   onChange={changeFileHandler}
                   className="mb-2"
+                  required
                 />
               </div>
               <div className="sm:col-span-2">
@@ -182,7 +192,7 @@ const CompanySetup = () => {
                   htmlFor="description"
                   className="mb-0.5 block font-medium text-gray-700"
                 >
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </Label>
                 <textarea
                   id="description"
@@ -192,6 +202,7 @@ const CompanySetup = () => {
                   placeholder="e.g. A tech giant"
                   rows={4}
                   className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#f83002] focus:border-[#f83002] transition mb-2"
+                  required
                 />
               </div>
             </div>

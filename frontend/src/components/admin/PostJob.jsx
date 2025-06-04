@@ -36,7 +36,28 @@ const popularJobTitles = [
   "Marketing Manager",
   "QA Engineer",
   "DevOps Engineer",
+  "AI Engineer",
+  "Cloud Engineer",
+  "Cybersecurity Analyst",
+  "Machine Learning Engineer",
+  "Mobile App Developer",
+  "Data Engineer",
+  "Blockchain Developer",
+  "UX/UI Designer",
+  "Business Analyst",
+  "Site Reliability Engineer",
+  "System Administrator",
+  "Technical Support Engineer",
+  "Database Administrator",
+  "Network Engineer",
+  "Content Writer",
+  "Sales Manager",
+  "HR Manager",
+  "Project Coordinator",
+  "Customer Success Manager",
+  "Quality Assurance Analyst",
 ];
+
 const indianLocations = [
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -77,8 +98,10 @@ const degrees = [
   "B.A",
   "B.Com",
   "B.Tech",
+  "BCA",
   "M.Sc",
   "M.A",
+  "MCA",
   "M.Com",
   "M.Tech",
   "PhD",
@@ -137,10 +160,10 @@ const PostJob = () => {
 
   useEffect(() => {
     // Auto update location field for Remote or Hybrid mode
-    if (jobMode === "Remote" || jobMode === "Hybrid") {
+    if (jobMode === "Remote") {
       setInput((prev) => ({ ...prev, location: jobMode }));
     } else if (jobMode === "On-site") {
-      setInput((prev) => ({ ...prev, location: "" })); // reset location for On-site
+      setInput((prev) => ({ ...prev, location: "" }));
     }
   }, [jobMode]);
 
@@ -452,7 +475,7 @@ const PostJob = () => {
                     name="location"
                     value={input.location}
                     onChange={handleChange}
-                    placeholder="Hybrid, Remote or enter city"
+                    placeholder="Enter city"
                     className="my-2"
                     required={jobMode !== "Remote"}
                   />
