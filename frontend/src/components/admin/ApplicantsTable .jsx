@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { APPLICATION_API_END_POINT } from "../../utils/constant";
 import axios from "axios";
+import { Info } from "lucide-react";
 
 const shortlistingStatus = ["Accepted", "Rejected", "On Hold"];
 
@@ -88,6 +89,53 @@ const ApplicantsTable = () => {
     );
   };
 
+  const renderProfilePopover = (profile) => (
+    <div className="space-y-2 text-sm text-gray-800">
+      {profile?.phoneNumber && (
+        <p>
+          <strong>Phone:</strong> {profile.phoneNumber}
+        </p>
+      )}
+      {profile?.dob && (
+        <p>
+          <strong>DOB:</strong> {profile.dob.split("T")[0]}
+        </p>
+      )}
+      {profile?.address && (
+        <p>
+          <strong>Address:</strong> {profile.address}
+        </p>
+      )}
+      {profile?.pincode && (
+        <p>
+          <strong>Pincode:</strong> {profile.pincode}
+        </p>
+      )}
+      {profile?.bio && (
+        <p>
+          <strong>Bio:</strong> {profile.bio}
+        </p>
+      )}
+      {profile?.skills?.length > 0 && (
+        <p>
+          <strong>Skills:</strong> {profile.skills.join(", ")}
+        </p>
+      )}
+      {profile?.linkedin && (
+        <p>
+          <strong>LinkedIn:</strong>{" "}
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 underline"
+          >
+            {profile.linkedin}
+          </a>
+        </p>
+      )}
+    </div>
+  );
   return (
     <div>
       {/* Desktop Table View */}
@@ -157,6 +205,20 @@ const ApplicantsTable = () => {
                         {item.status || "Pending"}
                       </span>
                     </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <Popover>
+                        <PopoverTrigger>
+                          <button className="flex items-center gap-1 text-blue-600 hover:underline">
+                            <Info className="w-4 h-4" />
+                            View
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-72 p-4 border shadow-md bg-white rounded">
+                          {renderProfilePopover(item?.applicant?.profile || {})}
+                        </PopoverContent>
+                      </Popover>
+                    </TableCell>
+
                     {/* Toggle button for answers */}
                     <TableCell className="px-4 py-3">
                       <button
@@ -266,6 +328,19 @@ const ApplicantsTable = () => {
                   >
                     {item.status || "Pending"}
                   </span>
+                </div>
+                <div className="mb-2">
+                  <Popover>
+                    <PopoverTrigger>
+                      <button className="flex items-center gap-1 text-blue-600 hover:underline">
+                        <Info className="w-4 h-4" />
+                        View Profile
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 p-4 border shadow-md bg-white rounded">
+                      {renderProfilePopover(item?.applicant?.profile || {})}
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 {/* Toggle answers button */}
