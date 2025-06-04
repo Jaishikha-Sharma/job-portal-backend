@@ -6,11 +6,15 @@ import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import axios from "../../utils/axiosConfig.js";  
+import axios from "../../utils/axiosConfig.js";
 import { USER_API_END_POINT } from "../../utils/constant.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../../redux/authSlice.js";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
+
+import { auth, provider } from "../../components/firebase"; // Adjust import path if needed
+import { signInWithPopup } from "firebase/auth";
 
 const Login = () => {
   const { loading } = useSelector((store) => store.auth);
@@ -23,8 +27,8 @@ const Login = () => {
     role: "",
   });
 
-  // New state to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false); // separate loading for Google login
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -61,12 +65,56 @@ const Login = () => {
     } catch (error) {
       console.error("Login error:", error);
       const message =
-        error?.response?.data?.message || "Something went wrong. Please try again.";
+        error?.response?.data?.message ||
+        "Something went wrong. Please try again.";
       toast.error(message);
     } finally {
       dispatch(setLoading(false));
     }
   };
+
+  // Google Login Handler
+ const googleLoginHandler = async () => {
+  setGoogleLoading(true);
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const token = await user.getIdToken();
+
+    // Extract fullname and email from Firebase user
+    const fullname = user.displayName;
+    const email = user.email;
+
+    console.log({ token, fullname, email });
+
+    // Send token, fullname and email together to backend
+    const res = await axios.post(
+      `${USER_API_END_POINT}/google-login`,
+      { token, fullname, email },  // <-- include fullname & email here
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    if (res.data.success) {
+      localStorage.setItem("token", res.data.token);
+      dispatch(setUser(res.data.user));
+      toast.success("Logged in with Google!");
+
+      if (res.data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    } else {
+      toast.error(res.data.message || "Google login failed");
+    }
+  } catch (error) {
+    console.error("Google login error:", error);
+    toast.error("Google login failed. Please try again.");
+  } finally {
+    setGoogleLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#f9f9f9]">
@@ -199,6 +247,27 @@ const Login = () => {
               Log In
             </Button>
           )}
+
+          {/* Google login button */}
+          <div className="mt-6">
+            <Button
+              onClick={googleLoginHandler}
+              disabled={googleLoading}
+              variant="outline"
+              className="flex items-center justify-center gap-2 w-full py-3 border-gray-400 text-gray-700 hover:bg-gray-100"
+            >
+              {googleLoading ? (
+                <>
+                  <Loader2 className="mr-3 h-4 w-4 animate-spin" /> Signing
+                  in...
+                </>
+              ) : (
+                <>
+                  <FaGoogle size={20} /> Sign in with Google
+                </>
+              )}
+            </Button>
+          </div>
 
           <span className="block mt-4 text-center text-sm text-gray-700">
             Don&apos;t have an account?{" "}

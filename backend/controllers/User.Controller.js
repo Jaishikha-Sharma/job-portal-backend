@@ -309,3 +309,56 @@ export const getSavedJobs = async (req, res) => {
   }
 };
 
+// GOOGLE LOGIN
+export const googleLogin = async (req, res) => {
+  try {
+    const { email, fullname } = req.body;
+
+    if (!email || !fullname) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing email or fullname",
+      });
+    }
+
+    let user = await User.findOne({ email });
+
+    // If user doesn't exist, create new user with default role = "student"
+    if (!user) {
+      user = await User.create({
+        fullname,
+        email,
+        role: "student",
+        profile: {},
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
+
+    // Prepare clean user response
+    const userData = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile,
+    };
+
+    return res.status(200).json({
+      success: true,
+      message: `Welcome ${user.fullname}`,
+      user: userData,
+      token,
+    });
+  } catch (error) {
+    console.error("Google Login error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error during Google login",
+    });
+  }
+};

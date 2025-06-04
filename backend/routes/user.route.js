@@ -7,6 +7,7 @@ import {
   saveJob,
   unsaveJob,
   getSavedJobs,
+  googleLogin
 } from "../controllers/User.Controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js"; 
 import { singleUpload } from "../middlewares/multer.js";
@@ -22,5 +23,6 @@ router.route("/logout").get(logout);
 router.put("/save-job/:jobId", isAuthenticated, saveJob);
 router.route("/unsave-job/:jobId").put(isAuthenticated, unsaveJob);
 router.route("/saved-jobs").get(isAuthenticated, getSavedJobs);
+router.route("/google-login").post(googleLogin);
 
 export default router;
