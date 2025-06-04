@@ -14,6 +14,14 @@ const LatestJobCards = ({ job }) => {
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
+  // ✅ Truncate description to 20 words
+  const truncateWords = (text, wordLimit = 20) => {
+    const words = text?.split(" ") || [];
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + "..."
+      : text;
+  };
+
   useEffect(() => {
     if (savedJobsFromRedux && Array.isArray(savedJobsFromRedux)) {
       localStorage.setItem("savedJobs", JSON.stringify(savedJobsFromRedux));
@@ -28,6 +36,7 @@ const LatestJobCards = ({ job }) => {
   const handleClick = () => {
     if (job?._id) {
       navigate(`/description/${job._id}`);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // ✅ Scroll to top
     }
   };
 
@@ -101,14 +110,16 @@ const LatestJobCards = ({ job }) => {
         <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-1">
           {job?.title || "Job Title"}
         </h3>
-        <p className="text-sm sm:text-base text-gray-600 line-clamp-2">
-          {job?.description ||
-            "Brief job description goes here. Keep it short and readable."}
+        <p className="text-sm sm:text-base text-gray-600">
+          {truncateWords(
+            job?.description ||
+              "Brief job description goes here. Keep it short and readable."
+          )}
         </p>
       </div>
 
       {/* Badges */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 mt-2">
         <Badge
           variant="ghost"
           className="bg-blue-50 text-blue-600 font-medium text-xs sm:text-sm px-2.5 py-1.5 rounded-full"

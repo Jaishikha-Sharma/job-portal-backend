@@ -51,7 +51,7 @@ const Herosection = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
+  return ( 
     <div className="bg-gradient-to-br from-indigo-100 via-white to-pink-100 px-4 sm:px-6 lg:px-20 py-10">
       {/* Content Layout */}
       <div className="flex flex-row items-center justify-between gap-6 flex-wrap md:flex-nowrap">
