@@ -5,23 +5,43 @@ import { setSavedJobs } from "../redux/authSlice";
 import { USER_API_END_POINT } from "../utils/constant.js";
 import JobCards from "../components/JobCards.jsx";
 import Navbar from "../components/shared/Navbar.jsx";
+import { toast } from "sonner"; // Optional: install with `npm install sonner`
 
 const SavedJobs = () => {
   const dispatch = useDispatch();
   const savedJobs = useSelector((state) => state.auth.savedJobs);
 
+  // Fetch saved jobs on mount
   useEffect(() => {
     const fetchSavedJobs = async () => {
       try {
-        const res = await axios.get(`${USER_API_END_POINT}/saved-jobs`, {
-        });
+        const res = await axios.get(`${USER_API_END_POINT}/saved-jobs`);
         dispatch(setSavedJobs(res.data.savedJobs));
       } catch (error) {
         console.error("Error fetching saved jobs:", error);
+        toast.error("Failed to load saved jobs");
       }
     };
     fetchSavedJobs();
   }, [dispatch]);
+
+  // Unsave job handler
+  const unsaveJob = async (jobId) => {
+    try {
+      const res = await axios.put(`${USER_API_END_POINT}/unsave-job/${jobId}`);
+      if (res.data.success) {
+        dispatch(setSavedJobs(savedJobs.filter((job) => job._id !== jobId)));
+        toast.success("Job removed from saved list!");
+      }
+    } catch (error) {
+      console.error("Error unsaving job:", error);
+      if (error.response?.status === 401) {
+        toast.error("Please login to continue.");
+      } else {
+        toast.error("Something went wrong while removing job.");
+      }
+    }
+  };
 
   return (
     <>
@@ -37,9 +57,15 @@ const SavedJobs = () => {
               {savedJobs.map((job) => (
                 <div
                   key={job._id}
-                  className="animate-fadeIn transform transition duration-300 hover:scale-[1.02]"
+                  className="relative animate-fadeIn transform transition duration-300 hover:scale-[1.02]"
                 >
                   <JobCards job={job} hideSaveButton />
+                  <button
+                    onClick={() => unsaveJob(job._id)}
+                    className="absolute top-3 right-3 text-sm text-red-600 bg-white border border-red-200 px-2 py-1 rounded hover:bg-red-50"
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>

@@ -94,7 +94,6 @@ export const postJob = async (req, res) => {
   }
 };
 
-
 // STUDENT - Get all jobs with optional keyword search
 export const getAllJobs = async (req, res) => {
   try {
