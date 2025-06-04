@@ -74,47 +74,46 @@ const Login = () => {
   };
 
   // Google Login Handler
- const googleLoginHandler = async () => {
-  setGoogleLoading(true);
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    const token = await user.getIdToken();
+  const googleLoginHandler = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const token = await user.getIdToken();
 
-    // Extract fullname and email from Firebase user
-    const fullname = user.displayName;
-    const email = user.email;
+      // Extract fullname and email from Firebase user
+      const fullname = user.displayName;
+      const email = user.email;
 
-    console.log({ token, fullname, email });
+      console.log({ token, fullname, email });
 
-    // Send token, fullname and email together to backend
-    const res = await axios.post(
-      `${USER_API_END_POINT}/google-login`,
-      { token, fullname, email },  // <-- include fullname & email here
-      { headers: { "Content-Type": "application/json" } }
-    );
+      // Send token, fullname and email together to backend
+      const res = await axios.post(
+        `${USER_API_END_POINT}/google-login`,
+        { token, fullname, email }, // <-- include fullname & email here
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-    if (res.data.success) {
-      localStorage.setItem("token", res.data.token);
-      dispatch(setUser(res.data.user));
-      toast.success("Logged in with Google!");
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
+        dispatch(setUser(res.data.user));
+        toast.success("Logged in with Google!");
 
-      if (res.data.user.role === "admin") {
-        navigate("/admin/dashboard");
+        if (res.data.user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
       } else {
-        navigate("/");
+        toast.error(res.data.message || "Google login failed");
       }
-    } else {
-      toast.error(res.data.message || "Google login failed");
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed. Please try again.");
+    } finally {
+      setGoogleLoading(false);
     }
-  } catch (error) {
-    console.error("Google login error:", error);
-    toast.error("Google login failed. Please try again.");
-  } finally {
-    setGoogleLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-[#f9f9f9]">
