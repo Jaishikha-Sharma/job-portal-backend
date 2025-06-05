@@ -153,6 +153,7 @@ const ApplicantsTable = () => {
               <TableHead className="px-4 py-2">Resume</TableHead>
               <TableHead className="px-4 py-2">Date</TableHead>
               <TableHead className="px-4 py-2">Status</TableHead>
+              <TableHead className="px-4 py-2">View Profile</TableHead>
               <TableHead className="px-4 py-2">Answers</TableHead>
               <TableHead className="px-4 py-2 text-right rounded-r-lg">
                 Action

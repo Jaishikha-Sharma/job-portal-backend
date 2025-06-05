@@ -27,6 +27,7 @@ const Login = () => {
     role: "",
   });
 
+  const [googleRole, setGoogleRole] = useState(""); // Separate role state for Google login
   const [showPassword, setShowPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false); // separate loading for Google login
 
@@ -75,6 +76,11 @@ const Login = () => {
 
   // Google Login Handler
   const googleLoginHandler = async () => {
+    if (!googleRole) {
+      toast.error("Please select a role before signing in with Google");
+      return;
+    }
+
     setGoogleLoading(true);
     try {
       const result = await signInWithPopup(auth, provider);
@@ -85,12 +91,12 @@ const Login = () => {
       const fullname = user.displayName;
       const email = user.email;
 
-      console.log({ token, fullname, email });
+      console.log({ token, fullname, email, role: googleRole });
 
-      // Send token, fullname and email together to backend
+      // Send token, fullname, email and role together to backend
       const res = await axios.post(
         `${USER_API_END_POINT}/google-login`,
-        { token, fullname, email }, // <-- include fullname & email here
+        { token, fullname, email, role: googleRole },
         { headers: { "Content-Type": "application/json" } }
       );
 
@@ -246,6 +252,48 @@ const Login = () => {
               Log In
             </Button>
           )}
+
+          {/* Google Role Selector */}
+          <div className="mt-10 mb-4">
+            <Label className="mb-2 block text-sm font-medium text-gray-700">
+              Select Role for Google Login
+            </Label>
+            <RadioGroup className="flex gap-6">
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="radio"
+                  name="googleRole"
+                  value="student"
+                  checked={googleRole === "student"}
+                  onChange={() => setGoogleRole("student")}
+                  className="cursor-pointer"
+                />
+                <Label
+                  htmlFor="google-student"
+                  className="cursor-pointer text-gray-700"
+                >
+                  Candidate
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="radio"
+                  name="googleRole"
+                  value="recruiter"
+                  checked={googleRole === "recruiter"}
+                  onChange={() => setGoogleRole("recruiter")}
+                  className="cursor-pointer"
+                />
+                <Label
+                  htmlFor="google-recruiter"
+                  className="cursor-pointer text-gray-700"
+                >
+                  Recruiter
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
 
           {/* Google login button */}
           <div className="mt-6">

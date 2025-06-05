@@ -312,33 +312,42 @@ export const getSavedJobs = async (req, res) => {
 // GOOGLE LOGIN
 export const googleLogin = async (req, res) => {
   try {
-    const { email, fullname } = req.body;
+    const { email, fullname, role } = req.body;
 
-    if (!email || !fullname) {
+    if (!email || !fullname || !role) {
       return res.status(400).json({
         success: false,
-        message: "Missing email or fullname",
+        message: "Missing email, fullname, or role",
+      });
+    }
+
+    if (!["student", "recruiter"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role",
       });
     }
 
     let user = await User.findOne({ email });
 
-    // If user doesn't exist, create new user with default role = "student"
     if (!user) {
       user = await User.create({
         fullname,
         email,
-        role: "student",
+        role,
         profile: {},
+      });
+    } else if (user.role !== role) {
+      return res.status(400).json({
+        success: false,
+        message: `Account already exists with role: ${user.role}`,
       });
     }
 
-    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
 
-    // Prepare clean user response
     const userData = {
       _id: user._id,
       fullname: user.fullname,
@@ -362,3 +371,4 @@ export const googleLogin = async (req, res) => {
     });
   }
 };
+

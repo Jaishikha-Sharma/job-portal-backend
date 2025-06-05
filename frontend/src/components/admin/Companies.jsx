@@ -18,10 +18,12 @@ const Companies = () => {
   const { companies, searchCompanyByText } = useSelector(
     (store) => store.company
   );
+  const { user } = useSelector((store) => store.auth);
+
   const isLimitReached = companies.length >= 5;
   const [runTour, setRunTour] = useState(false);
 
-  const [steps] = useState([
+  const steps = [
     {
       target: "#search-company-input",
       content: "Search your company here by name.",
@@ -34,15 +36,25 @@ const Companies = () => {
       target: "#companies-table-section",
       content: "All your registered companies will appear here.",
     },
-  ]);
+  ];
 
   useEffect(() => {
-    const hasSeen = localStorage.getItem("hasSeenRecruiterTour");
-    if (!hasSeen) {
-      setRunTour(true);
-      localStorage.setItem("hasSeenRecruiterTour", "true");
+    if (user?._id) {
+      const seen = localStorage.getItem(`hasSeenTour-${user._id}`);
+      if (seen !== "true") {
+        setRunTour(true);
+      }
     }
-  }, []);
+  }, [user]);
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    const finishedStatuses = ["finished", "skipped"];
+    if (finishedStatuses.includes(status) && user?._id) {
+      localStorage.setItem(`hasSeenTour-${user._id}`, "true");
+      setRunTour(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -53,6 +65,7 @@ const Companies = () => {
         continuous
         showSkipButton
         showProgress
+        callback={handleJoyrideCallback}
         styles={{
           options: {
             zIndex: 10000,
@@ -98,6 +111,7 @@ const Companies = () => {
           <CompaniesTable />
         </div>
       </div>
+
       <Button
         onClick={() => navigate("/admin/jobs/create")}
         className="fixed bottom-8 right-8 z-50 bg-[#f83002] hover:bg-[#d72000] text-white px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
