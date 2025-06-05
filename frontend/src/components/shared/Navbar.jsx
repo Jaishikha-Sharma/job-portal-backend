@@ -24,32 +24,41 @@ const Navbar = () => {
   const isActive = (path) =>
     currentPath === path || currentPath.startsWith(path + "/");
 
-const logoutHandler = async () => {
-  try {
-    const res = await axios.get(`${USER_API_END_POINT}/logout`);
-    if (res.data.success) {
-      dispatch(logout());
-      dispatch(clearCompanies());
-      dispatch(clearJobs());
-      dispatch(clearAdminJobs());
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`);
+      if (res.data.success) {
+        dispatch(logout());
+        dispatch(clearCompanies());
+        dispatch(clearJobs());
+        dispatch(clearAdminJobs());
 
-      // Clear all localStorage except hasSeenRecruiterTour
-      const keysToKeep = ["hasSeenRecruiterTour"];
-      Object.keys(localStorage).forEach((key) => {
-        if (!keysToKeep.includes(key)) {
-          localStorage.removeItem(key);
-        }
-      });
+        // Clear all localStorage except hasSeenRecruiterTour
+        const keysToKeep = ["hasSeenRecruiterTour"];
+        Object.keys(localStorage).forEach((key) => {
+          if (!keysToKeep.includes(key)) {
+            localStorage.removeItem(key);
+          }
+        });
 
-      navigate("/");
-      toast.success(res.data.message);
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Logout failed");
     }
-  } catch (error) {
-    console.log(error);
-    toast.error(error.response?.data?.message || "Logout failed");
-  }
-};
+  };
 
+  const getInitials = (name) => {
+    if (!name) return "";
+    const names = name.trim().split(" ");
+    if (names.length === 1) {
+      return names[0][0].toUpperCase();
+    } else {
+      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+    }
+  };
 
   return (
     <div className="px-4 sticky top-0 z-50 bg-white shadow-md transition-all">
@@ -180,15 +189,33 @@ const logoutHandler = async () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer hover:scale-110 transition-all">
-                  <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  {user?.profile?.profilePhoto ? (
+                    <AvatarImage
+                      src={user.profile.profilePhoto}
+                      alt={user.fullname}
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      {getInitials(user?.fullname)}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="flex gap-4 mb-4">
-                  <Avatar>
-                    <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
+                  <Avatar className="cursor-pointer hover:scale-110 transition-all">
+                    {user?.profile?.profilePhoto ? (
+                      <AvatarImage
+                        src={user.profile.profilePhoto}
+                        alt={user.fullname}
+                      />
+                    ) : (
+                      <AvatarFallback>
+                        {getInitials(user?.fullname)}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
+
                   <div>
                     <h4 className="font-medium">{user?.fullname}</h4>
                     <p className="text-sm text-muted-foreground">
@@ -293,9 +320,18 @@ const logoutHandler = async () => {
             <div className="space-y-4 pt-4 border-t border-gray-200">
               <div className="flex items-center gap-3">
                 <Avatar className="w-9 h-9">
-                  <AvatarImage src={user?.profile?.profilePhoto} alt="user" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  {user?.profile?.profilePhoto ? (
+                    <AvatarImage
+                      src={user.profile.profilePhoto}
+                      alt={user.fullname}
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      {getInitials(user?.fullname)}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
+
                 <div>
                   <p className="font-medium text-sm">{user?.fullname}</p>
                   <p className="text-xs text-muted-foreground">

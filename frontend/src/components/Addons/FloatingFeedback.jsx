@@ -96,10 +96,21 @@ const FloatingFeedback = () => {
             color: "#4b3e85",
           }}
         >
+          {/* New Prompt Added Here */}
+          <p
+            style={{
+              marginBottom: 16,
+              fontWeight: "600",
+              fontSize: 14,
+              textAlign: "center",
+              color: "#6b5fbd",
+            }}
+          >
+            We have just gone live! Feel free to leave a comment below reviewing
+            our website.
+          </p>
+
           <form onSubmit={handleSubmit}>
-            <h3 style={{ marginBottom: 12, fontWeight: "700", fontSize: 20 }}>
-              Feedback
-            </h3>
 
             <input
               type="text"
