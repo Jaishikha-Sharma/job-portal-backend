@@ -1,5 +1,7 @@
 import { Application } from "../models/application.model.js";
 import { Job } from "../models/job.model.js";
+import { Notification } from "../models/notification.model.js";
+
 
 export const applyJob = async (req, res) => {
   try {
@@ -174,6 +176,7 @@ export const updateStatus = async (req, res) => {
   try {
     const { status } = req.body;
     const applicationId = req.params.id;
+
     if (!status) {
       return res.status(400).json({
         message: "status is required",
@@ -181,7 +184,11 @@ export const updateStatus = async (req, res) => {
       });
     }
 
-    const application = await Application.findOne({ _id: applicationId });
+    // Populate applicant and job to get user id and job title
+    const application = await Application.findOne({ _id: applicationId })
+      .populate('applicant')
+      .populate('job'); // Assuming your Application model has a 'job' ref field
+
     if (!application) {
       return res.status(404).json({
         message: "Application not found.",
@@ -189,8 +196,20 @@ export const updateStatus = async (req, res) => {
       });
     }
 
+    // Update application status
     application.status = status.toLowerCase();
     await application.save();
+
+    // Create notification for the applicant with job info
+    const jobTitle = application.job?.title || "the job";
+    const notificationMessage = `Your application for "${jobTitle}" has been updated to "${application.status}".`;
+
+    await Notification.create({
+      userId: application.applicant._id,
+      message: notificationMessage,
+      type: "application",
+      read: false,
+    });
 
     return res.status(200).json({
       message: "Status updated successfully.",
@@ -201,3 +220,4 @@ export const updateStatus = async (req, res) => {
     res.status(500).json({ message: "Server error", success: false });
   }
 };
+

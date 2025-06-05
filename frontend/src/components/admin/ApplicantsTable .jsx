@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,18 +9,25 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { MoreHorizontal, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { MoreHorizontal, CheckCircle2, XCircle, Clock, Info } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { APPLICATION_API_END_POINT } from "../../utils/constant";
 import axios from "axios";
-import { Info } from "lucide-react";
 
 const shortlistingStatus = ["Accepted", "Rejected", "On Hold"];
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
   const [expandedAppId, setExpandedAppId] = useState(null);
+
+  // Local copy of applicants to update UI immediately after status change
+  const [localApplicants, setLocalApplicants] = useState(applicants?.applications || []);
+
+  // Sync localApplicants when redux applicants changes
+  useEffect(() => {
+    setLocalApplicants(applicants?.applications || []);
+  }, [applicants]);
 
   const toggleAnswers = (id) => {
     setExpandedAppId(expandedAppId === id ? null : id);
@@ -50,6 +57,10 @@ const ApplicantsTable = () => {
       );
       if (res.data.success) {
         toast.success(res.data.message);
+        // Update local applicants state to immediately show new status
+        setLocalApplicants((prev) =>
+          prev.map((app) => (app._id === id ? { ...app, status } : app))
+        );
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
@@ -136,6 +147,7 @@ const ApplicantsTable = () => {
       )}
     </div>
   );
+
   return (
     <div>
       {/* Desktop Table View */}
@@ -146,23 +158,19 @@ const ApplicantsTable = () => {
           </TableCaption>
           <TableHeader>
             <TableRow className="bg-gray-100 rounded-lg">
-              <TableHead className="px-4 py-2 rounded-l-lg">
-                Full Name
-              </TableHead>
+              <TableHead className="px-4 py-2 rounded-l-lg">Full Name</TableHead>
               <TableHead className="px-4 py-2">Email</TableHead>
               <TableHead className="px-4 py-2">Resume</TableHead>
               <TableHead className="px-4 py-2">Date</TableHead>
               <TableHead className="px-4 py-2">Status</TableHead>
               <TableHead className="px-4 py-2">View Profile</TableHead>
               <TableHead className="px-4 py-2">Answers</TableHead>
-              <TableHead className="px-4 py-2 text-right rounded-r-lg">
-                Action
-              </TableHead>
+              <TableHead className="px-4 py-2 text-right rounded-r-lg">Action</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {applicants?.applications
+            {localApplicants
               ?.filter((item) => item?.applicant)
               .map((item) => (
                 <React.Fragment key={item._id}>
@@ -181,8 +189,7 @@ const ApplicantsTable = () => {
                           rel="noopener noreferrer"
                           className="text-blue-600 font-medium hover:underline"
                         >
-                          {item?.applicant?.profile?.resumeOriginalName ||
-                            "Resume"}
+                          {item?.applicant?.profile?.resumeOriginalName || "Resume"}
                         </a>
                       ) : (
                         <span className="text-gray-400 italic">NA</span>
@@ -226,9 +233,7 @@ const ApplicantsTable = () => {
                         onClick={() => toggleAnswers(item._id)}
                         className="text-blue-600 underline hover:text-blue-800"
                       >
-                        {expandedAppId === item._id
-                          ? "Hide Answers"
-                          : "View Answers"}
+                        {expandedAppId === item._id ? "Hide Answers" : "View Answers"}
                       </button>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-right">
@@ -279,18 +284,14 @@ const ApplicantsTable = () => {
 
       {/* Mobile Card View */}
       <div className="md:hidden space-y-4">
-        {applicants?.applications
+        {localApplicants
           ?.filter((item) => item?.applicant)
           .map((item) => {
             const isExpanded = expandedAppId === item._id;
             return (
-              <div
-                key={item._id}
-                className="bg-white shadow-sm rounded-lg p-4 border"
-              >
+              <div key={item._id} className="bg-white shadow-sm rounded-lg p-4 border">
                 <div className="mb-2">
-                  <strong>Full Name:</strong>{" "}
-                  {item?.applicant?.fullname || "N/A"}
+                  <strong>Full Name:</strong> {item?.applicant?.fullname || "N/A"}
                 </div>
                 <div className="mb-2">
                   <strong>Email:</strong> {item?.applicant?.email || "N/A"}
@@ -311,8 +312,7 @@ const ApplicantsTable = () => {
                   )}
                 </div>
                 <div className="mb-2">
-                  <strong>Date:</strong>{" "}
-                  {item?.applicant?.createdAt?.split("T")[0] || "N/A"}
+                  <strong>Date:</strong> {item?.applicant?.createdAt?.split("T")[0] || "N/A"}
                 </div>
                 <div className="mb-2">
                   <strong>Status:</strong>{" "}
