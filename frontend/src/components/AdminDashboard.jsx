@@ -7,7 +7,6 @@ const isProduction = window.location.hostname !== "localhost";
 const BASE_URL = isProduction
   ? "https://job-portal-backend-2tyj.onrender.com"
   : "http://localhost:8000";
-
 const ADMIN_API_END_POINT = `${BASE_URL}/admin`;
 
 const AdminDashboard = () => {
@@ -16,8 +15,11 @@ const AdminDashboard = () => {
 
   const [users, setUsers] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [jobs, setJobs] = useState([]);
+
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingCompanies, setLoadingCompanies] = useState(true);
+  const [loadingJobs, setLoadingJobs] = useState(true);
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
@@ -26,6 +28,7 @@ const AdminDashboard = () => {
     }
     fetchUsers();
     fetchCompanies();
+    fetchJobs();
   }, [user, navigate]);
 
   const fetchUsers = async () => {
@@ -50,7 +53,6 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get(`${ADMIN_API_END_POINT}/companies`);
       if (response.data.success) {
-        // ✅ Sort companies by newest first (using createdAt)
         const sortedCompanies = response.data.companies.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -66,9 +68,25 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchJobs = async () => {
+    setLoadingJobs(true);
+    try {
+      const response = await axios.get(`${ADMIN_API_END_POINT}/all`);
+      if (response.data.success) {
+        setJobs(response.data.jobs);
+      } else {
+        alert("Failed to fetch jobs");
+      }
+    } catch (error) {
+      alert("Error fetching jobs");
+      console.error(error);
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
   const handleDeleteUser = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-
     try {
       const response = await axios.delete(`${ADMIN_API_END_POINT}/users/${id}`);
       if (response.data.success) {
@@ -78,6 +96,21 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       alert("Error deleting user");
+      console.error(error);
+    }
+  };
+
+  const handleDeleteJob = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this job?")) return;
+    try {
+      const response = await axios.delete(`${ADMIN_API_END_POINT}/job/${id}`);
+      if (response.data.success) {
+        setJobs(jobs.filter((j) => j._id !== id));
+      } else {
+        alert("Failed to delete job");
+      }
+    } catch (error) {
+      alert("Error deleting job");
       console.error(error);
     }
   };
@@ -102,7 +135,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loadingUsers || loadingCompanies)
+  if (loadingUsers || loadingCompanies || loadingJobs)
     return <p className="text-center mt-10 text-gray-500">Loading...</p>;
 
   return (
@@ -117,39 +150,22 @@ const AdminDashboard = () => {
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Fullname
-                  </th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Email
-                  </th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Role
-                  </th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">
-                    Action
-                  </th>
+                  <th className="py-3 px-4 border-b">Fullname</th>
+                  <th className="py-3 px-4 border-b">Email</th>
+                  <th className="py-3 px-4 border-b">Role</th>
+                  <th className="py-3 px-4 border-b text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map(({ _id, fullname, email, role }) => (
-                  <tr
-                    key={_id}
-                    className="hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <td className="py-3 px-4 border-b border-gray-200">
-                      {fullname}
-                    </td>
-                    <td className="py-3 px-4 border-b border-gray-200">
-                      {email}
-                    </td>
-                    <td className="py-3 px-4 border-b border-gray-200">
-                      {role}
-                    </td>
-                    <td className="py-3 px-4 border-b border-gray-200 text-center">
+                  <tr key={_id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b">{fullname}</td>
+                    <td className="py-3 px-4 border-b">{email}</td>
+                    <td className="py-3 px-4 border-b">{role}</td>
+                    <td className="py-3 px-4 border-b text-center">
                       <button
                         onClick={() => handleDeleteUser(_id)}
-                        className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-200"
+                        className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md"
                       >
                         Delete
                       </button>
@@ -172,62 +188,97 @@ const AdminDashboard = () => {
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Company Name
-                  </th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300 max-w-xs">
-                    Company Description
-                  </th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Owner Name
-                  </th>
-                  <th className="text-left py-3 px-4 border-b border-gray-300">
-                    Owner Email
-                  </th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">
+                  <th className="py-3 px-4 border-b">Company Name</th>
+                  <th className="py-3 px-4 border-b">Description</th>
+                  <th className="py-3 px-4 border-b">Owner Name</th>
+                  <th className="py-3 px-4 border-b">Owner Email</th>
+                  <th className="py-3 px-4 border-b text-center">
                     Approval Status
                   </th>
-                  <th className="text-center py-3 px-4 border-b border-gray-300">
-                    Action
-                  </th>
+                  <th className="py-3 px-4 border-b text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {companies.map(
                   ({ _id, name, description, userId, isApproved }) => (
-                    <tr
-                      key={_id}
-                      className="hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <td className="py-3 px-4 border-b border-gray-200 font-semibold text-gray-800">
+                    <tr key={_id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 border-b font-semibold">
                         {name}
                       </td>
-                      <td className="py-3 px-4 border-b border-gray-200 max-w-xs whitespace-normal break-words text-gray-700">
+                      <td className="py-3 px-4 border-b max-w-xs break-words">
                         {description || "-"}
                       </td>
-                      <td className="py-3 px-4 border-b border-gray-200">
+                      <td className="py-3 px-4 border-b">
                         {userId?.fullname || "-"}
                       </td>
-                      <td className="py-3 px-4 border-b border-gray-200">
+                      <td className="py-3 px-4 border-b">
                         {userId?.email || "-"}
                       </td>
                       <td
-                        className={`py-3 px-4 border-b border-gray-200 text-center font-semibold ${
+                        className={`py-3 px-4 border-b text-center font-semibold ${
                           isApproved ? "text-green-600" : "text-red-600"
                         }`}
                       >
                         {isApproved ? "Approved" : "Disapproved"}
                       </td>
-                      <td className="py-3 px-4 border-b border-gray-200 text-center">
+                      <td className="py-3 px-4 border-b text-center">
                         <button
                           onClick={() => toggleCompanyApproval(_id)}
-                          className={`inline-block font-semibold py-1 px-3 rounded-md transition-colors duration-200 ${
+                          className={`py-1 px-3 rounded-md text-white font-semibold ${
                             isApproved
-                              ? "bg-red-600 hover:bg-red-700 text-white"
-                              : "bg-green-600 hover:bg-green-700 text-white"
+                              ? "bg-red-600 hover:bg-red-700"
+                              : "bg-green-600 hover:bg-green-700"
                           }`}
                         >
                           {isApproved ? "Disapprove" : "Approve"}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Jobs Section */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Jobs</h2>
+        {jobs.length === 0 ? (
+          <p className="text-center text-gray-600">No jobs found.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-200 rounded-md">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="py-3 px-4 border-b">Title</th>
+                  <th className="py-3 px-4 border-b">Company</th>
+                  <th className="py-3 px-4 border-b">Location</th>
+                  <th className="py-3 px-4 border-b">Salary</th>
+                  <th className="py-3 px-4 border-b">Posted On</th>
+                  <th className="py-3 px-4 border-b text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {jobs.map(
+                  ({ _id, title, location, salary, createdAt, companyId }) => (
+                    <tr key={_id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 border-b">{title}</td>
+                      <td className="py-3 px-4 border-b">
+                        {companyId?.name || "-"}
+                      </td>
+                      <td className="py-3 px-4 border-b">{location}</td>
+                      <td className="py-3 px-4 border-b">₹{salary}</td>
+                      <td className="py-3 px-4 border-b">
+                        {new Date(createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4 border-b text-center">
+                        <button
+                          onClick={() => handleDeleteJob(_id)}
+                          className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md"
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>

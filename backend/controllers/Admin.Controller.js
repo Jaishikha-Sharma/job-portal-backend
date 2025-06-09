@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import { Company } from "../models/company.model.js";
+import { Job } from "../models/job.model.js";
 
 // GET all users (except admins)
 export const getAllUsers = async (req, res) => {
@@ -60,6 +61,34 @@ export const toggleCompanyApproval = async (req, res) => {
     });
   } catch (error) {
     console.error("Toggle approval error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// GET all jobs (admin)
+export const getAllJobsForAdmin = async (req, res) => {
+  try {
+    const jobs = await Job.find().sort({ createdAt: -1 }); // Optional: sort newest first
+    res.status(200).json({ success: true, jobs });
+  } catch (error) {
+    console.error("Get all jobs error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// DELETE a job by ID
+export const deleteJobByAdmin = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found" });
+    }
+
+    await Job.findByIdAndDelete(jobId);
+    res.status(200).json({ success: true, message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Delete job error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
