@@ -11,14 +11,13 @@ import applicationRoute from "./routes/application.route.js";
 import adminRoutes from "./routes/admin.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 
-
 const app = express();
 dotenv.config();
 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://job-portal-backend-neon.vercel.app",
-  "jobs.stepupstudent.com"
+  "https://jobs.stepupstudent.com",
 ];
 
 const corsOptions = {
