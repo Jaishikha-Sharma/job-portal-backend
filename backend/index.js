@@ -18,6 +18,7 @@ dotenv.config();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://job-portal-backend-neon.vercel.app",
+  "jobs.stepupstudent.com"
 ];
 
 const corsOptions = {
