@@ -9,3 +9,5 @@ export const APPLICATION_API_END_POINT = `${BASE_URL}/api/v1/application`;
 export const COMPANY_API_END_POINT = `${BASE_URL}/api/v1/company`;
 export const ADMIN_API_END_POINT = `${BASE_URL}/admin`;
 export const NOTIFICATION_API_END_POINT = `${BASE_URL}/api/notifications`;
+export const PROJECT_API_END_POINT = `${BASE_URL}/api/projects`;
+

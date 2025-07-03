@@ -173,7 +173,7 @@ const Dashboard = () => {
             <PlusCircle className="w-5 h-5" />
             Post a New Job
           </button>
-
+         
           <div className="text-sm text-gray-500 italic">
             Showing latest {Math.min(allAdminJobs.length, 3)} job postings
           </div>

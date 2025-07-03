@@ -107,6 +107,15 @@ const Navbar = () => {
                 >
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
+                <li
+                  className={`${
+                    isActive("/admin/projects/create")
+                      ? "text-[#f83002] font-semibold"
+                      : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
+                  <Link to="/admin/projects/create">Post a Project</Link>
+                </li>
               </>
             ) : (
               <>
@@ -275,6 +284,8 @@ const Navbar = () => {
                   { to: "/dashboards", label: "Dashboard" },
                   { to: "/admin/companies", label: "Companies" },
                   { to: "/admin/jobs", label: "Jobs" },
+                  { to: "/admin/projects/create", label: "Post a Project" },
+
                 ]
               : [
                   { to: "/", label: "Home" },

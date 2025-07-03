@@ -1,4 +1,3 @@
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
@@ -20,6 +19,9 @@ import AppliedMenu from "./components/AppliedMenu.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import Dashboard from "./components/admin/Dashboard.jsx";
 import JobUpdate from "./components/admin/JobUpdate.jsx";
+import PostProjectForm from "./components/admin/PostProjectForm";
+import ProjectList from "./components/admin/ProjectList.jsx";
+
 
 const appRouter = createBrowserRouter([
   {
@@ -118,10 +120,26 @@ const appRouter = createBrowserRouter([
     element: <AdminDashboard />,
   },
   {
-  path: "/admin/jobs/edit/:id",
+    path: "/admin/jobs/edit/:id",
+    element: (
+      <ProtectedRoute>
+        <JobUpdate />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/projects/create",
+    element: (
+      <ProtectedRoute>
+        <PostProjectForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+  path: "/admin/projects",
   element: (
     <ProtectedRoute>
-      <JobUpdate />
+      <ProjectList />
     </ProtectedRoute>
   ),
 },
