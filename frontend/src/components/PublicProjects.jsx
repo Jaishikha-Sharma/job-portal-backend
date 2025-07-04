@@ -7,6 +7,7 @@ import {
   APPLICATION_API_END_POINT,
 } from "../utils/constant.js";
 import Navbar from "./shared/Navbar.jsx";
+import { useNavigate } from "react-router-dom";
 
 const PublicProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -16,6 +17,7 @@ const PublicProjects = () => {
   const [showAppliedOnly, setShowAppliedOnly] = useState(false);
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate(); // 👈 useNavigate hook
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -103,7 +105,8 @@ const PublicProjects = () => {
             {projectsToShow.map((project) => (
               <div
                 key={project._id}
-                className="p-5 border rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white w-full max-w-full mx-auto"
+                onClick={() => navigate(`/projects/${project._id}`)} // 👈 Navigate on click
+                className="cursor-pointer p-5 border rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white w-full max-w-full mx-auto"
               >
                 <div className="text-gray-400 text-xs mb-2">
                   Posted:{" "}
@@ -144,7 +147,8 @@ const PublicProjects = () => {
 
                 <Button
                   className="w-full bg-[#6a38c2] text-white hover:bg-[#5c2fbf]"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // 👈 Prevent navigation on apply
                     if (!token) {
                       alert("Please login to apply.");
                       return;

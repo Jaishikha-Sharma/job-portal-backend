@@ -22,12 +22,18 @@ import JobUpdate from "./components/admin/JobUpdate.jsx";
 import PostProjectForm from "./components/admin/PostProjectForm";
 import ProjectList from "./components/admin/ProjectList.jsx";
 import PublicProjects from "./components/PublicProjects.jsx";
+import ProjectDescription from "./components/ProjectDescription.jsx";
 
 const appRouter = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/projects/:id",
+    element: <ProjectDescription />,
+  },
+
   {
     path: "/projects",
     element: <PublicProjects />,

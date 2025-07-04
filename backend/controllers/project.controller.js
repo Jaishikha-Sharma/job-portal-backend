@@ -6,22 +6,24 @@ export const createProject = async (req, res) => {
     const {
       title,
       description,
+      termsOfPayment, // ✅ added
       budget,
       duration,
       skillsRequired,
       category,
-      isPublic = true, // default to true if not provided
+      isPublic = true,
     } = req.body;
 
     const newProject = new Project({
       title,
       description,
+      termsOfPayment, // ✅ added
       budget,
       duration,
       skillsRequired,
       category,
       isPublic,
-      createdBy: req.id, // ✅ from isAuthenticated middleware
+      createdBy: req.id, // from isAuthenticated middleware
     });
 
     await newProject.save();
@@ -85,5 +87,24 @@ export const getPublicProjects = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching public projects", error });
+  }
+};
+
+// ✅ Get a single project by ID (for project detail page)
+export const getProjectById = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id).populate(
+      "createdBy",
+      "fullname email"
+    );
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json({ success: true, project });
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    res.status(500).json({ message: "Error fetching project", error });
   }
 };

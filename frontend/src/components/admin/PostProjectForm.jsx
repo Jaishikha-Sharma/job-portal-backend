@@ -17,6 +17,7 @@ const PostProjectForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    termsOfPayment: "",
     budget: "",
     duration: "",
     skillsRequired: "",
@@ -44,6 +45,7 @@ const PostProjectForm = () => {
       setFormData({
         title: "",
         description: "",
+        termsOfPayment: "",
         budget: "",
         duration: "",
         skillsRequired: "",
@@ -74,6 +76,7 @@ const PostProjectForm = () => {
                 placeholder="Enter project title"
               />
             </div>
+
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Project Description *
@@ -88,8 +91,23 @@ const PostProjectForm = () => {
                 placeholder="Enter project description"
               />
             </div>
+
+            <div className="md:col-span-2">
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Terms of Payment
+              </label>
+              <textarea
+                name="termsOfPayment"
+                value={formData.termsOfPayment}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder="e.g. 50% advance, 50% after delivery"
+              />
+            </div>
           </div>
         );
+
       case 2:
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,6 +135,7 @@ const PostProjectForm = () => {
                 />
               </div>
             </div>
+
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Duration
@@ -132,6 +151,7 @@ const PostProjectForm = () => {
             </div>
           </div>
         );
+
       case 3:
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -163,6 +183,7 @@ const PostProjectForm = () => {
             </div>
           </div>
         );
+
       default:
         return null;
     }
@@ -210,12 +231,12 @@ const PostProjectForm = () => {
           ))}
         </div>
 
-        {/* Form fields */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {StepUI()}
         </form>
 
-        {/* Step buttons outside form to prevent premature submission */}
+        {/* Navigation Buttons */}
         <div className="flex justify-between pt-6">
           {step > 1 && (
             <button
@@ -248,7 +269,7 @@ const PostProjectForm = () => {
         {error && <p className="text-red-500 text-sm mt-2">⚠️ {error}</p>}
       </div>
 
-      {/* Toggle Projects */}
+      {/* Toggle Project List */}
       <div className="max-w-xl mx-auto mt-10 text-center">
         <button
           onClick={() => setShowProjects(!showProjects)}

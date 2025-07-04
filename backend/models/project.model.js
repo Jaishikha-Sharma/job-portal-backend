@@ -9,6 +9,7 @@ const projectSchema = new mongoose.Schema(
     duration: { type: String, required: true }, 
     skillsRequired: [{ type: String }], 
     category: { type: String, required: true },
+     termsOfPayment: { type: String },
      isPublic: {                     
       type: Boolean,
       default: true,
