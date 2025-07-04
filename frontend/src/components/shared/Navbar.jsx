@@ -158,6 +158,14 @@ const Navbar = () => {
                 >
                   <Link to="/applied-jobss">Applied Jobs</Link>
                 </li>
+                <li
+                  className={`${
+                    isActive("/projects") ? "text-[#f83002] font-semibold" : ""
+                  } hover:text-[#f83002] hover:scale-105 transition-all`}
+                >
+                  <Link to="/projects">Projects</Link>
+                </li>
+
                 {user?.role === "admin" && (
                   <li
                     className={`${
@@ -285,7 +293,6 @@ const Navbar = () => {
                   { to: "/admin/companies", label: "Companies" },
                   { to: "/admin/jobs", label: "Jobs" },
                   { to: "/admin/projects/create", label: "Post a Project" },
-
                 ]
               : [
                   { to: "/", label: "Home" },
@@ -293,6 +300,7 @@ const Navbar = () => {
                   // { to: "/browse", label: "Browse" },
                   { to: "/saved-jobs", label: "Saved Jobs" },
                   { to: "/applied-jobss", label: "Applied Jobs" },
+                  { to: "/projects", label: "Projects" },
                   ...(user?.role === "admin"
                     ? [{ to: "/admin/dashboard", label: "Dashboard" }]
                     : []),

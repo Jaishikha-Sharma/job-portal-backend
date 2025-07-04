@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js"; 
-import { applyJob, getApplicants, getAppliedJobs, updateStatus } from "../controllers/application.controller.js";
+import { applyJob, getApplicants, getAppliedJobs, updateStatus  , applyToProject , getAppliedProjects , getProjectApplicants} from "../controllers/application.controller.js";
  
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.route("/apply/:id").post(isAuthenticated, applyJob);
 router.route("/get").get(isAuthenticated, getAppliedJobs);
 router.route("/:id/applicants").get(isAuthenticated, getApplicants);
 router.route("/status/:id/update").post(isAuthenticated, updateStatus);
+router.post("/apply-project/:id", isAuthenticated, applyToProject);
+router.get("/applied-projects", isAuthenticated, getAppliedProjects);
+router.get("/project/:id/applicants", isAuthenticated, getProjectApplicants);
  
 
 export default router;

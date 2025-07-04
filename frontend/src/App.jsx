@@ -21,13 +21,18 @@ import Dashboard from "./components/admin/Dashboard.jsx";
 import JobUpdate from "./components/admin/JobUpdate.jsx";
 import PostProjectForm from "./components/admin/PostProjectForm";
 import ProjectList from "./components/admin/ProjectList.jsx";
-
+import PublicProjects from "./components/PublicProjects.jsx";
 
 const appRouter = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/projects",
+    element: <PublicProjects />,
+  },
+
   {
     path: "/signup",
     element: <SignUp />,
@@ -136,14 +141,13 @@ const appRouter = createBrowserRouter([
     ),
   },
   {
-  path: "/admin/projects",
-  element: (
-    <ProtectedRoute>
-      <ProjectList />
-    </ProtectedRoute>
-  ),
-},
-
+    path: "/admin/projects",
+    element: (
+      <ProtectedRoute>
+        <ProjectList />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 function App() {

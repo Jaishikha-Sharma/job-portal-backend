@@ -1,6 +1,6 @@
 import { Project } from "../models/project.model.js";
 
-// Create Project
+// ✅ Create Project
 export const createProject = async (req, res) => {
   try {
     const {
@@ -10,6 +10,7 @@ export const createProject = async (req, res) => {
       duration,
       skillsRequired,
       category,
+      isPublic = true, // default to true if not provided
     } = req.body;
 
     const newProject = new Project({
@@ -19,7 +20,8 @@ export const createProject = async (req, res) => {
       duration,
       skillsRequired,
       category,
-      createdBy: req.id, // ✅ Set from isAuthenticated middleware
+      isPublic,
+      createdBy: req.id, // ✅ from isAuthenticated middleware
     });
 
     await newProject.save();
@@ -29,11 +31,12 @@ export const createProject = async (req, res) => {
       project: newProject,
     });
   } catch (error) {
+    console.error("Error creating project:", error);
     res.status(500).json({ message: "Error creating project", error });
   }
 };
 
-// Get all projects (for logged-in recruiter only)
+// ✅ Get all projects created by logged-in user
 export const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find({ createdBy: req.id }).populate(
@@ -43,17 +46,17 @@ export const getAllProjects = async (req, res) => {
 
     res.status(200).json(projects);
   } catch (error) {
+    console.error("Error fetching all projects:", error);
     res.status(500).json({ message: "Error fetching projects", error });
   }
 };
 
-// Delete project (only if created by the current user)
+// ✅ Delete a project (only if owned by user)
 export const deleteProject = async (req, res) => {
   try {
     const projectId = req.params.id;
-
     const project = await Project.findById(projectId);
-    
+
     if (!project || project.createdBy.toString() !== req.id) {
       return res
         .status(403)
@@ -64,6 +67,23 @@ export const deleteProject = async (req, res) => {
 
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
+    console.error("Error deleting project:", error);
     res.status(500).json({ message: "Error deleting project", error });
+  }
+};
+
+// ✅ Get all public projects (accessible to anyone)
+export const getPublicProjects = async (req, res) => {
+  try {
+    const projects = await Project.find({ isPublic: true })
+      .populate("createdBy", "fullname email")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, projects });
+  } catch (error) {
+    console.error("Error fetching public projects:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching public projects", error });
   }
 };

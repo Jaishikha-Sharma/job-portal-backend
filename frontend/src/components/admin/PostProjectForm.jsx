@@ -12,6 +12,7 @@ const PostProjectForm = () => {
 
   const [step, setStep] = useState(1);
   const [showProjects, setShowProjects] = useState(false);
+  const [currency, setCurrency] = useState("INR");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -27,8 +28,18 @@ const PostProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const finalData = {
+      ...formData,
+      budget: `${currency === "INR" ? "₹" : "$"}${formData.budget}`,
+      skillsRequired: formData.skillsRequired
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    };
+
     try {
-      await dispatch(createProject(formData)).unwrap();
+      await dispatch(createProject(finalData)).unwrap();
       alert("✅ Project posted successfully!");
       setFormData({
         title: "",
@@ -58,9 +69,9 @@ const PostProjectForm = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter project title"
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder="Enter project title"
               />
             </div>
             <div>
@@ -71,10 +82,10 @@ const PostProjectForm = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={4}
-                placeholder="Enter project description"
                 required
+                rows={4}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder="Enter project description"
               />
             </div>
           </div>
@@ -86,15 +97,25 @@ const PostProjectForm = () => {
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Budget *
               </label>
-              <input
-                type="text"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter budget"
-                required
-              />
+              <div className="flex gap-2 items-center">
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="px-2 py-2 border border-gray-300 rounded-lg bg-white"
+                >
+                  <option value="INR">₹ (INR)</option>
+                  <option value="USD">$ (USD)</option>
+                </select>
+                <input
+                  type="number"
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter budget"
+                />
+              </div>
             </div>
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
@@ -105,7 +126,7 @@ const PostProjectForm = () => {
                 name="duration"
                 value={formData.duration}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 placeholder="e.g. 1 month"
               />
             </div>
@@ -116,14 +137,14 @@ const PostProjectForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
-                Skills Required
+                Skills Required (comma separated)
               </label>
               <input
                 type="text"
                 name="skillsRequired"
                 value={formData.skillsRequired}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 placeholder="e.g. React, Node.js"
               />
             </div>
@@ -136,7 +157,7 @@ const PostProjectForm = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 placeholder="e.g. Web Development"
               />
             </div>
@@ -156,13 +177,13 @@ const PostProjectForm = () => {
           Post a New Project
         </h2>
 
-        {/* Stepper UI */}
-        <div className="w-full flex items-center justify-between mb-10 relative">
+        {/* Stepper */}
+        <div className="w-full flex justify-between mb-10">
           {steps.map((label, index) => (
             <div key={index} className="flex-1 flex flex-col items-center relative">
-              {index !== 0 && (
+              {index > 0 && (
                 <div
-                  className={`absolute top-4 -left-1/2 w-full h-1 z-0 ${
+                  className={`absolute top-4 -left-1/2 w-full h-1 ${
                     step > index ? "bg-blue-600" : "bg-gray-300"
                   }`}
                 ></div>
@@ -172,7 +193,7 @@ const PostProjectForm = () => {
                   step === index + 1
                     ? "bg-blue-600 text-white"
                     : step > index + 1
-                    ? "bg-green-500 text-white"
+                    ? "bg-green-600 text-white"
                     : "bg-gray-300 text-gray-700"
                 }`}
               >
@@ -189,42 +210,45 @@ const PostProjectForm = () => {
           ))}
         </div>
 
+        {/* Form fields */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {StepUI()}
-
-          <div className="flex justify-between pt-6">
-            {step > 1 && (
-              <button
-                type="button"
-                onClick={() => setStep(step - 1)}
-                className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
-              >
-                Back
-              </button>
-            )}
-            {step < 3 ? (
-              <button
-                type="button"
-                onClick={() => setStep(step + 1)}
-                className="ml-auto px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={loading}
-                className="ml-auto px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300"
-              >
-                {loading ? "Posting..." : "Submit"}
-              </button>
-            )}
-          </div>
-          {error && <p className="text-red-500 text-sm">⚠️ {error}</p>}
         </form>
+
+        {/* Step buttons outside form to prevent premature submission */}
+        <div className="flex justify-between pt-6">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+            >
+              Back
+            </button>
+          )}
+          {step < 3 ? (
+            <button
+              type="button"
+              onClick={() => setStep(step + 1)}
+              className="ml-auto px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="ml-auto px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300"
+            >
+              {loading ? "Posting..." : "Submit"}
+            </button>
+          )}
+        </div>
+        {error && <p className="text-red-500 text-sm mt-2">⚠️ {error}</p>}
       </div>
 
-      {/* Toggle Project List */}
+      {/* Toggle Projects */}
       <div className="max-w-xl mx-auto mt-10 text-center">
         <button
           onClick={() => setShowProjects(!showProjects)}
@@ -235,7 +259,7 @@ const PostProjectForm = () => {
       </div>
 
       {showProjects && (
-        <div className="max-w-4xl mx-auto mt-8 border-t pt-6 border-blue-300 transition-all duration-500">
+        <div className="max-w-4xl mx-auto mt-8 border-t pt-6 border-blue-300">
           <h3 className="text-xl font-semibold text-blue-700 mb-4 text-center">
             📂 Your Posted Projects
           </h3>

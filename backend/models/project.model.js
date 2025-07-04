@@ -1,4 +1,3 @@
-// backend/models/project.model.js
 
 import mongoose from "mongoose";
 
@@ -10,6 +9,10 @@ const projectSchema = new mongoose.Schema(
     duration: { type: String, required: true }, 
     skillsRequired: [{ type: String }], 
     category: { type: String, required: true },
+     isPublic: {                     
+      type: Boolean,
+      default: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
