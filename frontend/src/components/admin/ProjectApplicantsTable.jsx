@@ -9,11 +9,9 @@ import {
   TableRow,
 } from "../ui/table";
 import { useSelector } from "react-redux";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { APPLICATION_API_END_POINT } from "../../utils/constant";
 import axios from "axios";
 import { toast } from "sonner";
-import { Info, CheckCircle2, XCircle, Clock } from "lucide-react";
 
 const statusOptions = ["Accepted", "Rejected", "On Hold"];
 
@@ -76,7 +74,6 @@ const ProjectApplicantsTable = () => {
             <TableHead className="px-4 py-2">Email</TableHead>
             <TableHead className="px-4 py-2">Resume</TableHead>
             <TableHead className="px-4 py-2">Status</TableHead>
-            <TableHead className="px-4 py-2">Profile</TableHead>
             <TableHead className="px-4 py-2">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -111,63 +108,6 @@ const ProjectApplicantsTable = () => {
                 >
                   {app.status || "Pending"}
                 </span>
-              </TableCell>
-              <TableCell className="px-4 py-2">
-                <Popover>
-                  <PopoverTrigger>
-                    <button className="text-blue-600 underline flex gap-1 items-center">
-                      <Info className="w-4 h-4" /> View
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-72 p-4 border shadow bg-white text-sm space-y-1">
-                    <p>
-                      <strong>Phone:</strong>{" "}
-                      {app.applicant?.phoneNumber || "NA"}
-                    </p>
-                    {app?.applicant?.profile?.dob && (
-                      <p>
-                        <strong>DOB:</strong>{" "}
-                        {app.applicant.profile.dob.split("T")[0]}
-                      </p>
-                    )}
-                    {app?.applicant?.profile?.address && (
-                      <p>
-                        <strong>Address:</strong>{" "}
-                        {app.applicant.profile.address}
-                      </p>
-                    )}
-                    {app?.applicant?.profile?.pincode && (
-                      <p>
-                        <strong>Pincode:</strong>{" "}
-                        {app.applicant.profile.pincode}
-                      </p>
-                    )}
-                    {app?.applicant?.profile?.bio && (
-                      <p>
-                        <strong>Bio:</strong> {app.applicant.profile.bio}
-                      </p>
-                    )}
-                    {app?.applicant?.profile?.skills?.length > 0 && (
-                      <p>
-                        <strong>Skills:</strong>{" "}
-                        {app.applicant.profile.skills.join(", ")}
-                      </p>
-                    )}
-                    {app?.applicant?.profile?.linkedin && (
-                      <p>
-                        <strong>LinkedIn:</strong>{" "}
-                        <a
-                          href={app.applicant.profile.linkedin}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-600 underline"
-                        >
-                          {app.applicant.profile.linkedin}
-                        </a>
-                      </p>
-                    )}
-                  </PopoverContent>
-                </Popover>
               </TableCell>
               <TableCell className="px-4 py-2">
                 <div className="flex gap-2">

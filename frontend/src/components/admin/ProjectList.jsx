@@ -4,7 +4,7 @@ import { getAllProjects, deleteProject } from "../../redux/projectSlice";
 import axios from "axios";
 import { setProjectApplicants } from "../../redux/applicationSlice";
 import { APPLICATION_API_END_POINT } from "../../utils/constant";
-import ProjectApplicantsTable from "../admin/ProjectApplicantsTable"; // ✅ Import
+import ProjectApplicantsTable from "../admin/ProjectApplicantsTable";
 
 const ProjectList = () => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const ProjectList = () => {
   const toggleApplicants = async (projectId) => {
     const token = localStorage.getItem("token");
     if (openProjectId === projectId) {
-      setOpenProjectId(null); // close
+      setOpenProjectId(null);
       return;
     }
 
@@ -38,7 +38,7 @@ const ProjectList = () => {
         }
       );
       dispatch(setProjectApplicants(res.data.applicants));
-      setOpenProjectId(projectId); // open this one
+      setOpenProjectId(projectId);
     } catch (error) {
       console.error("Failed to fetch applicants:", error);
     }
@@ -61,7 +61,7 @@ const ProjectList = () => {
                 <th className="px-6 py-3">Title</th>
                 <th className="px-6 py-3">Budget</th>
                 <th className="px-6 py-3">Duration</th>
-                <th className="px-6 py-3">Category</th>
+                <th className="px-6 py-3">Company</th>
                 <th className="px-6 py-3">Skills</th>
                 <th className="px-6 py-3">Actions</th>
               </tr>
@@ -73,9 +73,11 @@ const ProjectList = () => {
                   <React.Fragment key={project._id}>
                     <tr className="border-t hover:bg-gray-50">
                       <td className="px-6 py-4 text-blue-900 font-medium">{project.title}</td>
-                      <td className="px-6 py-4">₹{project.budget}</td>
+                      <td className="px-6 py-4">{project.budget}</td>
                       <td className="px-6 py-4">{project.duration}</td>
-                      <td className="px-6 py-4">{project.category}</td>
+                      <td className="px-6 py-4">
+                        {project.company?.name || "N/A"}
+                      </td>
                       <td className="px-6 py-4">
                         {Array.isArray(project.skillsRequired)
                           ? project.skillsRequired.join(", ")
@@ -99,7 +101,6 @@ const ProjectList = () => {
                       </td>
                     </tr>
 
-                    {/* Show applicants inline below this row */}
                     {openProjectId === project._id && (
                       <tr>
                         <td colSpan="6" className="bg-gray-50 p-4">

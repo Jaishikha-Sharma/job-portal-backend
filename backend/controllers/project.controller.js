@@ -1,4 +1,5 @@
 import { Project } from "../models/project.model.js";
+import { Company } from "../models/company.model.js";
 
 // ✅ Create Project
 export const createProject = async (req, res) => {
@@ -6,24 +7,30 @@ export const createProject = async (req, res) => {
     const {
       title,
       description,
-      termsOfPayment, // ✅ added
+      termsOfPayment,
       budget,
       duration,
       skillsRequired,
-      category,
+      company,
       isPublic = true,
     } = req.body;
+
+    // ✅ Optional: Validate company existence
+    const existingCompany = await Company.findById(company);
+    if (!existingCompany) {
+      return res.status(400).json({ message: "Invalid company selected" });
+    }
 
     const newProject = new Project({
       title,
       description,
-      termsOfPayment, // ✅ added
+      termsOfPayment,
       budget,
       duration,
       skillsRequired,
-      category,
+      company,
       isPublic,
-      createdBy: req.id, // from isAuthenticated middleware
+      createdBy: req.id, // set by isAuthenticated middleware
     });
 
     await newProject.save();
@@ -41,10 +48,9 @@ export const createProject = async (req, res) => {
 // ✅ Get all projects created by logged-in user
 export const getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ createdBy: req.id }).populate(
-      "createdBy",
-      "fullname email"
-    );
+    const projects = await Project.find({ createdBy: req.id })
+      .populate("createdBy", "fullname email")
+      .populate("company", "name");
 
     res.status(200).json(projects);
   } catch (error) {
@@ -79,6 +85,7 @@ export const getPublicProjects = async (req, res) => {
   try {
     const projects = await Project.find({ isPublic: true })
       .populate("createdBy", "fullname email")
+      .populate("company", "name")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, projects });
@@ -93,10 +100,9 @@ export const getPublicProjects = async (req, res) => {
 // ✅ Get a single project by ID (for project detail page)
 export const getProjectById = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id).populate(
-      "createdBy",
-      "fullname email"
-    );
+    const project = await Project.findById(req.params.id)
+      .populate("createdBy", "fullname email")
+      .populate("company", "name");
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });

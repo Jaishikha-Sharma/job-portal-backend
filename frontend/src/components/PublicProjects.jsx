@@ -87,7 +87,9 @@ const PublicProjects = () => {
               onClick={() => setShowAppliedOnly((prev) => !prev)}
               className="absolute right-6"
             >
-              {showAppliedOnly ? "Show All Projects" : "Show My Applied Projects"}
+              {showAppliedOnly
+                ? "Show All Projects"
+                : "Show My Applied Projects"}
             </Button>
           )}
         </div>
@@ -122,16 +124,27 @@ const PublicProjects = () => {
                 <p className="text-sm text-gray-500 italic mb-2">
                   Posted by: {project.createdBy?.fullname || "Unknown"}
                 </p>
+                {project.company?.name && (
+                  <p className="text-sm text-gray-500 italic mb-2">
+                    Company: {project.company.name}
+                  </p>
+                )}
 
                 <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                   {project.description}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <Badge variant="ghost" className="text-blue-600 text-xs sm:text-sm">
+                  <Badge
+                    variant="ghost"
+                    className="text-blue-600 text-xs sm:text-sm"
+                  >
                     Budget: ₹{project.budget}
                   </Badge>
-                  <Badge variant="ghost" className="text-green-600 text-xs sm:text-sm">
+                  <Badge
+                    variant="ghost"
+                    className="text-green-600 text-xs sm:text-sm"
+                  >
                     Duration: {project.duration}
                   </Badge>
                   {project.skillsRequired?.map((skill, idx) => (

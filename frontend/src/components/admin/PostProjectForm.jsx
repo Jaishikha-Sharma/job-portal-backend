@@ -9,6 +9,7 @@ const steps = ["Project Info", "Budget", "Skills"];
 const PostProjectForm = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.project);
+  const { companies } = useSelector((state) => state.company);
 
   const [step, setStep] = useState(1);
   const [showProjects, setShowProjects] = useState(false);
@@ -21,7 +22,7 @@ const PostProjectForm = () => {
     budget: "",
     duration: "",
     skillsRequired: "",
-    category: "",
+    company: "", // now storing ObjectId
   });
 
   const handleChange = (e) =>
@@ -49,7 +50,7 @@ const PostProjectForm = () => {
         budget: "",
         duration: "",
         skillsRequired: "",
-        category: "",
+        company: "",
       });
       setStep(1);
     } catch (err) {
@@ -135,7 +136,7 @@ const PostProjectForm = () => {
                 placeholder="e.g. 1 month"
               />
             </div>
-            
+
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Terms of Payment
@@ -168,18 +169,31 @@ const PostProjectForm = () => {
                 placeholder="e.g. React, Node.js"
               />
             </div>
+
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
-                Category
+                Company Name *
               </label>
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                placeholder="e.g. Web Development"
-              />
+              {companies.length > 0 ? (
+                <select
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="">Select a Company</option>
+                  {companies.map((company) => (
+                    <option key={company._id} value={company._id}>
+                      {company.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-red-500 text-sm">
+                  * No companies found. Please add a company first.
+                </p>
+              )}
             </div>
           </div>
         );
@@ -193,7 +207,6 @@ const PostProjectForm = () => {
     <>
       <Navbar />
 
-      {/* Top bar with toggle button */}
       <div className="max-w-6xl mx-auto flex justify-end mt-6 px-4">
         <button
           onClick={() => setShowProjects(!showProjects)}
@@ -203,17 +216,18 @@ const PostProjectForm = () => {
         </button>
       </div>
 
-      {/* Show project list or form based on toggle */}
       {!showProjects ? (
         <div className="max-w-4xl mx-auto mt-6 p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
             Post a New Project
           </h2>
 
-          {/* Stepper */}
           <div className="w-full flex justify-between mb-10">
             {steps.map((label, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center relative">
+              <div
+                key={index}
+                className="flex-1 flex flex-col items-center relative"
+              >
                 {index > 0 && (
                   <div
                     className={`absolute top-4 -left-1/2 w-full h-1 ${
@@ -245,12 +259,10 @@ const PostProjectForm = () => {
             ))}
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {StepUI()}
           </form>
 
-          {/* Navigation Buttons */}
           <div className="flex justify-between pt-6">
             {step > 1 && (
               <button

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
-import { APPLICATION_API_END_POINT, PROJECT_API_END_POINT } from "../utils/constant";
+import {
+  APPLICATION_API_END_POINT,
+  PROJECT_API_END_POINT,
+} from "../utils/constant";
 import Navbar from "./shared/Navbar";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -27,9 +30,12 @@ const ProjectDescription = () => {
 
     const checkApplied = async () => {
       try {
-        const res = await axios.get(`${APPLICATION_API_END_POINT}/applied-projects`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${APPLICATION_API_END_POINT}/applied-projects`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const appliedIds = res.data.projects.map((p) => p._id);
         setApplied(appliedIds.includes(id));
       } catch (err) {
@@ -56,7 +62,10 @@ const ProjectDescription = () => {
     }
   };
 
-  if (!project) return <div className="text-center mt-10 text-gray-600">Loading project...</div>;
+  if (!project)
+    return (
+      <div className="text-center mt-10 text-gray-600">Loading project...</div>
+    );
 
   return (
     <>
@@ -65,13 +74,19 @@ const ProjectDescription = () => {
       <div className="max-w-4xl mx-auto p-6 mt-6 bg-white rounded-2xl shadow-xl">
         {/* Back Button */}
         <div className="mb-6">
-          <Button variant="outline" onClick={() => navigate(-1)} className="text-sm">
+          <Button
+            variant="outline"
+            onClick={() => navigate(-1)}
+            className="text-sm"
+          >
             ← Back to Projects
           </Button>
         </div>
 
         {/* Project Title */}
-        <h1 className="text-3xl font-bold text-purple-700 mb-4">{project.title}</h1>
+        <h1 className="text-3xl font-bold text-purple-700 mb-4">
+          {project.title}
+        </h1>
 
         {/* Project Details */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -82,28 +97,37 @@ const ProjectDescription = () => {
             Duration: {project.duration}
           </Badge>
           <Badge className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full">
-            Category: {project.category}
+            Company: {project?.company?.name || "Unknown"}
           </Badge>
         </div>
 
         {/* Description */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">Project Description</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Project Description
+          </h2>
           <p className="text-gray-600 leading-relaxed">{project.description}</p>
         </div>
 
         {/* Terms of Payment ✅ */}
         {project.termsOfPayment && (
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Terms of Payment</h2>
-            <p className="text-gray-600 leading-relaxed">{project.termsOfPayment}</p>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              Terms of Payment
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              {project.termsOfPayment}
+            </p>
           </div>
         )}
 
         {/* Skills Required */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">Skills Required</h2>
-          {Array.isArray(project.skillsRequired) && project.skillsRequired.length > 0 ? (
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Skills Required
+          </h2>
+          {Array.isArray(project.skillsRequired) &&
+          project.skillsRequired.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {project.skillsRequired.map((skill, idx) => (
                 <span
