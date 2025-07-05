@@ -298,8 +298,10 @@ export const getProjectApplicants = async (req, res) => {
   try {
     const projectId = req.params.id;
 
-    const applications = await Application.find({ project: projectId })
-      .populate("applicant", "fullname email");
+    const applications = await Application.find({ project: projectId }).populate({
+      path: "applicant",
+      select: "fullname email phoneNumber profile",
+    });
 
     return res.status(200).json({ success: true, applicants: applications });
   } catch (error) {
@@ -307,3 +309,4 @@ export const getProjectApplicants = async (req, res) => {
     res.status(500).json({ message: "Server error", success: false });
   }
 };
+

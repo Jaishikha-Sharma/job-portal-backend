@@ -4,7 +4,7 @@ import { createProject } from "../../redux/projectSlice";
 import ProjectList from "./ProjectList";
 import Navbar from "../../components/shared/Navbar.jsx";
 
-const steps = ["Basic Info", "Budget", "Skills"];
+const steps = ["Project Info", "Budget", "Skills"];
 
 const PostProjectForm = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const PostProjectForm = () => {
     switch (step) {
       case 1:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Project Title *
@@ -89,20 +89,6 @@ const PostProjectForm = () => {
                 rows={4}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 placeholder="Enter project description"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Terms of Payment
-              </label>
-              <textarea
-                name="termsOfPayment"
-                value={formData.termsOfPayment}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                placeholder="e.g. 50% advance, 50% after delivery"
               />
             </div>
           </div>
@@ -149,6 +135,20 @@ const PostProjectForm = () => {
                 placeholder="e.g. 1 month"
               />
             </div>
+            
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Terms of Payment
+              </label>
+              <textarea
+                name="termsOfPayment"
+                value={formData.termsOfPayment}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder="e.g. 50% advance, 50% after delivery"
+              />
+            </div>
           </div>
         );
 
@@ -193,97 +193,97 @@ const PostProjectForm = () => {
     <>
       <Navbar />
 
-      <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Post a New Project
-        </h2>
-
-        {/* Stepper */}
-        <div className="w-full flex justify-between mb-10">
-          {steps.map((label, index) => (
-            <div key={index} className="flex-1 flex flex-col items-center relative">
-              {index > 0 && (
-                <div
-                  className={`absolute top-4 -left-1/2 w-full h-1 ${
-                    step > index ? "bg-blue-600" : "bg-gray-300"
-                  }`}
-                ></div>
-              )}
-              <div
-                className={`z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold ${
-                  step === index + 1
-                    ? "bg-blue-600 text-white"
-                    : step > index + 1
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-300 text-gray-700"
-                }`}
-              >
-                {index + 1}
-              </div>
-              <p
-                className={`mt-2 text-sm ${
-                  step === index + 1 ? "text-blue-600 font-semibold" : "text-gray-500"
-                }`}
-              >
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {StepUI()}
-        </form>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between pt-6">
-          {step > 1 && (
-            <button
-              type="button"
-              onClick={() => setStep(step - 1)}
-              className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
-            >
-              Back
-            </button>
-          )}
-          {step < 3 ? (
-            <button
-              type="button"
-              onClick={() => setStep(step + 1)}
-              className="ml-auto px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="ml-auto px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300"
-            >
-              {loading ? "Posting..." : "Submit"}
-            </button>
-          )}
-        </div>
-        {error && <p className="text-red-500 text-sm mt-2">⚠️ {error}</p>}
-      </div>
-
-      {/* Toggle Project List */}
-      <div className="max-w-xl mx-auto mt-10 text-center">
+      {/* Top bar with toggle button */}
+      <div className="max-w-6xl mx-auto flex justify-end mt-6 px-4">
         <button
           onClick={() => setShowProjects(!showProjects)}
-          className="px-5 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
+          className="fixed right-8 z-50 bg-[#f83002] hover:bg-[#d72000] text-white px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
         >
           {showProjects ? "Hide Projects" : "Show Projects"}
         </button>
       </div>
 
-      {showProjects && (
+      {/* Show project list or form based on toggle */}
+      {!showProjects ? (
+        <div className="max-w-4xl mx-auto mt-6 p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Post a New Project
+          </h2>
+
+          {/* Stepper */}
+          <div className="w-full flex justify-between mb-10">
+            {steps.map((label, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center relative">
+                {index > 0 && (
+                  <div
+                    className={`absolute top-4 -left-1/2 w-full h-1 ${
+                      step > index ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  ></div>
+                )}
+                <div
+                  className={`z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold ${
+                    step === index + 1
+                      ? "bg-blue-600 text-white"
+                      : step > index + 1
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-300 text-gray-700"
+                  }`}
+                >
+                  {index + 1}
+                </div>
+                <p
+                  className={`mt-2 text-sm ${
+                    step === index + 1
+                      ? "text-blue-600 font-semibold"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {StepUI()}
+          </form>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-6">
+            {step > 1 && (
+              <button
+                type="button"
+                onClick={() => setStep(step - 1)}
+                className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+              >
+                Back
+              </button>
+            )}
+            {step < 3 ? (
+              <button
+                type="button"
+                onClick={() => setStep(step + 1)}
+                className="ml-auto px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="ml-auto px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300"
+              >
+                {loading ? "Posting..." : "Submit"}
+              </button>
+            )}
+          </div>
+          {error && <p className="text-red-500 text-sm mt-2">⚠️ {error}</p>}
+        </div>
+      ) : (
         <div className="max-w-4xl mx-auto mt-8 border-t pt-6 border-blue-300">
-          <h3 className="text-xl font-semibold text-blue-700 mb-4 text-center">
-            📂 Your Posted Projects
-          </h3>
           <ProjectList />
         </div>
       )}
