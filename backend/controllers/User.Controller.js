@@ -25,8 +25,6 @@ export const register = async (req, res) => {
       !password ||
       !phoneNumber ||
       !role ||
-      !linkedin ||
-      !pincode ||
       !dob
     ) {
       return res.status(400).json({

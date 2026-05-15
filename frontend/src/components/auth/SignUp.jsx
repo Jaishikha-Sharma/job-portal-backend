@@ -186,7 +186,7 @@ const SignUp = () => {
                     htmlFor="student"
                     className="cursor-pointer text-gray-700 font-medium"
                   >
-                    Student
+                    Candidate
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -242,7 +242,6 @@ const SignUp = () => {
                 placeholder="Your Address"
                 value={input.address}
                 onChange={changeEventHandler}
-                required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
@@ -261,7 +260,6 @@ const SignUp = () => {
                 placeholder="Your Area Pincode"
                 value={input.pincode}
                 onChange={changeEventHandler}
-                required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
@@ -280,7 +278,6 @@ const SignUp = () => {
                 placeholder="https://linkedin.com/in/your-profile"
                 value={input.linkedin}
                 onChange={changeEventHandler}
-                required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </div>
