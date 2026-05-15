@@ -25,16 +25,7 @@ export const registerCompany = async (req, res) => {
       });
     }
 
-    // Check if company name already exists
-    let company = await Company.findOne({ name: companyName });
-    if (company) {
-      return res.status(400).json({
-        message: "Company Already Exists",
-        success: false,
-      });
-    }
-
-    company = await Company.create({
+    const company = await Company.create({
       name: companyName,
       userId,
     });

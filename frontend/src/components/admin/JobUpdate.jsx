@@ -277,8 +277,9 @@ return (
             <option value="">Select Qualification</option>
             <option value="10th">10th</option>
             <option value="12th">12th</option>
+            <option value="Under-Graduate">Under-Graduate</option>
             <option value="Graduation">Graduation</option>
-            <option value="Post Graduation">Post Graduation</option>
+            <option value="Post Graduation">Post Graduation or above</option>
             <option value="Other">Other</option>
           </select>
           {formData.qualification === "Other" && (

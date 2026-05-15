@@ -389,8 +389,9 @@ const PostJob = () => {
                   <option value="">Select Qualification</option>
                   <option value="10th Pass">10th Pass</option>
                   <option value="12th Pass">12th Pass</option>
+                  <option value="Under-Graduate">Under-Graduate</option>
                   <option value="Graduate">Graduate</option>
-                  <option value="Post Graduate">Post Graduate</option>
+                  <option value="Post Graduate">Post Graduate or above</option>
                 </select>
               </div>
 

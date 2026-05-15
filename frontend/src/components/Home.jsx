@@ -7,7 +7,6 @@ import Footer from "./Footer.jsx";
 import useGetAllJobs from "../hooks/useGetAllJobs.jsx";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FloatingFeedback from "./Addons/FloatingFeedback.jsx";
 
 const Home = () => {
   useGetAllJobs();
@@ -40,7 +39,7 @@ const Home = () => {
       />
       <LatestJobs />
       <Footer />
-      <FloatingFeedback/>
+
     </div>
   );
 };

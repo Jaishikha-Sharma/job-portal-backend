@@ -89,15 +89,17 @@ const JobCards = ({ job, hideSaveButton = false }) => {
         >
           {job?.position || "12 Positions"}
         </Badge>
+
         <Badge
           variant="ghost"
           className="text-[#f83002] font-medium text-xs sm:text-sm"
         >
           {job?.jobType || "Part Time"}
         </Badge>
+
         <Badge
           variant="ghost"
-          className="text-[#6a38c2] font-medium text-xs sm:text-sm"
+          className="text-[#6a38c2] font-medium text-xs sm:text-sm break-words whitespace-normal max-w-full"
         >
           {job?.salary || "24 LPA"}
         </Badge>

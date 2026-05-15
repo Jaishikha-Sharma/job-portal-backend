@@ -61,7 +61,7 @@ const LatestJobCards = ({ job }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       dispatch(setSavedJobs(res.data.savedJobs));
@@ -113,7 +113,7 @@ const LatestJobCards = ({ job }) => {
         <p className="text-sm sm:text-base text-gray-600">
           {truncateWords(
             job?.description ||
-              "Brief job description goes here. Keep it short and readable."
+              "Brief job description goes here. Keep it short and readable.",
           )}
         </p>
       </div>
@@ -134,7 +134,7 @@ const LatestJobCards = ({ job }) => {
         </Badge>
         <Badge
           variant="ghost"
-          className="bg-purple-50 text-[#6a38c2] font-medium text-xs sm:text-sm px-2.5 py-1.5 rounded-full"
+          className="bg-purple-50 text-[#6a38c2] font-medium text-xs sm:text-sm px-2.5 py-1.5 rounded-md break-words whitespace-normal max-w-full text-center"
         >
           {job?.salary || "24 LPA"}
         </Badge>

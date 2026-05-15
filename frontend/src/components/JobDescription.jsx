@@ -28,7 +28,7 @@ const JobDescription = () => {
 
   const isInitiallyApplied =
     singleJob?.applications?.some(
-      (application) => application.applicant === user?._id
+      (application) => application.applicant === user?._id,
     ) || false;
 
   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
@@ -36,7 +36,14 @@ const JobDescription = () => {
   const applyJobHandler = async () => {
     try {
       const token = localStorage.getItem("token");
+      const hasEmptyAnswer = singleJob.questions.some(
+        (_, index) => !answers[index]?.trim(),
+      );
 
+      if (hasEmptyAnswer) {
+        toast.error("Please fill all application questions");
+        return;
+      }
       // Convert answers object into array with questions
       const answersArray = singleJob.questions.map((question, index) => ({
         question,
@@ -50,7 +57,7 @@ const JobDescription = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (res.data.success) {
@@ -85,8 +92,8 @@ const JobDescription = () => {
           dispatch(setSingleJob(res.data.job));
           setIsApplied(
             res.data.job.applications.some(
-              (application) => application.applicant === user?._id
-            )
+              (application) => application.applicant === user?._id,
+            ),
           );
         }
       } catch (error) {
@@ -139,36 +146,43 @@ const JobDescription = () => {
         </Button>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8">
+          {/* Left Content */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3 break-words">
               {singleJob?.title}
             </h1>
+
             <div className="flex flex-wrap gap-3">
               <Badge className="bg-indigo-100 text-indigo-800 font-semibold">
                 {singleJob?.position} Position
                 {singleJob?.position > 1 ? "s" : ""}
               </Badge>
+
               <Badge className="bg-pink-100 text-pink-700 font-semibold">
                 {singleJob?.jobType}
               </Badge>
-              <Badge className="bg-green-100 text-green-700 font-semibold">
+
+              <Badge className="bg-green-100 text-green-700 font-semibold break-words whitespace-normal max-w-full">
                 ₹ {singleJob?.salary} LPA
               </Badge>
             </div>
           </div>
 
-          <Button
-            onClick={isApplied ? null : applyJobHandler}
-            disabled={isApplied}
-            className={`rounded-lg text-white font-semibold px-6 py-3 transition-colors duration-300 ${
-              isApplied
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-purple-700 hover:bg-purple-800"
-            }`}
-          >
-            {isApplied ? "Already Applied" : "Apply Now"}
-          </Button>
+          {/* Right Button */}
+          <div className="w-full lg:w-auto flex lg:justify-end">
+            <Button
+              onClick={isApplied ? null : applyJobHandler}
+              disabled={isApplied}
+              className={`w-full lg:w-auto rounded-lg text-white font-semibold px-6 py-3 transition-colors duration-300 ${
+                isApplied
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-purple-700 hover:bg-purple-800"
+              }`}
+            >
+              {isApplied ? "Already Applied" : "Apply Now"}
+            </Button>
+          </div>
         </div>
 
         {/* Questions & Answers Section */}
@@ -278,7 +292,7 @@ const JobDescription = () => {
 
           <a
             href={`https://wa.me/?text=${encodeURIComponent(
-              window.location.href
+              window.location.href,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -290,7 +304,7 @@ const JobDescription = () => {
 
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-              window.location.href
+              window.location.href,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
