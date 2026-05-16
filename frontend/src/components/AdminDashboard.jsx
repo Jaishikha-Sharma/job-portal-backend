@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const isProduction = window.location.hostname !== "localhost";
 const BASE_URL = isProduction
   ? "https://job-portal-backend-2tyj.onrender.com"
   : "http://localhost:8000";
 const ADMIN_API_END_POINT = `${BASE_URL}/admin`;
-
+const btnBase =
+  "px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 shadow-sm active:scale-95";
 const AdminDashboard = () => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
@@ -47,14 +51,56 @@ const AdminDashboard = () => {
       setLoadingUsers(false);
     }
   };
+  // downloadables CSV
+  const exportCSV = (data, fileName) => {
+    const keys = Object.keys(data[0] || {});
 
+    const csv = [
+      keys.join(","),
+      ...data.map((row) =>
+        keys.map((k) => JSON.stringify(row[k] ?? "")).join(","),
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fileName}.csv`;
+    a.click();
+  };
+  //EXCEL
+  const exportExcel = (data, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    XLSX.writeFile(wb, `${fileName}.xlsx`);
+  };
+  //PDF
+  const exportPDF = (data, columns, fileName) => {
+    const doc = new jsPDF();
+
+    const tableData = data.map((item) =>
+      columns.map((col) => item[col] ?? "-"),
+    );
+
+    autoTable(doc, {
+      head: [columns],
+      body: tableData,
+    });
+
+    doc.save(`${fileName}.pdf`);
+  };
   const fetchCompanies = async () => {
     setLoadingCompanies(true);
     try {
       const response = await axios.get(`${ADMIN_API_END_POINT}/companies`);
       if (response.data.success) {
         const sortedCompanies = response.data.companies.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
         );
         setCompanies(sortedCompanies);
       } else {
@@ -118,13 +164,13 @@ const AdminDashboard = () => {
   const toggleCompanyApproval = async (companyId) => {
     try {
       const response = await axios.put(
-        `${ADMIN_API_END_POINT}/companies/${companyId}/toggle-approval`
+        `${ADMIN_API_END_POINT}/companies/${companyId}/toggle-approval`,
       );
       if (response.data.success) {
         setCompanies((prev) =>
           prev.map((c) =>
-            c._id === companyId ? { ...c, isApproved: !c.isApproved } : c
-          )
+            c._id === companyId ? { ...c, isApproved: !c.isApproved } : c,
+          ),
         );
       } else {
         alert("Failed to toggle approval");
@@ -139,16 +185,42 @@ const AdminDashboard = () => {
     return <p className="text-center mt-10 text-gray-500">Loading...</p>;
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white shadow-md rounded-md mt-10 space-y-12">
+    <div className="max-w-7xl mx-auto p-6 mt-10 space-y-10 bg-gray-50">
       {/* Users Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Users</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-500 pl-3">
+          Users
+        </h2>
+        <div className="flex gap-3 mb-4">
+          <button
+            onClick={() => exportCSV(users, "users")}
+            className={`${btnBase} bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md`}
+          >
+            CSV
+          </button>
+
+          <button
+            onClick={() => exportExcel(users, "users")}
+            className={`${btnBase} bg-green-600 text-white hover:bg-green-700 hover:shadow-md`}
+          >
+            Excel
+          </button>
+
+          <button
+            onClick={() =>
+              exportPDF(users, ["fullname", "email", "role"], "users")
+            }
+            className={`${btnBase} bg-red-600 text-white hover:bg-red-700 hover:shadow-md`}
+          >
+            PDF
+          </button>
+        </div>
         {users.length === 0 ? (
           <p className="text-center text-gray-600">No users found.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <table className="min-w-full border border-gray-200 rounded-md">
-              <thead className="bg-gray-100">
+              <thead className="bg-gray-100 text-gray-700 uppercase text-sm tracking-wide">
                 <tr>
                   <th className="py-3 px-4 border-b">Fullname</th>
                   <th className="py-3 px-4 border-b">Email</th>
@@ -180,11 +252,41 @@ const AdminDashboard = () => {
 
       {/* Companies Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Companies</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-500 pl-3">
+          Companies
+        </h2>
+        <div className="flex gap-3 mb-4">
+          <button
+            onClick={() => exportCSV(companies, "companies")}
+            className={`${btnBase} bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md`}
+          >
+            CSV
+          </button>
+
+          <button
+            onClick={() => exportExcel(companies, "companies")}
+            className={`${btnBase} bg-green-600 text-white hover:bg-green-700 hover:shadow-md`}
+          >
+            Excel
+          </button>
+
+          <button
+            onClick={() =>
+              exportPDF(
+                companies,
+                ["name", "description", "isApproved"],
+                "companies",
+              )
+            }
+            className={`${btnBase} bg-red-600 text-white hover:bg-red-700 hover:shadow-md`}
+          >
+            PDF
+          </button>
+        </div>
         {companies.length === 0 ? (
           <p className="text-center text-gray-600">No companies found.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
@@ -234,7 +336,7 @@ const AdminDashboard = () => {
                         </button>
                       </td>
                     </tr>
-                  )
+                  ),
                 )}
               </tbody>
             </table>
@@ -244,11 +346,37 @@ const AdminDashboard = () => {
 
       {/* Jobs Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Jobs</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-500 pl-3">
+          Jobs
+        </h2>
+        <div className="flex gap-3 mb-4">
+          <button
+            onClick={() => exportCSV(jobs, "jobs")}
+            className={`${btnBase} bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md`}
+          >
+            CSV
+          </button>
+
+          <button
+            onClick={() => exportExcel(jobs, "jobs")}
+            className={`${btnBase} bg-green-600 text-white hover:bg-green-700 hover:shadow-md`}
+          >
+            Excel
+          </button>
+
+          <button
+            onClick={() =>
+              exportPDF(jobs, ["title", "location", "salary"], "jobs")
+            }
+            className={`${btnBase} bg-red-600 text-white hover:bg-red-700 hover:shadow-md`}
+          >
+            PDF
+          </button>
+        </div>
         {jobs.length === 0 ? (
           <p className="text-center text-gray-600">No jobs found.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <table className="min-w-full border border-gray-200 rounded-md">
               <thead className="bg-gray-100">
                 <tr>
@@ -282,7 +410,7 @@ const AdminDashboard = () => {
                         </button>
                       </td>
                     </tr>
-                  )
+                  ),
                 )}
               </tbody>
             </table>

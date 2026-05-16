@@ -91,7 +91,7 @@ const ProjectDescription = () => {
         {/* Project Details */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <Badge className="bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full">
-            Budget: ₹{project.budget}
+            Budget: {project.budget}
           </Badge>
           <Badge className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
             Duration: {project.duration}

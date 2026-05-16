@@ -139,7 +139,7 @@ const PublicProjects = () => {
                     variant="ghost"
                     className="text-blue-600 text-xs sm:text-sm"
                   >
-                    Budget: ₹{project.budget}
+                    Budget: {project.budget}
                   </Badge>
                   <Badge
                     variant="ghost"
