@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import { JOB_API_END_POINT } from "../../utils/constant";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 const jobTypes = [
@@ -136,6 +136,8 @@ const PostJob = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [draftJobId, setDraftJobId] = useState(null);
   const { companies } = useSelector((store) => store.company);
 
   const [input, setInput] = useState({
@@ -154,9 +156,57 @@ const PostJob = () => {
     genderPreference: "",
     languagesKnown: "",
     questions: [],
+    status: "published",
   });
 
   const [jobMode, setJobMode] = useState(""); // "On-site", "Remote", or "Hybrid"
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const draftId = params.get("draftId");
+
+    if (!draftId) return;
+    setDraftJobId(draftId);
+
+    const fetchDraft = async () => {
+      try {
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${draftId}`);
+        if (res.data.success) {
+          const job = res.data.job;
+          if (job.status !== "draft") {
+            toast.error("This job is not a draft.");
+            return;
+          }
+
+          setInput({
+            title: job.title || "",
+            description: job.description || "",
+            requirements: job.requirements?.length ? job.requirements : [""],
+            salary: job.salary || "",
+            location: job.location || "",
+            jobType: job.jobType || "",
+            experience: job.experience || job.experienceLevel || "",
+            position: job.position || 1,
+            companyId: job.company?._id || job.company || "",
+            qualification: job.qualification || "",
+            degree: job.degree || "",
+            customQualification: job.customQualification || "",
+            genderPreference: job.genderPreference || "",
+            languagesKnown: Array.isArray(job.languagesKnown)
+              ? job.languagesKnown.join(", ")
+              : job.languagesKnown || "",
+            questions: Array.isArray(job.questions) ? job.questions : [],
+            status: job.status || "draft",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load draft:", err);
+        toast.error("Unable to load draft details.");
+      }
+    };
+
+    fetchDraft();
+  }, [location.search]);
 
   useEffect(() => {
     // Auto update location field for Remote or Hybrid mode
@@ -190,7 +240,7 @@ const PostJob = () => {
 
   const selectChangeHandler = (value) => {
     const selectedCompany = companies.find(
-      (company) => company.name.toLowerCase() === value
+      (company) => company.name.toLowerCase() === value,
     );
     setInput({ ...input, companyId: selectedCompany?._id || "" });
   };
@@ -220,6 +270,43 @@ const PostJob = () => {
     });
   };
 
+  const saveAsDraft = async () => {
+    if (!token) return toast.error("Login required");
+
+    setLoading(true);
+
+    try {
+      const payload = {
+        ...input,
+        status: "draft", // FORCE override
+      };
+
+      console.log("🔥 FINAL PAYLOAD:", payload);
+
+      const res = draftJobId
+        ? await axios.put(`${JOB_API_END_POINT}/update/${draftJobId}`, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        : await axios.post(`${JOB_API_END_POINT}/post`, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+      if (res.data.success) {
+        toast.success("Saved as draft");
+        navigate("/admin/jobs");
+      }
+    } catch (err) {
+      toast.error("Draft save failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -259,12 +346,23 @@ const PostJob = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const payload = {
+        ...input,
+        status: "published",
+      };
+      const res = draftJobId
+        ? await axios.put(`${JOB_API_END_POINT}/update/${draftJobId}`, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        : await axios.post(`${JOB_API_END_POINT}/post`, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
       if (res.data.success) {
         toast.success(res.data.message);
@@ -638,21 +736,38 @@ const PostJob = () => {
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-10">
             {step > 1 && (
-              <Button variant="outline" onClick={prevStep}>
+              <Button type="button" variant="outline" onClick={prevStep}>
                 Previous
               </Button>
             )}
 
-            {step < 3 && <Button onClick={nextStep}>Next</Button>}
+            {step < 3 && (
+              <Button type="button" onClick={nextStep}>
+                Next
+              </Button>
+            )}
 
             {step === 3 && (
-              <Button type="submit" disabled={loading}>
-                {loading ? (
-                  <Loader2 className="animate-spin h-5 w-5" />
-                ) : (
-                  "Submit"
-                )}
-              </Button>
+              <div className="flex gap-3">
+                {/* 👇 SAVE AS DRAFT */}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={saveAsDraft}
+                  disabled={loading}
+                >
+                  Save as Draft
+                </Button>
+
+                {/* 👇 PUBLISH */}
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <Loader2 className="animate-spin h-5 w-5" />
+                  ) : (
+                    "Publish"
+                  )}
+                </Button>
+              </div>
             )}
           </div>
         </form>

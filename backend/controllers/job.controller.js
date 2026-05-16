@@ -21,6 +21,7 @@ export const postJob = async (req, res) => {
       genderPreference,
       languagesKnown,
       questions,
+      status,
     } = req.body;
 
     const userId = req.id;
@@ -37,16 +38,23 @@ export const postJob = async (req, res) => {
       !position ||
       !companyId
     ) {
-      return res.status(400).json({ message: "Required fields missing.", success: false });
+      return res
+        .status(400)
+        .json({ message: "Required fields missing.", success: false });
     }
 
     // Check if company is approved
     const company = await Company.findById(companyId);
     if (!company) {
-      return res.status(404).json({ message: "Company not found.", success: false });
+      return res
+        .status(404)
+        .json({ message: "Company not found.", success: false });
     }
     if (!company.isApproved) {
-      return res.status(403).json({ message: "Company is not approved to post jobs.", success: false });
+      return res.status(403).json({
+        message: "Company is not approved to post jobs.",
+        success: false,
+      });
     }
 
     // Create job
@@ -68,10 +76,11 @@ export const postJob = async (req, res) => {
       questions: Array.isArray(questions)
         ? questions
         : questions
-        ? questions.split(",").map((q) => q.trim())
-        : [],
+          ? questions.split(",").map((q) => q.trim())
+          : [],
       company: companyId,
       created_by: userId,
+      status: ["draft", "published"].includes(status) ? status : "published",
     });
 
     // Notify all students
@@ -90,7 +99,9 @@ export const postJob = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in postJob:", error);
-    return res.status(500).json({ message: "Server error", error: error.message, success: false });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message, success: false });
   }
 };
 
@@ -105,7 +116,10 @@ export const getAllJobs = async (req, res) => {
       ],
     };
 
-    const jobs = await Job.find(query)
+    const jobs = await Job.find({
+      ...query,
+      status: "published",
+    })
       .populate("company")
       .populate("created_by", "fullname")
       .sort({ createdAt: -1 });
@@ -218,9 +232,11 @@ export const updateJob = async (req, res) => {
       languagesKnown,
       questions, // Added questions here
       companyId,
+      status,
     } = req.body;
 
     const updatedFields = {
+      ...(status && { status }),
       ...(title && { title }),
       ...(description && { description }),
       ...(requirements && {

@@ -84,6 +84,9 @@ const AdminJobsTable = () => {
                 Role
               </TableHead>
               <TableHead className="text-gray-700 py-3 px-6 text-left">
+                Status
+              </TableHead>
+              <TableHead className="text-gray-700 py-3 px-6 text-left">
                 Date
               </TableHead>
               <TableHead className="text-right text-gray-700 py-3 px-6">
@@ -102,6 +105,17 @@ const AdminJobsTable = () => {
                 </TableCell>
                 <TableCell className="text-gray-700 py-4 px-6">
                   {job?.title}
+                </TableCell>
+                <TableCell className="text-gray-700 py-4 px-6">
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${
+                      job.status === "draft"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {job.status === "draft" ? "Draft" : "Published"}
+                  </span>
                 </TableCell>
                 <TableCell className="text-gray-600 py-4 px-6">
                   {job?.createdAt?.split("T")[0]}
@@ -123,6 +137,17 @@ const AdminJobsTable = () => {
                           <span>Edit</span>
                         </div>
 
+                        {job.status === "draft" && (
+                          <div
+                            onClick={() =>
+                              navigate(`/admin/jobs/create?draftId=${job._id}`)
+                            }
+                            className="flex items-center gap-2 text-sm text-blue-700 hover:text-white hover:bg-blue-600 p-2 rounded-md cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Continue Draft</span>
+                          </div>
+                        )}
                         <div
                           onClick={() =>
                             navigate(`/admin/jobs/${job._id}/applicants`)
@@ -132,7 +157,6 @@ const AdminJobsTable = () => {
                           <Eye className="w-4 h-4" />
                           <span>Applicants</span>
                         </div>
-
                         <div
                           onClick={() => handleDelete(job._id)}
                           className="flex items-center gap-2 text-sm text-red-600 hover:text-white hover:bg-red-600 p-2 rounded-md cursor-pointer"
