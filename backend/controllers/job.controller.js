@@ -25,36 +25,40 @@ export const postJob = async (req, res) => {
     } = req.body;
 
     const userId = req.id;
+    const isDraft = status === "draft";
 
-    // Validation for required fields
-    if (
-      !title ||
-      !description ||
-      !requirements ||
-      !salary ||
-      !location ||
-      !jobType ||
-      !experience ||
-      !position ||
-      !companyId
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Required fields missing.", success: false });
+    if (!isDraft) {
+      if (
+        !title ||
+        !description ||
+        !requirements ||
+        !salary ||
+        !location ||
+        !jobType ||
+        !experience ||
+        !position ||
+        !companyId
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Required fields missing.", success: false });
+      }
     }
 
-    // Check if company is approved
-    const company = await Company.findById(companyId);
-    if (!company) {
-      return res
-        .status(404)
-        .json({ message: "Company not found.", success: false });
-    }
-    if (!company.isApproved) {
-      return res.status(403).json({
-        message: "Company is not approved to post jobs.",
-        success: false,
-      });
+    let company = null;
+    if (companyId) {
+      company = await Company.findById(companyId);
+      if (!company && !isDraft) {
+        return res
+          .status(404)
+          .json({ message: "Company not found.", success: false });
+      }
+      if (company && !company.isApproved && !isDraft) {
+        return res.status(403).json({
+          message: "Company is not approved to post jobs.",
+          success: false,
+        });
+      }
     }
 
     // Create job
@@ -78,19 +82,20 @@ export const postJob = async (req, res) => {
         : questions
           ? questions.split(",").map((q) => q.trim())
           : [],
-      company: companyId,
+      company: company?._id,
       created_by: userId,
       status: ["draft", "published"].includes(status) ? status : "published",
     });
 
-    // Notify all students
-    const users = await User.find({ role: "student" });
-    const notifications = users.map((user) => ({
-      userId: user._id,
-      message: `New job posted: ${job.title}`,
-      type: "job",
-    }));
-    await Notification.insertMany(notifications);
+    if (!isDraft) {
+      const users = await User.find({ role: "student" });
+      const notifications = users.map((user) => ({
+        userId: user._id,
+        message: `New job posted: ${job.title}`,
+        type: "job",
+      }));
+      await Notification.insertMany(notifications);
+    }
 
     return res.status(201).json({
       message: "Job created successfully.",
@@ -266,6 +271,7 @@ export const updateJob = async (req, res) => {
     }).populate("company");
 
     return res.status(200).json({
+      runValidators: true,
       message: "Job updated successfully.",
       job: updatedJob,
       success: true,

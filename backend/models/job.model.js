@@ -4,11 +4,15 @@ const jobSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     description: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     requirements: [
       {
@@ -17,29 +21,54 @@ const jobSchema = new mongoose.Schema(
     ],
     salary: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     location: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     jobType: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     position: {
       type: String,
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
-    qualification: { type: String, required: true },
-    degree: { type: String, required: true },
-    genderPreference: { type: String, required: true },
+    qualification: {
+      type: String,
+      required() {
+        return this.status !== "draft";
+      },
+    },
+    degree: {
+      type: String,
+      required() {
+        return this.status !== "draft";
+      },
+    },
+    genderPreference: {
+      type: String,
+      required() {
+        return this.status !== "draft";
+      },
+    },
     languagesKnown: [{ type: String, default: [] }],
     experienceLevel: { type: String, default: "" },
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-      required: true,
+      required() {
+        return this.status !== "draft";
+      },
     },
     created_by: {
       type: mongoose.Schema.Types.ObjectId,

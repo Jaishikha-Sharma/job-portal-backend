@@ -57,10 +57,6 @@ const Herosection = () => {
       <div className="flex flex-row items-center justify-between gap-6 flex-wrap md:flex-nowrap">
         {/* Left: Text */}
         <div className="w-full md:w-2/3 text-center md:text-left space-y-6">
-          <span className="px-5 py-2 rounded-full bg-white text-[#f83002] font-semibold text-sm shadow-md inline-block">
-            🚀 No.1 Job Hunt Website
-          </span>
-
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug">
             Search, apply & <br />
             Get your <span className="text-[#6a38c2]">Dream Job</span>

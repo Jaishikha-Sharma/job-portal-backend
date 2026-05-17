@@ -734,32 +734,32 @@ const PostJob = () => {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-10">
-            {step > 1 && (
-              <Button type="button" variant="outline" onClick={prevStep}>
-                Previous
-              </Button>
-            )}
-
-            {step < 3 && (
-              <Button type="button" onClick={nextStep}>
-                Next
-              </Button>
-            )}
-
-            {step === 3 && (
-              <div className="flex gap-3">
-                {/* 👇 SAVE AS DRAFT */}
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={saveAsDraft}
-                  disabled={loading}
-                >
-                  Save as Draft
+          <div className="flex flex-col md:flex-row justify-between mt-10 gap-3">
+            <div className="flex gap-3">
+              {step > 1 && (
+                <Button type="button" variant="outline" onClick={prevStep}>
+                  Previous
                 </Button>
+              )}
 
-                {/* 👇 PUBLISH */}
+              {step < 3 && (
+                <Button type="button" onClick={nextStep}>
+                  Next
+                </Button>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={saveAsDraft}
+                disabled={loading}
+              >
+                Save as Draft
+              </Button>
+
+              {step === 3 && (
                 <Button type="submit" disabled={loading}>
                   {loading ? (
                     <Loader2 className="animate-spin h-5 w-5" />
@@ -767,8 +767,8 @@ const PostJob = () => {
                     "Publish"
                   )}
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </form>
       </div>
