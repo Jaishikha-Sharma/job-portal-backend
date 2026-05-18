@@ -68,7 +68,9 @@ export const toggleCompanyApproval = async (req, res) => {
 // GET all jobs (admin)
 export const getAllJobsForAdmin = async (req, res) => {
   try {
-    const jobs = await Job.find().sort({ createdAt: -1 }); // Optional: sort newest first
+    const jobs = await Job.find()
+      .populate("company")
+      .sort({ createdAt: -1 }); // Optional: sort newest first
     res.status(200).json({ success: true, jobs });
   } catch (error) {
     console.error("Get all jobs error:", error);

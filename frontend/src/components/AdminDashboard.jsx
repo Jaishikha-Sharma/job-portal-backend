@@ -390,11 +390,11 @@ const AdminDashboard = () => {
               </thead>
               <tbody>
                 {jobs.map(
-                  ({ _id, title, location, salary, createdAt, companyId }) => (
+                  ({ _id, title, location, salary, createdAt, company }) => (
                     <tr key={_id} className="hover:bg-gray-50">
                       <td className="py-3 px-4 border-b">{title}</td>
                       <td className="py-3 px-4 border-b">
-                        {companyId?.name || "-"}
+                        {company?.name || "-"}
                       </td>
                       <td className="py-3 px-4 border-b">{location}</td>
                       <td className="py-3 px-4 border-b">₹{salary}</td>
