@@ -164,7 +164,7 @@ const JobDescription = () => {
               </Badge>
 
               <Badge className="bg-green-100 text-green-700 font-semibold break-words whitespace-normal max-w-full">
-                ₹ {singleJob?.salary} LPA
+               {singleJob?.salary} LPA
               </Badge>
             </div>
           </div>
@@ -215,7 +215,7 @@ const JobDescription = () => {
         {/* Job Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 text-gray-800 text-base">
           <Detail label="Role" value={singleJob?.title} />
-          <Detail label="Salary" value={`₹ ${singleJob?.salary} LPA`} />
+          <Detail label="Salary" value={`${singleJob?.salary} LPA`} />
           <Detail label="Location" value={singleJob?.location} />
           <Detail label="Experience Level" value={singleJob?.experienceLevel} />
           <Detail label="Job Type" value={singleJob?.jobType} />
