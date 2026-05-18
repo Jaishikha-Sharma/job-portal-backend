@@ -1,3 +1,4 @@
 .vercel
 backend/.env
 frontend/.env
+node_modules
